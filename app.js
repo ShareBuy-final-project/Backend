@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const db = require('./config/db');
 const sampleRoutes = require('./routes/sampleRoutes.js');
+const userRegisterRoute = require('./routes/userRegisterRoute.js');
 const loginRoute = require('./routes/loginRoute.js');
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/api/samples', sampleRoutes);
+app.use('/api/userRegister', userRegisterRoute);
 app.use('/api/login', loginRoute);
 
 
