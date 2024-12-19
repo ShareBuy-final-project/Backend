@@ -11,13 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Connect to database
-// db.authenticate()
-//   .then(() => console.log('Database connected...'))
-//   .catch((err) => console.log('Error: ' + err));
 
-// app.use('/api/businessRegister', businessRegisterRoute);
-// app.use('/api/userRegister', userRegisterRoute);
-// app.use('/api/login', loginRoute);
 userApi(app);
 
 const PORT = process.env.PORT || 5000;
