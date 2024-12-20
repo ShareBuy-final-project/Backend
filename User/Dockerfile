@@ -1,3 +1,5 @@
+# This Dockerfile should be used to build the `User` microservice.
+
 FROM node:14
 
 WORKDIR /app
