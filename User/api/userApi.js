@@ -1,9 +1,9 @@
 const express = require('express');
-const User = require('../data/models/User');
+const User = require('../data/models/user');
 const { register } = require('../domain/user');
 
 module.exports = (app) => {
-  app.post('/api/register', async (req, res) => {// Implemnt function by calling the function register from 'domain/user'
+  app.post('/api/register', async (req, res) => {
     try {
       const { username, password, email } = req.body;
   
@@ -15,6 +15,6 @@ module.exports = (app) => {
     } catch (error) {
       res.status(400).json({ message: 'Error registering user', error: error.message });
     }  
-  })
-}
+  });
+};
 
