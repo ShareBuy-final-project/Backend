@@ -1,4 +1,4 @@
-const User = require('../data/models/User');
+const User = require('../data/models/user');
 const { register, getUser } = require('../domain/user');
 
 module.exports = (app) => {
@@ -14,7 +14,7 @@ module.exports = (app) => {
     } catch (error) {
       res.status(400).json({ message: 'Error registering user', error: error.message });
     }  
-  })
+  });
   
   app.get('/users/me', async (req, res) => {
     try {
@@ -24,6 +24,6 @@ module.exports = (app) => {
     } catch (error) {
       res.status(400).json({ message: 'Error fetching user', error: error.message });
     }
-  })
-}
+  });
+};
 

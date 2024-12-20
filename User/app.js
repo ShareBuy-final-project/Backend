@@ -1,9 +1,9 @@
 const userApi = require("./api/userApi");
-console.log("Hello app")
+console.log("Hello app");
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const db = require('../config/db.js');
+//const db = require('./config/db.js');
 
 
 const app = express();
