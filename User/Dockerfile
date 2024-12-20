@@ -7,7 +7,7 @@ WORKDIR /app
 COPY User/package*.json ./
 RUN npm install
 
-COPY . .
+COPY User/ .
 COPY config ./config
 
 CMD ["npm", "start"]
