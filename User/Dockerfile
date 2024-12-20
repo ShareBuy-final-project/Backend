@@ -8,6 +8,6 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-COPY ../config ./config
+COPY config ./config
 
 CMD ["npm", "start"]
