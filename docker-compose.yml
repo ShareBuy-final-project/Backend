@@ -3,7 +3,7 @@ version: '3.8'
 services:
   user-service:
     build:
-      context: .
+      context: ./User
     ports:
       - "5000:5000"
     environment:
