@@ -1,5 +1,6 @@
 // const bcrypt = require('bcrypt');
 const User = require('../data/models/user');
+const {validate} = require('./validation');
 
 const register = async ({ username, password, email }) => {
 
@@ -28,6 +29,17 @@ const register = async ({ username, password, email }) => {
   };
 };
 
+const getUser = async (accessToken) => {
+  try{
+    const {userEmail} = validate(accessToken);
+    const user = await User.findOne({email: userEmail});
+    return user;
+  }
+  catch(error){
+    throw new Error('Invalid token');
+  }
+}
+
 module.exports = {
-  register,
+  register, getUser
 };
