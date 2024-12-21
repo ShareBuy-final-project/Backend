@@ -1,4 +1,4 @@
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const User = require('../data/models/user');
 const {validate} = require('./validation');
 
@@ -8,25 +8,22 @@ const register = async ({ username, password, email }) => {
     throw new Error('All fields are required');
   }
 
-//   const existingUser = await User.findOne({ username });
-//   if (existingUser) {
-//     throw new Error('Username already exists');
-//   }
+  const existingUser = await User.findOne({ username });
+  if (existingUser) {
+    throw new Error('Username already exists');
+  }
 
-//   const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-//   const newUser = new User({
-//     username,
-//     password: hashedPassword,
-//     email,
-//   });
-
-//   await newUser.save();
-
-  return {
+  const newUser = new User({
     username,
-    email,  
-  };
+    password: hashedPassword,
+    email,
+  });
+
+  await newUser.save();
+
+  return newUser;
 };
 
 const getUser = async (accessToken) => {
