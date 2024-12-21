@@ -1,13 +1,14 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-const generateToken = (userId) => {
+
+const generateToken = (userEmail) => {
     try{
-        console.log('userId', userId);  
         const token = jwt.sign(
-            { userId: userId },  // payload
-            process.env.JWT_SECRET,  // secret key
+            { email: userEmail }, 
+            process.env.JWT_SECRET,
             { 
-                expiresIn: '24h'  // token expiration time
+                expiresIn: '15s'
             }
         );
         return token;
@@ -18,8 +19,36 @@ const generateToken = (userId) => {
     }
 };
 
-const verifyTokenJWT = (token) => {
-    return jwt.verify(token, process.env.JWT_SECRET);
+const generateRefreshToken = (userEmail) => {
+    try{
+        const token = jwt.sign(
+            { email: userEmail }, 
+            process.env.REFRESH_TOKEN_SECRET,
+        );
+        return token;
+    }
+    catch(err){
+        throw new Error(err);
+    }
 };
 
-module.exports = { generateToken, verifyTokenJWT };
+const refreshTokenJWT = (token) => {
+    try{
+        const decoded = verifyTokenJWT(token, process.env.REFRESH_TOKEN_SECRET);
+        return generateToken(decoded.email);
+    }
+    catch(err){
+        throw new Error(err);
+    }
+};
+
+const verifyTokenJWT = (token, secret = process.env.JWT_SECRET) => {
+    return jwt.verify(token, secret,(err, decoded) => {
+        if (err) {
+            throw new Error(err);
+        }
+        return decoded;
+    });
+};
+
+module.exports = { generateToken, verifyTokenJWT, refreshTokenJWT, generateRefreshToken};

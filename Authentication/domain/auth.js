@@ -1,26 +1,44 @@
-const user = require('../data/models/userTest');
-const {verifyTokenJWT, generateToken} = require('../utils/jwt');
+const User = require('../data/models/userTest');
+const {verifyTokenJWT, generateToken, refreshTokenJWT, generateRefreshToken} = require('../utils/jwt');
+
+let refreshTokens = []
 
 const verifyToken = (token) => {
-    //verify token
+    if (!token) return res.status(401).json({ message: 'No token provided' });
+    try {
+        const decoded = verifyTokenJWT(token);
+        return decoded;
+    } catch (err) {
+        throw new Error('Invalid token');
+    }
 }
+
 const login = async ({email, password}) => {
     try {
-        console.log('email', email);
-        console.log('password', password)
-        const usera = await user.findOne(email);
-        if (!usera) return res.status(404).json({ message: 'User not found' });
-        console.log('user', usera);
-        const isMatch = await user.comparePassword(password);
-        if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
-        console.log('isMatch', isMatch);
-        const token = generateToken(usera._id);
-        return token;
+        const user = await User.findOne(email);
+        if (!user) throw new Error('Invalid credentials');
+        const isMatch = await User.comparePassword(password);
+        if (!isMatch) throw new Error('Invalid credentials');
+        const token = generateToken(email);
+        const refreshUserToken = generateRefreshToken(email);
+        refreshTokens.push(refreshUserToken);
+        return {token, refreshUserToken};
     } catch (err) {
-        console.log('error', err);
         throw new Error('Error logging in');
     }
 };
+
+const refreshToken = async (token) => {
+    try{
+        if (!token) throw new Error('No token provided');
+        if (!refreshTokens.includes(token)) throw new Error('Invalid token');
+        return refreshTokenJWT(token);
+    } 
+    catch(err){
+        throw new Error(err);
+    }
+}
+
 module.exports = {
-    login, verifyToken
+    login, verifyToken, refreshToken
   };
