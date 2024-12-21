@@ -8,7 +8,7 @@ const generateToken = (userEmail) => {
             { email: userEmail }, 
             process.env.JWT_SECRET,
             { 
-                expiresIn: '15s'
+                expiresIn: '15m'
             }
         );
         return token;
@@ -32,9 +32,9 @@ const generateRefreshToken = (userEmail) => {
     }
 };
 
-const refreshTokenJWT = (token) => {
+const refreshTokenJWT = (refreshToken) => {
     try{
-        const decoded = verifyTokenJWT(token, process.env.REFRESH_TOKEN_SECRET);
+        const decoded = verifyTokenJWT(refreshToken, process.env.REFRESH_TOKEN_SECRET);
         return generateToken(decoded.email);
     }
     catch(err){
