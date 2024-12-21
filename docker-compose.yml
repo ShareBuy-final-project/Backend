@@ -9,18 +9,18 @@ services:
       - NODE_ENV=production
       - PORT=5000
       - DB_HOST=db
-      - DB_USER=your_database_user
-      - DB_PASS=your_database_password
-      - DB_NAME=your_database_name
+      - DB_USER=adminDB
+      - DB_PASS=adminDB
+      - DB_NAME=ShareBuyDB
     depends_on:
       - db
 
   db:
     image: postgres:latest
     environment:
-      - POSTGRES_DB=your_database_name
-      - POSTGRES_USER=your_database_user
-      - POSTGRES_PASSWORD=your_database_password
+      - POSTGRES_DB=ShareBuyDB
+      - POSTGRES_USER=adminDB
+      - POSTGRES_PASSWORD=adminDB
     ports:
       - "5432:5432"
     volumes:
