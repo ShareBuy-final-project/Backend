@@ -15,6 +15,22 @@ services:
     depends_on:
       - db
 
+  authentication-service:
+    build:
+      context: .
+      dockerfile: ./Authentication/Dockerfile
+    ports:
+      - "6000:6000"
+    environment:
+      - NODE_ENV=production
+      - PORT=6000
+      - DB_HOST=db
+      - DB_USER=adminDB
+      - DB_PASS=adminDB
+      - DB_NAME=ShareBuyDB
+    depends_on:
+      - db
+
   db:
     image: postgres:latest
     environment:
