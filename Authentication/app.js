@@ -11,9 +11,14 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Connect to database
+// Connect to database and synchronize models
+db.sync().then(() => {
+  console.log('Database synchronized');
+  // Start the server after the database is synchronized
+  const PORT = process.env.PORT || 6000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}).catch(err => {
+  console.error('Unable to synchronize the database:', err);
+});
 
 authApi(app);
-
-const PORT = process.env.PORT || 6000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
