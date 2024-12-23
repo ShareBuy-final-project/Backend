@@ -8,7 +8,7 @@ const register = async ({ username, password, email }) => {
     throw new Error('All fields are required');
   }
 
-  const existingUser = await User.findOne({ username });
+  const existingUser = await User.findOne({ where: { username } });
   if (existingUser) {
     throw new Error('Username already exists');
   }
