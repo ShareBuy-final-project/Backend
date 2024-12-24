@@ -1,6 +1,6 @@
 # This Dockerfile should be used to build the `User` microservice.
 
-FROM node:latest
+FROM node:18
 
 WORKDIR /app
 
@@ -18,4 +18,4 @@ WORKDIR /app/User
 EXPOSE 5000
 
 # Run the application with the --trace-deprecation flag
-CMD ["node", "--trace-deprecation", "app.js"]
+CMD ["npm", "start"]

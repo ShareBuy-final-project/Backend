@@ -1,6 +1,6 @@
 # This Dockerfile should be used to build the `Authentication` microservice.
 
-FROM node:latest
+FROM node:18
 
 WORKDIR /app
 
