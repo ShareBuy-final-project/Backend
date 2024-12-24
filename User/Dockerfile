@@ -6,6 +6,7 @@ WORKDIR /app
 
 COPY User/package*.json ./
 RUN npm install
+RUN npm update
 
 # Copy the source code
 COPY User/ ./User
@@ -13,4 +14,8 @@ COPY config ./config
 
 WORKDIR /app/User
 
-CMD ["npm", "start"]
+# Expose port 5000 to the host
+EXPOSE 5000
+
+# Run the application with the --trace-deprecation flag
+CMD ["node", "--trace-deprecation", "app.js"]

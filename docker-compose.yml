@@ -31,6 +31,19 @@ services:
     depends_on:
       - db
 
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./ApiGateway/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    depends_on:
+      - user-service
+      - authentication-service
+
   db:
     image: postgres:latest
     environment:
