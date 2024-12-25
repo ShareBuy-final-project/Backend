@@ -1,6 +1,6 @@
 # This Dockerfile should be used to build the `Authentication` microservice.
 
-FROM node:latest
+FROM node:18
 
 WORKDIR /app
 
@@ -12,5 +12,8 @@ COPY Authentication/ ./Authentication
 COPY config ./config
 
 WORKDIR /app/Authentication
+
+# Expose port 6000 to the host
+EXPOSE 6000
 
 CMD ["npm", "start"]

@@ -10,6 +10,13 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+console.log('Starting User service...');
+
+app.use((req, res, next) => {
+  console.log(`User service received request: ${req.method} ${req.url}`);
+  next();
+});
+
 // Connect to database and synchronize models
 sequelize.sync().then(() => {
   console.log('Database synchronized');
