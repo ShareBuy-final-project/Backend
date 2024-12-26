@@ -1,4 +1,4 @@
-const User = require('../data/models/group');
+const Group = require('../data/models/group');
 const { create, getGroup } = require('../domain/group');
 
 module.exports = (app) => {
@@ -7,7 +7,7 @@ module.exports = (app) => {
       const {  name, user, details, image,price,discount,size } = req.body;
   
       // Call the register function from 'domain/user'
-      const newUser = await create({  name, user, details, image,price,discount,size });
+      const newGroup = await create({  name, user, details, image,price,discount,size });
   
       res.status(201).json({ message: 'Group created successfully', user: newUser });
       console.log('Group created successfully');
