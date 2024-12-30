@@ -1,9 +1,15 @@
 const express = require('express');
 const cors = require('cors');
+const https = require('https');
+const fs = require('fs');
 const bodyParser = require('body-parser');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
+
+const privateKey = fs.readFileSync('../sslKeys/private.key', 'utf8');
+const certificate = fs.readFileSync('../sslKeys/certificate.crt', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
 
 const userServiceProxy = createProxyMiddleware({
   target: 'http://user-service:5000',
@@ -33,7 +39,8 @@ app.use('/auth', (req, res, next) => {
 
 app.use(cors());
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`API Gateway running on port ${PORT}`);
+const httpsServer = https.createServer(credentials, app);
+// const PORT = process.env.PORT || 3000;
+httpsServer.listen(443, () => {
+  console.log('HTTPS Server running on port 443');
 });
