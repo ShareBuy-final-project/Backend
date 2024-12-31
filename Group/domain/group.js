@@ -1,5 +1,6 @@
 const Group = require('../data/models/group');
-const create = async ({ name, user, details, image,price,discount,size }) => {
+const {validate} = require('./validation');
+const create = async ({ name, accessToken, details, image,price,discount,size }) => {
     if (!name || !price || !discount || !size) {
         throw new Error('Missing required fields');
     }
@@ -7,9 +8,12 @@ const create = async ({ name, user, details, image,price,discount,size }) => {
     if (existingGroup) {
         throw new Error('name already exists');
     }
-    const user = await User.findOne({ where: { userEmail:user } });
-    if (!user) {
-        throw new Error("user doesn't exist");
+    try{
+      const {userEmail} = validate(accessToken);
+      var user = await User.findOne({email: userEmail});
+    }
+    catch(error){
+      throw new Error('Invalid token');
     }
     const newGroup = new Group({
         name, user, details, image,price,discount,size
