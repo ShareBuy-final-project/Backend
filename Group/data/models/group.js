@@ -35,11 +35,6 @@ const Group = sequelize.define('group', {
         type: DataTypes.INTEGER,
         allowNull:false
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
   }, {
     timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
   });

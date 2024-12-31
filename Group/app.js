@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('../config/db');
 const userApi = require('./api/userApi');
-const User = require('./data/models/user'); // Import the User model
 // Import other models as needed
 
 const app = express();
