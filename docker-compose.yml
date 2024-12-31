@@ -48,10 +48,10 @@ services:
       context: .
       dockerfile: ./ApiGateway/Dockerfile
     ports:
-      - "3000:3000"
+      - "443:443"
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=443
     depends_on:
       - user-service
       - authentication-service
