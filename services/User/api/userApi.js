@@ -6,15 +6,7 @@ module.exports = (app) => {
   app.post('/register', async (req, res) => {
     console.log('User service received request to /register');
     try {
-<<<<<<< HEAD
-<<<<<<< HEAD
       const { name, password, email, phone, state, city, street, streetNumber, zipCode } = req.body;
-=======
-      const { username, password, email, phone, state, city, street, streetNumber, zipCode } = req.body;
->>>>>>> 9f1eec2 (add debug print)
-=======
-      const { name, password, email, phone, state, city, street, streetNumber, zipCode } = req.body;
->>>>>>> 0f28466 (fix name field)
       console.log('Request body:', req.body);
 
       const newUser = await register({ name, password, email, phone, state, city, street, streetNumber, zipCode });
