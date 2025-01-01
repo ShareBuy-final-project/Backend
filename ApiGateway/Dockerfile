@@ -16,7 +16,10 @@ RUN npm update
 RUN npm install http-proxy@latest http-proxy-middleware@latest
 
 # Copy the sslKeys directory to the working directory
-COPY sslKeys/ ./sslKeys/
+# COPY sslKeys/ ./sslKeys/
+
+# Copy the rest of the application code to the working directory
+# COPY ApiGateway/ ./
 
 # Copy the rest of the application code to the working directory
 COPY ApiGateway/ ./ApiGateway
