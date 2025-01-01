@@ -1,47 +1,42 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../../config/db');
 
-const User = sequelize.define('User', {
-  name: {
+const Business = sequelize.define('Business', {
+  businessName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  businessNumber: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
   },
-  password: {
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  category: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  email: {
+  websiteLink: {
     type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
+    allowNull: true,
   },
-  phone: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  state: {
+  contactEmail: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  city: {
-    type: DataTypes.STRING,
+  userId: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-  },
-  street: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  streetNumber: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  zipCode: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
+  }
 }, {
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
 });
 
-module.exports = User;
+module.exports = Business;

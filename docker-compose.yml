@@ -10,6 +10,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ShareBuyDB -U adminDB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
       
   user-service:
     build:
@@ -25,7 +30,8 @@ services:
       - DB_PASS=adminDB
       - DB_NAME=ShareBuyDB
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   authentication-service:
     build:
@@ -41,7 +47,8 @@ services:
       - DB_PASS=adminDB
       - DB_NAME=ShareBuyDB
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   api-gateway:
     build:
