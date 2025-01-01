@@ -1,20 +1,37 @@
 const User = require('../data/models/user');
-const { register, getUser } = require('../domain/user');
+const Business = require('../data/models/business');
+const { register, getUser, registerBusiness } = require('../domain/user');
 
 module.exports = (app) => {
   app.post('/register', async (req, res) => {
     console.log('User service received request to /register');
     try {
-      const { username, password, email } = req.body;
+      const { username, password, email, phone, state, city, street, streetNumber, zipCode } = req.body;
       //console.log('Request body:', req.body);
 
-      const newUser = await register({ username, password, email });
+      const newUser = await register({ username, password, email, phone, state, city, street, streetNumber, zipCode });
       //console.log('New user registered:', newUser);
 
       res.status(201).json({ message: 'User registered successfully', user: newUser });
     } catch (error) {
       //console.error('Error registering user:', error);
       res.status(400).json({ message: 'Error registering user', error: error.message });
+    }
+  });
+
+  app.post('/registerBusiness', async (req, res) => {
+    console.log('User service received request to /registerBusiness');
+    try {
+      const { username, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = req.body;
+      //console.log('Request body:', req.body);
+
+      const newBusiness = await registerBusiness({ username, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail });
+      //console.log('New business registered:', newBusiness);
+
+      res.status(201).json({ message: 'Business registered successfully', business: newBusiness });
+    } catch (error) {
+      //console.error('Error registering business:', error);
+      res.status(400).json({ message: 'Error registering business', error: error.message });
     }
   });
 

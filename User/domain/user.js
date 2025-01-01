@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../data/models/user');
+const Business = require('../data/models/business');
 const {validate} = require('./validation');
 
 const register = async ({ username, password, email }) => {
@@ -37,6 +38,15 @@ const getUser = async (accessToken) => {
   }
 }
 
+const registerBusiness = async (businessDetails) => {
+  const { username, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = businessDetails;
+
+  const newUser = await User.create({ username, password, email, phone, state, city, street, streetNumber, zipCode });
+  const newBusiness = await Business.create({ businessName, businessNumber, description, category, websiteLink, contactEmail, userId: newUser.id });
+
+  return { user: newUser, business: newBusiness };
+}
+
 module.exports = {
-  register, getUser
+  register, getUser, registerBusiness
 };
