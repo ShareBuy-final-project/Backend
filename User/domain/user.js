@@ -3,20 +3,20 @@ const User = require('../data/models/user');
 const Business = require('../data/models/business');
 const { validate } = require('./validation');
 
-const register = async ({ username, password, email, phone, state, city, street, streetNumber, zipCode }) => {
-  if (!username || !password || !email || !phone || !state || !city || !street || !streetNumber) {
+const register = async ({ name, password, email, phone, state, city, street, streetNumber, zipCode }) => {
+  if (!name || !password || !email || !phone || !state || !city || !street || !streetNumber) {
     throw new Error('All fields are required');
   }
 
-  const existingUser = await User.findOne({ where: { username } });
+  const existingUser = await User.findOne({ where: { email } });
   if (existingUser) {
-    throw new Error('Username already exists');
+    throw new Error('User with thiw email already exists');
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = new User({
-    username,
+    name,
     password: hashedPassword,
     email,
     phone,
