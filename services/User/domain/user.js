@@ -41,18 +41,6 @@ const getUser = async (accessToken) => {
     throw new Error('Invalid token');
   }
 };
-<<<<<<< HEAD
-
-const registerBusiness = async (businessDetails) => {
-  const { username, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = businessDetails;
-
-  const newUser = await User.create({ username, password, email, phone, state, city, street, streetNumber, zipCode });
-  const newBusiness = await Business.create({ businessName, businessNumber, description, category, websiteLink, contactEmail, userId: newUser.id });
-
-  return { user: newUser, business: newBusiness };
-};
-=======
->>>>>>> 7afd00c (fix register function)
 
 const registerBusiness = async (businessDetails) => {
   const { username, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = businessDetails;
@@ -64,17 +52,7 @@ const registerBusiness = async (businessDetails) => {
 };
 
 module.exports = {
-<<<<<<< HEAD
-<<<<<<< HEAD
   register,
   getUser,
   registerBusiness,
-=======
-  register, getUser, registerBusiness
->>>>>>> 434c086 (add registerBusiness route)
-=======
-  register,
-  getUser,
-  registerBusiness,
->>>>>>> 7afd00c (fix register function)
 };
