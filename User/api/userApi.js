@@ -7,7 +7,7 @@ module.exports = (app) => {
     console.log('User service received request to /register');
     try {
       const { username, password, email, phone, state, city, street, streetNumber, zipCode } = req.body;
-      //console.log('Request body:', req.body);
+      console.log('Request body:', req.body);
 
       const newUser = await register({ username, password, email, phone, state, city, street, streetNumber, zipCode });
       //console.log('New user registered:', newUser);
