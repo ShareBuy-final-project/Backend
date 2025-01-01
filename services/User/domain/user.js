@@ -51,8 +51,21 @@ const registerBusiness = async (businessDetails) => {
   return { user: newUser, business: newBusiness };
 };
 
+const registerBusiness = async (businessDetails) => {
+  const { username, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = businessDetails;
+
+  const newUser = await User.create({ username, password, email, phone, state, city, street, streetNumber, zipCode });
+  const newBusiness = await Business.create({ businessName, businessNumber, description, category, websiteLink, contactEmail, userId: newUser.id });
+
+  return { user: newUser, business: newBusiness };
+}
+
 module.exports = {
+<<<<<<< HEAD
   register,
   getUser,
   registerBusiness,
+=======
+  register, getUser, registerBusiness
+>>>>>>> 434c086 (add registerBusiness route)
 };
