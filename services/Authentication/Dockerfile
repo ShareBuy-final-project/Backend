@@ -4,11 +4,11 @@ FROM node:18
 
 WORKDIR /app
 
-COPY Authentication/package*.json ./
+COPY services/Authentication/package*.json ./
 RUN npm install
 
 # Copy the source code
-COPY Authentication/ ./Authentication
+COPY services/Authentication/ ./Authentication
 COPY config ./config
 
 WORKDIR /app/Authentication

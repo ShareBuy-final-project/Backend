@@ -4,12 +4,12 @@ FROM node:18
 
 WORKDIR /app
 
-COPY User/package*.json ./
+COPY services/User/package*.json ./
 RUN npm install
 RUN npm update
 
 # Copy the source code
-COPY User/ ./User
+COPY services/User/ ./User
 COPY config ./config
 
 WORKDIR /app/User

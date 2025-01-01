@@ -14,7 +14,7 @@ services:
   user-service:
     build:
       context: .
-      dockerfile: ./User/Dockerfile
+      dockerfile: ./services/User/Dockerfile
     ports:
       - "5000:5000"
     environment:
@@ -30,7 +30,7 @@ services:
   authentication-service:
     build:
       context: .
-      dockerfile: ./Authentication/Dockerfile
+      dockerfile: ./services/Authentication/Dockerfile
     ports:
       - "6000:6000"
     environment:
