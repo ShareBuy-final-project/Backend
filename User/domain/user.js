@@ -4,7 +4,7 @@ const Business = require('../data/models/business');
 const { validate } = require('./validation');
 
 const register = async ({ username, password, email, phone, state, city, street, streetNumber, zipCode }) => {
-  if (!username || !password || !email || !phone || !state || !city || !street || !streetNumber || !zipCode) {
+  if (!username || !password || !email || !phone || !state || !city || !street || !streetNumber) {
     throw new Error('All fields are required');
   }
 
