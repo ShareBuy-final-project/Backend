@@ -43,9 +43,9 @@ const getUser = async (accessToken) => {
 };
 
 const registerBusiness = async (businessDetails) => {
-  const { username, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = businessDetails;
+  const { name, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = businessDetails;
 
-  const newUser = await User.create({ username, password, email, phone, state, city, street, streetNumber, zipCode });
+  const newUser = await User.create({ name, password, email, phone, state, city, street, streetNumber, zipCode });
   const newBusiness = await Business.create({ businessName, businessNumber, description, category, websiteLink, contactEmail, userId: newUser.id });
 
   return { user: newUser, business: newBusiness };

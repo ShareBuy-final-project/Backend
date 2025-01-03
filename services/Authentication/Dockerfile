@@ -13,7 +13,4 @@ COPY config ./config
 
 WORKDIR /app/Authentication
 
-# Expose port 6000 to the host
-EXPOSE 6000
-
 CMD ["npm", "start"]

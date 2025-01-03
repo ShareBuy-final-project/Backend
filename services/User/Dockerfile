@@ -14,8 +14,5 @@ COPY config ./config
 
 WORKDIR /app/User
 
-# Expose port 5000 to the host
-EXPOSE 5000
-
 # Run the application with the --trace-deprecation flag
 CMD ["npm", "start"]
