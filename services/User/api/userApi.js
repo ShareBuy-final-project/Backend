@@ -22,10 +22,10 @@ module.exports = (app) => {
   app.post('/registerBusiness', async (req, res) => {
     console.log('User service received request to /registerBusiness');
     try {
-      const { username, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = req.body;
+      const { name, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = req.body;
       //console.log('Request body:', req.body);
 
-      const newBusiness = await registerBusiness({ username, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail });
+      const newBusiness = await registerBusiness({ name, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail });
       //console.log('New business registered:', newBusiness);
 
       res.status(201).json({ message: 'Business registered successfully', business: newBusiness });
