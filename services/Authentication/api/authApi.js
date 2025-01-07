@@ -8,7 +8,7 @@ module.exports = (app) => {
    * What it does: Authenticates the user and returns access and refresh tokens.
    * Response: JSON object containing accessToken and refreshToken.
    */
-  app.post('/auth/login', async (req, res) => {
+  app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
       const { token, refreshUserToken } = await login({ email, password });
