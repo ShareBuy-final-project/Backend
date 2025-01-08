@@ -20,6 +20,13 @@ const userServiceProxy = createProxyMiddleware({
   pathRewrite: {
     '^/user': '', // remove /user prefix
   },
+  onProxyReq: (proxyReq, req, res) => {
+    if (req.body) {
+      const bodyData = JSON.stringify(req.body);
+      proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+      proxyReq.write(bodyData);
+    }
+  }
 });
 
 const authServiceProxy = createProxyMiddleware({
