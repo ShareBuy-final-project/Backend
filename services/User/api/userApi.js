@@ -2,9 +2,6 @@ const User = require('../data/models/user');
 const Business = require('../data/models/business');
 const { register, getUser, registerBusiness } = require('../domain/user');
 
-// Add this line to parse JSON request bodies
-app.use(express.json());
-
 module.exports = (app) => {
   app.post('/register', async (req, res) => {
     console.log('User service received request to /register');
