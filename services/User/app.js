@@ -10,12 +10,12 @@ const Business = require('./data/models/business'); // Import the Business model
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 console.log('Starting User service...');
 
 app.use((req, res, next) => {
   console.log(`User service received request: ${req.method} ${req.url}`);
+  console.log(`Request body: ${JSON.stringify(req.body)}`);
   next();
 });
 
