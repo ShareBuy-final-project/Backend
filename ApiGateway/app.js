@@ -16,6 +16,12 @@ app.use(bodyParser.json());
 
 const onProxyReq = function (proxyReq, req, res) {
   console.log(`Request made to ${req.originalUrl} with method ${req.method} and body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
+  if(req.body) {
+    const bodyData = JSON.stringify(req.body);
+    proxyReq.setHeader('Content-Type','application/json');
+    proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+    proxyReq.write(bodyData);
+  }
 };
 
 const userServiceProxy = createProxyMiddleware({
