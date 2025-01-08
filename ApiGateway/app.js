@@ -7,6 +7,9 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // const privateKey = fs.readFileSync('../sslKeys/private.key', 'utf8');
 // const certificate = fs.readFileSync('../sslKeys/certificate.crt', 'utf8');
 // const credentials = { key: privateKey, cert: certificate };
