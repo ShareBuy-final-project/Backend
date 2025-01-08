@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 const userServiceProxy = createProxyMiddleware({
   target: 'http://user-service:5000',
-  //changeOrigin: true,
+  changeOrigin: true,
   pathRewrite: {
     '^/user': '', // remove /user prefix
   },
@@ -38,10 +38,12 @@ const authServiceProxy = createProxyMiddleware({
   },
 });
 
-app.use('/user', (req, res, next) => {
-  console.log(`Before proxy: ${req.method} ${req.originalUrl} with body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
-  next();
-}, userServiceProxy);
+// app.use('/user', (req, res, next) => {
+//   console.log(`Before proxy: ${req.method} ${req.originalUrl} with body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
+//   next();
+// }, userServiceProxy);
+
+app.use('/user', userServiceProxy);
 
 app.use('/auth', (req, res, next) => {
   console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
