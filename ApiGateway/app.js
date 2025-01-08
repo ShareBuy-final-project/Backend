@@ -21,6 +21,7 @@ const userServiceProxy = createProxyMiddleware({
     '^/user': '', // remove /user prefix
   },
   onProxyReq: (proxyReq, req, res) => {
+    console.log(`Request made to ${req.originalUrl}`);
     if (req.body) {
       console.log(`Request body: ${JSON.stringify(req.body)}`);
       const bodyData = JSON.stringify(req.body);
