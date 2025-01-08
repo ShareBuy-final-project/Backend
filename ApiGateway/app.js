@@ -14,21 +14,17 @@ app.use(bodyParser.json());
 // const certificate = fs.readFileSync('../sslKeys/certificate.crt', 'utf8');
 // const credentials = { key: privateKey, cert: certificate };
 
+const onProxyReq = function (proxyReq, req, res) {
+  console.log(`Request made to ${req.originalUrl}`);
+};
+
 const userServiceProxy = createProxyMiddleware({
   target: 'http://user-service:5000',
   changeOrigin: true,
   pathRewrite: {
     '^/user': '', // remove /user prefix
   },
-  onProxyReq: (proxyReq, req, res) => {
-    console.log(`Request made to ${req.originalUrl}`);
-    if (req.body) {
-      console.log(`Request body: ${JSON.stringify(req.body)}`);
-      const bodyData = JSON.stringify(req.body);
-      proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-      proxyReq.write(bodyData);
-    }
-  }
+  on: { proxyReq: onProxyReq },
 });
 
 const authServiceProxy = createProxyMiddleware({
