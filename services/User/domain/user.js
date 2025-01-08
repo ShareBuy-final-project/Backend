@@ -3,8 +3,8 @@ const User = require('../data/models/user');
 const Business = require('../data/models/business');
 const { validate } = require('./validation');
 
-const register = async ({ name, password, email, phone, state, city, street, streetNumber, zipCode }) => {
-  if (!name || !password || !email || !phone || !state || !city || !street || !streetNumber) {
+const register = async ({ fullName, password, email, phone, state, city, street, streetNumber, zipCode }) => {
+  if (!fullName || !password || !email || !phone || !state || !city || !street || !streetNumber) {
     throw new Error('All fields are required');
   }
 
@@ -16,7 +16,7 @@ const register = async ({ name, password, email, phone, state, city, street, str
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = new User({
-    name,
+    fullName,
     password: hashedPassword,
     email,
     phone,
@@ -43,9 +43,9 @@ const getUser = async (accessToken) => {
 };
 
 const registerBusiness = async (businessDetails) => {
-  const { name, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = businessDetails;
+  const { fullName, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = businessDetails;
 
-  const newUser = await User.create({ name, password, email, phone, state, city, street, streetNumber, zipCode });
+  const newUser = await User.create({ fullName, password, email, phone, state, city, street, streetNumber, zipCode });
   const newBusiness = await Business.create({ businessName, businessNumber, description, category, websiteLink, contactEmail, userId: newUser.id });
 
   return { user: newUser, business: newBusiness };
