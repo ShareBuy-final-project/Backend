@@ -8,7 +8,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
 
 // const privateKey = fs.readFileSync('../sslKeys/private.key', 'utf8');
 // const certificate = fs.readFileSync('../sslKeys/certificate.crt', 'utf8');
@@ -20,29 +20,29 @@ const userServiceProxy = createProxyMiddleware({
   pathRewrite: {
     '^/user': '', // remove /user prefix
   },
-  onProxyReq: (proxyReq, req, res) => {
-    if (req.body) {
-      console.log(`Proxying request with body: ${JSON.stringify(req.body)}`);
-      const bodyData = JSON.stringify(req.body);
-      proxyReq.setHeader('Content-Type', 'application/json');
-      proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-      proxyReq.write(bodyData);
-      proxyReq.end();
-    }
-  },
-  onError: (err, req, res) => {
-    console.error('Error in proxy:', err);
-    res.status(500).send('Proxy error');
-  },
-  onProxyRes: (proxyRes, req, res) => {
-    let body = '';
-    proxyRes.on('data', (chunk) => {
-      body += chunk;
-    });
-    proxyRes.on('end', () => {
-      console.log(`Response from User service: ${body}`);
-    });
-  },
+  // onProxyReq: (proxyReq, req, res) => {
+  //   if (req.body) {
+  //     console.log(`Proxying request with body: ${JSON.stringify(req.body)}`);
+  //     const bodyData = JSON.stringify(req.body);
+  //     proxyReq.setHeader('Content-Type', 'application/json');
+  //     proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+  //     proxyReq.write(bodyData);
+  //     proxyReq.end();
+  //   }
+  // },
+  // onError: (err, req, res) => {
+  //   console.error('Error in proxy:', err);
+  //   res.status(500).send('Proxy error');
+  // },
+  // onProxyRes: (proxyRes, req, res) => {
+  //   let body = '';
+  //   proxyRes.on('data', (chunk) => {
+  //     body += chunk;
+  //   });
+  //   proxyRes.on('end', () => {
+  //     console.log(`Response from User service: ${body}`);
+  //   });
+  // },
 });
 
 const authServiceProxy = createProxyMiddleware({
