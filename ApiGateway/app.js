@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 // const credentials = { key: privateKey, cert: certificate };
 
 const onProxyReq = function (proxyReq, req, res) {
-  console.log(`Request made to ${req.originalUrl}`);
+  console.log(`Request made to ${req.originalUrl} with method ${req.method} and body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
 };
 
 const userServiceProxy = createProxyMiddleware({
