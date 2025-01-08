@@ -7,6 +7,8 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 
+
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -47,7 +49,7 @@ app.use('/auth', (req, res, next) => {
   next();
 }, authServiceProxy);
 
-app.use(cors());
+
 
 const PORT = process.env.PORT || 443;
 app.listen(PORT, () => {
