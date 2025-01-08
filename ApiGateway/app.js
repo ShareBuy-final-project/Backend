@@ -16,8 +16,6 @@ app.use(bodyParser.json());
 
 const onProxyReq = function (proxyReq, req, res) {
   console.log(`Request made to ${req.originalUrl} with method ${req.method} and body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
-  //remove "Content-Type" header to use the one from the target
-  proxyReq.setHeader('Content-Type', 'application/json');
 };
 
 const userServiceProxy = createProxyMiddleware({
