@@ -20,28 +20,6 @@ const userServiceProxy = createProxyMiddleware({
   pathRewrite: {
     '^/user': '', // remove /user prefix
   },
-  onProxyReq: (proxyReq, req, res) => {
-    if (req.body) {
-      console.log(`Proxying request with body: ${JSON.stringify(req.body)}`);
-      const bodyData = JSON.stringify(req.body);
-      proxyReq.setHeader('Content-Type', 'application/json');
-      proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-      proxyReq.write(bodyData);
-    }
-  },
-  onError: (err, req, res) => {
-    console.error('Error in proxy:', err);
-    res.status(500).send('Proxy error');
-  },
-  onProxyRes: (proxyRes, req, res) => {
-    let body = '';
-    proxyRes.on('data', (chunk) => {
-      body += chunk;
-    });
-    proxyRes.on('end', () => {
-      console.log(`Response from User service: ${body}`);
-    });
-  },
 });
 
 const authServiceProxy = createProxyMiddleware({
@@ -56,11 +34,6 @@ app.use('/user', (req, res, next) => {
   console.log(`Before proxy: ${req.method} ${req.originalUrl} with body: ${JSON.stringify(req.body)}`);
   next();
 }, userServiceProxy);
-
-// Add a simple route to test if the API Gateway is running
-app.get('/test', (req, res) => {
-  res.send('API Gateway is running');
-});
 
 app.use('/auth', (req, res, next) => {
   console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
