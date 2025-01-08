@@ -1,14 +1,13 @@
 const User = require('../data/models/user');
 const { register, getUser } = require('../domain/user');
-
+const express = require('express');
 module.exports = (app) => {
+  app.use(express.json());
   app.post('/users/register', async (req, res) => {// Implemnt function by calling the function register from 'domain/user'
     try {
       const { username, password, email } = req.body;
-  
       // Call the register function from 'domain/user'
       const newUser = await register({ username, password, email });
-  
       res.status(201).json({ message: 'User registered successfully', user: newUser });
       console.log('User registered successfully');
     } catch (error) {
