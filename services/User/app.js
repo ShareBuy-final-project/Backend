@@ -20,16 +20,16 @@ app.use((req, res, next) => {
 });
 
 // Add a simple route to test if the service is running
-app.get('/test', (req, res) => {
-  res.send('User service is running');
-});
+// app.get('/test', (req, res) => {
+//   res.send('User service is running');
+// });
 
 // Add a route to handle user registration for testing
-app.post('/register', (req, res) => {
-  console.log('User service received request to /register');
-  console.log(`Request body: ${JSON.stringify(req.body)}`);
-  res.status(200).send('User registered');
-});
+// app.post('/register', (req, res) => {
+//   console.log('User service received request to /register');
+//   console.log(`Request body: ${JSON.stringify(req.body)}`);
+//   res.status(200).send('User registered');
+// });
 
 const connectWithRetry = async () => {
   try {
