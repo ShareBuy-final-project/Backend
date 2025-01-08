@@ -31,7 +31,7 @@ const authServiceProxy = createProxyMiddleware({
 });
 
 app.use('/user', (req, res, next) => {
-  console.log(`Before proxy: ${req.method} ${req.originalUrl} with body: ${JSON.stringify(req.body)}`);
+  console.log(`Before proxy: ${req.method} ${req.originalUrl} with body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
   next();
 }, userServiceProxy);
 
