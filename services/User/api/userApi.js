@@ -5,16 +5,17 @@ const { register, getUser, registerBusiness } = require('../domain/user');
 module.exports = (app) => {
   app.post('/register', async (req, res) => {
     console.log('User service received request to /register');
+    console.log('Request body:', req.body);
     try {
       const { fullName, password, email, phone, state, city, street, streetNumber, zipCode } = req.body;
-      console.log('Request body:', req.body);
+      console.log('Parsed request body:', { fullName, password, email, phone, state, city, street, streetNumber, zipCode });
 
       const newUser = await register({ fullName, password, email, phone, state, city, street, streetNumber, zipCode });
       //console.log('New user registered:', newUser);
 
       res.status(201).json({ message: 'User registered successfully', user: newUser });
     } catch (error) {
-      //console.error('Error registering user:', error);
+      console.error('Error registering user:', error);
       res.status(400).json({ message: 'Error registering user', error: error.message });
     }
   });

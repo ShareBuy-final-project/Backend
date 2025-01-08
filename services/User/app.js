@@ -19,6 +19,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Add a simple route to test if the service is running
+app.get('/test', (req, res) => {
+  res.send('User service is running');
+});
+
 const connectWithRetry = async () => {
   try {
     await sequelize.sync();
