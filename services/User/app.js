@@ -9,7 +9,7 @@ const Business = require('./data/models/business'); // Import the Business model
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // Use express.json instead of bodyParser
+app.use(bodyParser.json());
 
 console.log('Starting User service...');
 
