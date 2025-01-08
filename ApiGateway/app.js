@@ -22,6 +22,7 @@ const userServiceProxy = createProxyMiddleware({
   },
   onProxyReq: (proxyReq, req, res) => {
     if (req.body) {
+      console.log(`Proxying request with body: ${JSON.stringify(req.body)}`);
       const bodyData = JSON.stringify(req.body);
       proxyReq.setHeader('Content-Type', 'application/json');
       proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
