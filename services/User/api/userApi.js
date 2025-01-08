@@ -56,5 +56,58 @@ module.exports = (app) => {
       res.status(400).json({ message: 'Error fetching user', error: error.message });
     }
   });
+
+  app.post('/update', async (req, res) => {
+    console.log('User service received request to /update');
+    try {
+      const { fullName, email, phone, state, city, street, streetNumber, zipCode } = req.body;
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const user = await getUser(accessToken);
+
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid token' });
+      }
+
+      user.fullName = fullName;
+      user.email = email;
+      user.phone = phone;
+      user.state = state;
+      user.city = city;
+      user.street = street;
+      user.streetNumber = streetNumber;
+      user.zipCode = zipCode;
+
+      await user.save();
+      res.status(200).json({ message: 'Update successful' });
+    } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(400).json({ message: 'Error updating user', error: error.message });
+    }
+  });
+
+  app.post('/change-password', async (req, res) => {
+    console.log('User service received request to /change-password');
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const user = await getUser(accessToken);
+
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid token' });
+      }
+
+      const isMatch = await user.comparePassword(currentPassword);
+      if (!isMatch) {
+        return res.status(400).json({ message: 'Current password is incorrect' });
+      }
+
+      user.password = newPassword;
+      await user.save();
+      res.status(200).json({ message: 'Password change successful' });
+    } catch (error) {
+      console.error('Error changing password:', error);
+      res.status(400).json({ message: 'Error changing password', error: error.message });
+    }
+  });
 };
 
