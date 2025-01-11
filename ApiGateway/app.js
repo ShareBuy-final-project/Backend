@@ -40,6 +40,7 @@ const authServiceProxy = createProxyMiddleware({
   pathRewrite: {
     '^/auth': '', // remove /auth prefix
   },
+  on: { proxyReq: onProxyReq },
 });
 
 app.use('/user', (req, res, next) => {
