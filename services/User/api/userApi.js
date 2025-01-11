@@ -39,6 +39,7 @@ module.exports = (app) => {
   app.get('/me', async (req, res) => {
     console.log('User service received request to /me');
     try {
+      console.log('Authorization header:', req.headers.authorization);
       const accessToken = req.headers.authorization.split(' ')[1];
       const user = await getUser(accessToken);
 
