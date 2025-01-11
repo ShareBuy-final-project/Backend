@@ -47,6 +47,7 @@ module.exports = (app) => {
       }
 
       const { password, ...userData } = user.dataValues;
+      console.log('User data returned:', userData);
       res.status(200).json(userData);
     } catch (error) {
       if (error.message === 'Invalid token') {
