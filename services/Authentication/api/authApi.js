@@ -48,6 +48,7 @@ module.exports = (app) => {
     console.log('validate token');
     const authHeader = req.headers['Authorization'];
     const token = authHeader && authHeader.split(' ')[1];
+    console.log('Token:', token);
     try {
       const decoded = verifyToken(token);
       res.status(200).json({ valid: true, data: decoded });
