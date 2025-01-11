@@ -1,14 +1,20 @@
 const e = require("express");
+const axios = require('axios');
 
 const validate = async (accessToken) => {
-    //call auth api and recive username if token is valid
-    // const response = await fetch('http://localhost:3000/auth/validate')
-    userEmail = "placeholder@gmail.com"
-    if (userEmail) {
-        return {userEmail};
+    try {
+        const response = await axios.get('http://api-gateway/validate-token', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        });
+
+        if (response.status === 200) {
+            return { userEmail: response.data.data.email };
+        }
+    } catch (error) {
+        throw new Error('Invalid token');
     }
-    throw error('Invalid token');
-    
 }
 
 module.exports = { validate };

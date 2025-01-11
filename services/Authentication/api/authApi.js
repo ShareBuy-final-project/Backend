@@ -25,7 +25,7 @@ module.exports = (app) => {
    * What it does: Invalidates the refresh token by deleting it from db.
    * Response: JSON object with a success message.
    */
-  app.delete('/auth/logout', async (req, res) => {
+  app.delete('/logout', async (req, res) => {
     try {
       const token = req.body.token;
       logout(token);
@@ -42,8 +42,8 @@ module.exports = (app) => {
    * What it does: Verifies the access token.
    * Response: JSON object indicating whether the token is valid and the decoded token data- email of the user.
    */
-  app.get('/auth/validate-token', (req, res) => {
-    const authHeader = req.headers['authorization'];
+  app.get('/validate-token', (req, res) => {
+    const authHeader = req.headers['Authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     try {
       const decoded = verifyToken(token);
@@ -60,7 +60,7 @@ module.exports = (app) => {
    * What it does: Generates a new access token.
    * Response: JSON object containing the new access token.
    */
-  app.post('/auth/token', async (req, res) => {
+  app.post('/token', async (req, res) => {
     console.log('refresh token');
     try {
       const { token } = req.body;
