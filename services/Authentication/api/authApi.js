@@ -46,6 +46,7 @@ module.exports = (app) => {
    */
   app.get('/validate-token', (req, res) => {
     console.log('validate token');
+    console.log('Headers:', req.headers);
     const authHeader = req.headers['Authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     console.log('Token:', token);
