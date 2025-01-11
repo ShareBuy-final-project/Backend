@@ -10,8 +10,11 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+console.log('Starting Authentication service...');
+
 app.use((req, res, next) => {
   console.log(`Auth service received request: ${req.method} ${req.url}`);
+  console.log(`Request body: ${JSON.stringify(req.body)}`);
   next();
 });
 
