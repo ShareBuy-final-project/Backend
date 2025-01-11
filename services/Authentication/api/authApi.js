@@ -9,6 +9,7 @@ module.exports = (app) => {
    * Response: JSON object containing accessToken and refreshToken.
    */
   app.post('/login', async (req, res) => {
+    console.log('login');
     const { email, password } = req.body;
     try {
       const { token, refreshUserToken } = await login({ email, password });
@@ -26,6 +27,7 @@ module.exports = (app) => {
    * Response: JSON object with a success message.
    */
   app.delete('/logout', async (req, res) => {
+    console.log('logout');
     try {
       const token = req.body.token;
       logout(token);
@@ -43,6 +45,7 @@ module.exports = (app) => {
    * Response: JSON object indicating whether the token is valid and the decoded token data- email of the user.
    */
   app.get('/validate-token', (req, res) => {
+    console.log('validate token');
     const authHeader = req.headers['Authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     try {
