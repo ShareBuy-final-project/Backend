@@ -37,14 +37,16 @@ module.exports = (app) => {
 
   app.get('/me', async (req, res) => {
     console.log('User service received request to /users/me');
+    
     try {
-      const { accessToken } = req.body;
-      //console.log('Request body:', req.body);
+      const authHeader = req.headers['authorization']; // Get the header
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const accessToken = authHeader.split(' ')[1]; // Extract token part
+        const user = await getUser(accessToken);
+        res.status(200).json({ user });
+      }
 
-      const user = await getUser(accessToken);
-      //console.log('Fetched user:', user);
-
-      res.status(200).json(user);
+      
     } catch (error) {
       //console.error('Error fetching user:', error);
       res.status(400).json({ message: 'Error fetching user', error: error.message });
