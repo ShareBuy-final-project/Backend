@@ -39,18 +39,18 @@ module.exports = (app) => {
   app.get('/me', async (req, res) => {
     console.log('User service received request to /me');
     try {
-      console.log('Authorization header:', req.headers.authorization);
+      //console.log('Authorization header:', req.headers.authorization);
       const accessToken = req.headers.authorization.split(' ')[1];
       const user = await getUser(accessToken);
 
-      console.log('User:', user);
+      //console.log('User:', user);
 
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }
 
       const { password, ...userData } = user.dataValues;
-      console.log('User data returned:', userData);
+      //console.log('User data returned:', userData);
       res.status(200).json(userData);
     } catch (error) {
       if (error.message === 'Invalid token') {

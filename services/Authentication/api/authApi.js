@@ -46,11 +46,11 @@ module.exports = (app) => {
    */
   app.get('/validate-token', (req, res) => {
     console.log('validate token');
-    console.log('Headers:', req.headers);
+    //console.log('Headers:', req.headers);
     const authHeader = req.headers['authorization'];
-    console.log('Auth header:', authHeader);
+    //console.log('Auth header:', authHeader);
     const token = authHeader && authHeader.split(' ')[1];
-    console.log('Token:', token);
+    //console.log('Token:', token);
     try {
       const decoded = verifyToken(token);
       res.status(200).json({ valid: true, data: decoded });
