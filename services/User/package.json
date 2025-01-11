@@ -21,6 +21,7 @@
     "express": "^4.21.1",
     "pg": "^8.13.1",
     "sequelize": "^6.37.5",
+    "axios": "^0.21.1",
     "bcrypt": "^5.1.0"
   },
   "devDependencies": {

@@ -7,9 +7,23 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 
+app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: true }));
+
 // const privateKey = fs.readFileSync('../sslKeys/private.key', 'utf8');
 // const certificate = fs.readFileSync('../sslKeys/certificate.crt', 'utf8');
 // const credentials = { key: privateKey, cert: certificate };
+
+const onProxyReq = function (proxyReq, req, res) {
+  console.log(`Request made to ${req.originalUrl} with method ${req.method} and body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
+  if(req.body) {
+    console.log('Request body:', req.body);
+    const bodyData = JSON.stringify(req.body);
+    proxyReq.setHeader('Content-Type','application/json');
+    proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+    proxyReq.write(bodyData);
+  }
+};
 
 const userServiceProxy = createProxyMiddleware({
   target: 'http://user-service:5000',
@@ -17,6 +31,7 @@ const userServiceProxy = createProxyMiddleware({
   pathRewrite: {
     '^/user': '', // remove /user prefix
   },
+  on: { proxyReq: onProxyReq },
 });
 
 const authServiceProxy = createProxyMiddleware({
@@ -25,10 +40,11 @@ const authServiceProxy = createProxyMiddleware({
   pathRewrite: {
     '^/auth': '', // remove /auth prefix
   },
+  on: { proxyReq: onProxyReq },
 });
 
 app.use('/user', (req, res, next) => {
-  console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
+  console.log(`Before proxy: ${req.method} ${req.originalUrl} with body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
   next();
 }, userServiceProxy);
 
