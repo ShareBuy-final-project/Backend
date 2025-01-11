@@ -43,6 +43,8 @@ module.exports = (app) => {
       const accessToken = req.headers.authorization.split(' ')[1];
       const user = await getUser(accessToken);
 
+      console.log('User:', user);
+
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }

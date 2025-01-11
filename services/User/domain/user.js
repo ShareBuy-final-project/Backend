@@ -35,6 +35,7 @@ const register = async ({ fullName, password, email, phone, state, city, street,
 const getUser = async (accessToken) => {
   try {
     const { userEmail } = validate(accessToken);
+    console.log('User email:', userEmail);
     const user = await User.findOne({ where: { email: userEmail } });
     return user;
   } catch (error) {
