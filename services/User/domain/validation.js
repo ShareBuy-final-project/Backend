@@ -4,7 +4,7 @@ const axios = require('axios');
 const validate = async (accessToken) => {
     console.log(`Sending request to validate token: ${accessToken}`);
     try {
-        const response = await axios.get('http://api-gateway/validate-token', {
+        const response = await axios.get('http://132.73.84.56:443/auth/validate-token', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
