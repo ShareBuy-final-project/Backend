@@ -2,3 +2,4 @@ node_modules
 Authentication/node_modules/
 /node_modules
 **node_modules
+Authentication\node_modules
