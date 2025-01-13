@@ -9,7 +9,7 @@ module.exports = (app) => {
       
       const payment = await pay({items, accessToken});
 
-      res.status(201).json({ message: 'payment recived successfully', user: newUser });
+      res.status(201).json({ payment });
     } catch (error) {
       res.status(400).json({ message: 'Error making payment', error: error.message });
     }

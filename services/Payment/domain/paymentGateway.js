@@ -1,25 +1,30 @@
 require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+const {getGroup} = require('../data/models/groups');
 
-const makeTransfer = async ({credit, expiry, id, group_id}) => {
+const makeTransfer = async ({items}) => {
     //return { message: 'Payment processed successfully' };
-    const serssion = await stripe.checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
-        line_items: [
-            {
+        line_items: items.map (item => {
+            const group = getGroup(item.id)
+            console.log("price",group.price)
+            return {
                 price_data: {
                     currency: 'usd',
+                    unit_amount: group.price,
                     product_data: {
-                        name: 'Donation',
+                        name: "some_name",
                     },
-                    unit_amount: credit,
                 },
-                quantity: 1,
-            },
-        ],
+                quantity: item.quantity,
+            }
+        }
+        ),
         mode: 'payment',
         success_url: `${process.env.SERVER_URL}/home`,
         cancel_url: `${process.env.SERVER_URL}/home`,
     });
+    return {url: session.url}
 }
 module.exports = {makeTransfer};

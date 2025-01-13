@@ -2,7 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const sequelize = require('../config/db');
+// const sequelize = require('../config/db');
 const paymentApi = require('./api/paymentApi');
 
 const app = express();
@@ -11,7 +11,6 @@ app.use(bodyParser.json());
 
 console.log('Starting Payment service service...');
 
-const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 app.use((req, res, next) => {
   console.log(`Payment service received request: ${req.method} ${req.url}`);
@@ -20,8 +19,8 @@ app.use((req, res, next) => {
 
 const connectWithRetry = async () => {
   try {
-    await sequelize.sync();
-    console.log('Database synchronized');
+    // await sequelize.sync();
+    // console.log('Database synchronized');
     // Start the server after the database is synchronized
     const PORT = process.env.PORT || 4000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
