@@ -1,35 +1,4 @@
 services:
-  user-service:
-    build:
-      context: .
-      dockerfile: ./User/Dockerfile
-    ports:
-      - "5000:5000"
-    environment:
-      - NODE_ENV=production
-      - PORT=5000
-      - DB_HOST=db
-      - DB_USER=adminDB
-      - DB_PASS=adminDB
-      - DB_NAME=ShareBuyDB
-    depends_on:
-      - db
-
-  authentication-service:
-    build:
-      context: .
-      dockerfile: ./Authentication/Dockerfile
-    ports:
-      - "6000:6000"
-    environment:
-      - NODE_ENV=production
-      - PORT=6000
-      - DB_HOST=db
-      - DB_USER=adminDB
-      - DB_PASS=adminDB
-      - DB_NAME=ShareBuyDB
-    depends_on:
-      - db
 
   db:
     image: postgres:latest
@@ -41,6 +10,54 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ShareBuyDB -U adminDB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      
+  user-service:
+    build:
+      context: .
+      dockerfile: ./services/User/Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - DB_HOST=db
+      - DB_USER=adminDB
+      - DB_PASS=adminDB
+      - DB_NAME=ShareBuyDB
+    depends_on:
+      db:
+        condition: service_healthy
+
+  authentication-service:
+    build:
+      context: .
+      dockerfile: ./services/Authentication/Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=6000
+      - DB_HOST=db
+      - DB_USER=adminDB
+      - DB_PASS=adminDB
+      - DB_NAME=ShareBuyDB
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./ApiGateway/Dockerfile
+    ports:
+      - "443:443"
+    environment:
+      - NODE_ENV=production
+      - PORT=443
+    depends_on:
+      - user-service
+      - authentication-service
 
 volumes:
   pgdata:
