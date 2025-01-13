@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('../config/db');
-const userApi = require('./api/userApi');
+const groupApi = require('./api/groupApi');
 // Import other models as needed
 
 const app = express();
@@ -18,3 +18,4 @@ sequelize.sync().then(() => {
 }).catch(err => {
   console.error('Unable to synchronize the database:', err);
 });
+groupApi(app);

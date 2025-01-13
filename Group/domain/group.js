@@ -1,4 +1,5 @@
 const Group = require('../data/models/group');
+const USer = require('../data/models/user');
 const {validate} = require('./validation');
 const create = async ({ name, accessToken, details, image,price,discount,size }) => {
     if (!name || !price || !discount || !size) {
@@ -8,20 +9,22 @@ const create = async ({ name, accessToken, details, image,price,discount,size })
     if (existingGroup) {
         throw new Error('name already exists');
     }
+    
     try{
-      const {userEmail} = validate(accessToken);
-      var user = await User.findOne({email: userEmail});
-    }
-    catch(error){
-      throw new Error('Invalid token');
-    }
-    const newGroup = new Group({
-        name, user, details, image,price,discount,size
-      });
+      let {userEmail} = await validate(accessToken);
+      let obj = {
+        name, creator:userEmail, description:details, image,price,discount,size
+      };
+      console.log(obj);
+      const newGroup = new Group(obj);
     
       await newGroup.save();
     
       return newGroup;
+    }
+    catch(error){
+      throw new Error(error.toString());
+    }
 }
 const getGroup = async (id) => {
     try{
