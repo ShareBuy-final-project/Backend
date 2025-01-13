@@ -44,6 +44,7 @@ module.exports = (app) => {
    * What it does: Verifies the access token.
    * Response: JSON object indicating whether the token is valid and the decoded token data- email of the user.
    */
+
   app.get('/validate-token', (req, res) => {
     console.log('validate token');
     //console.log('Headers:', req.headers);

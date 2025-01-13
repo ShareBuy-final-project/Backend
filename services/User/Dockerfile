@@ -15,4 +15,5 @@ COPY config ./config
 WORKDIR /app/User
 
 # Run the application with the --trace-deprecation flag
+
 CMD ["npm", "start"]

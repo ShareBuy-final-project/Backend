@@ -32,5 +32,4 @@ const connectWithRetry = async () => {
 };
 
 connectWithRetry();
-
 authApi(app);
