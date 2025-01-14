@@ -1,6 +1,6 @@
 const { create, getGroup, getGroupsWithSavedStatus, saveGroup } = require('../domain/group');
 const { validate } = require('../domain/validation');
-const { SavedGroup, Group} = require('models');
+const { SavedGroup, Group } = require('models');
 const express = require('express');
 
 module.exports = (app) => {
@@ -11,13 +11,13 @@ module.exports = (app) => {
    * @apiName CreateGroup
    * @apiGroup Group
    * 
-   * @apiParam {String} name Name of the group.
-   * @apiParam {String} user User creating the group.
-   * @apiParam {String} details Details of the group.
-   * @apiParam {String} image Image URL of the group.
-   * @apiParam {Number} price Price of the group.
-   * @apiParam {Number} discount Discount on the group.
-   * @apiParam {String} size Size of the group.
+   * @apiBody {String} name Name of the group.
+   * @apiBody {String} user User creating the group.
+   * @apiBody {String} details Details of the group.
+   * @apiBody {String} image Image URL of the group.
+   * @apiBody {Number} price Price of the group.
+   * @apiBody {Number} discount Discount on the group.
+   * @apiBody {String} size Size of the group.
    * 
    * @apiSuccess {Object} group The newly created group.
    */
@@ -37,7 +37,7 @@ module.exports = (app) => {
    * @apiName GetGroup
    * @apiGroup Group
    * 
-   * @apiParam {String} id ID of the group.
+   * @apiBody {String} id ID of the group.
    * 
    * @apiSuccess {Object} group The requested group.
    */
@@ -98,7 +98,7 @@ module.exports = (app) => {
    * @apiName SaveGroup
    * @apiGroup Group
    * 
-   * @apiParam {String} groupId ID of the group to be saved.
+   * @apiBody {String} groupId ID of the group to be saved.
    * 
    * @apiSuccess {String} message Success message.
    */
