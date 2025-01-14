@@ -1,5 +1,4 @@
-const User = require('../data/models/user');
-const Business = require('../data/models/business');
+const { User, Business } = require('models');
 const { register, getUser, registerBusiness } = require('../domain/user');
 
 module.exports = (app) => {

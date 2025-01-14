@@ -1,4 +1,3 @@
-const e = require("express");
 const axios = require('axios');
 
 const validate = async (accessToken) => {

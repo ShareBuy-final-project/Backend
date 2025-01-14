@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
-const User = require('../data/models/user');
-const Business = require('../data/models/business');
+const { Business, User } = require('models');
 const { validate } = require('./validation');
 
 const register = async ({ fullName, password, email, phone, state, city, street, streetNumber, zipCode }) => {

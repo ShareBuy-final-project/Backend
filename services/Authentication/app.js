@@ -3,7 +3,8 @@ console.log("Hello app");
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const db = require('../config/db.js');
+// Import other models as needed:
+const { sequelize, RefreshToken }= require('models');
 require('dotenv').config();
 
 const app = express();
@@ -20,7 +21,7 @@ app.use((req, res, next) => {
 
 const connectWithRetry = async () => {
   try {
-    await db.sync();
+    await sequelize.sync();
     console.log('Database synchronized');
     // Start the server after the database is synchronized
     const PORT = process.env.PORT || 6000;

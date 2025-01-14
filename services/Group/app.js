@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const sequelize = require('../config/db');
 const groupApi = require('./api/groupApi');
-// Import other models as needed
+// Import other models as needed:
+const { sequelize, Group, SavedGroup } = require('models');
 
 const app = express();
 app.use(cors());
