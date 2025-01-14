@@ -1,0 +1,9 @@
+{
+  "name": "models",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "sequelize": "^6.6.5"
+  }
+}
