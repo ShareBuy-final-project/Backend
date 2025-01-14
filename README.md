@@ -157,4 +157,20 @@ To ensure that the persistent data in the database is not deleted, avoid executi
    sudo docker-compose down -v
    ```
 
-By following these instructions, you can manage the Docker services, access the database, and use pgAdmin effectively while ensuring the persistence of your data.
+## Generating API Documentation
+
+To generate a new updated `index.html` of the API documentation, use the following command:
+
+```sh
+apidoc -c apidoc/apidoc.json
+```
+
+This command will generate the API documentation based on the configuration specified in `apidoc/apidoc.json`.
+
+## Viewing API Documentation
+
+To view the API documentation, open the following file in your browser:
+
+[API Documentation](doc/index.html)
+
+By following these instructions, you can manage the Docker services, access the database, generate API documentation, and use pgAdmin effectively while ensuring the persistence of your data.
