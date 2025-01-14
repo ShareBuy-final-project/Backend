@@ -49,6 +49,20 @@ const getGroupsWithSavedStatus = async ({ page, limit, userEmail }) => {
   }));
 };
 
+const saveGroup = async ({ userEmail, groupId }) => {
+  try {
+    const existingSavedGroup = await SavedGroup.findOne({ where: { userEmail, groupId } });
+    if (existingSavedGroup) {
+      throw new Error('Group already saved');
+    }
+
+    const newSavedGroup = new SavedGroup({ userEmail, groupId });
+    await newSavedGroup.save();
+  } catch (error) {
+    throw new Error(error.toString());
+  }
+};
+
 module.exports = {
-  create, getGroup, getGroupsWithSavedStatus
+  create, getGroup, getGroupsWithSavedStatus, saveGroup
 };

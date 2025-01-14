@@ -9,7 +9,11 @@ const Group = sequelize.define('group', {
   },
   creator: { //email of the user
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    references: {
+      model: 'Users',
+      key: 'email'
+    }
   },
   name: {
     type: DataTypes.STRING,
@@ -35,6 +39,14 @@ const Group = sequelize.define('group', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  businessNumber: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    references: {
+      model: 'Businesses',
+      key: 'businessNumber'
+    }
+  }
 }, {
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
 });
