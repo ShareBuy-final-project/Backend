@@ -1,6 +1,7 @@
 const Group = require('../data/models/group');
 const USer = require('../data/models/user');
 const {validate} = require('./validation');
+
 const create = async ({ name, accessToken, details, image,price,discount,size }) => {
     if (!name || !price || !discount || !size) {
         throw new Error('Missing required fields');
