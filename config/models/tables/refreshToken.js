@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
-//const sequelize = require('../db');
-const {sequelize} = require('models');
+const sequelize = require('../db');
 
 const RefreshToken = sequelize.define('RefreshToken', {
   email: {
