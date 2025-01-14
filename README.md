@@ -169,8 +169,8 @@ This command will generate the API documentation based on the configuration spec
 
 ## Viewing API Documentation
 
-To view the API documentation, open the following file in your browser:
+To view the API documentation, open the following link in your browser:
 
-[API Documentation](doc/index.html)
+[API Documentation](https://html-preview.github.io/?url=https://github.com/ShareBuy-final-project/Backend/blob/60-add-api-call-for-fetche-deals-page/doc/index.html)
 
 By following these instructions, you can manage the Docker services, access the database, generate API documentation, and use pgAdmin effectively while ensuring the persistence of your data.
