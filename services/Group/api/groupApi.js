@@ -1,4 +1,4 @@
-const { create, getGroup } = require('../domain/group');
+const { create, getGroup, getGroupsWithSavedStatus } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group} = require('models');
 const express = require('express');
@@ -34,12 +34,11 @@ module.exports = (app) => {
       const { page = 1, limit = 10 } = req.query;
       const accessToken = req.headers.authorization.split(' ')[1];
       
-      await validate(accessToken);
+      const { userEmail } = await validate(accessToken);
 
-      const offset = (page - 1) * limit;
-      const groups = await Group.findAll({ offset, limit });
+      const groupsWithSavedStatus = await getGroupsWithSavedStatus({ page, limit, userEmail });
 
-      res.status(200).json(groups);
+      res.status(200).json(groupsWithSavedStatus);
     } catch (error) {
       res.status(400).json({ message: 'Error fetching groups', error: error.message });
     }

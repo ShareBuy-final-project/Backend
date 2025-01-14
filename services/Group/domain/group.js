@@ -1,4 +1,4 @@
-const { Group, User } = require('models');
+const { Group, User, SavedGroup } = require('models');
 const { validate } = require('./validation');
 
 const create = async ({ name, accessToken, details, image, price, discount, size }) => {
@@ -36,6 +36,19 @@ const getGroup = async (id) => {
   }
 }
 
+const getGroupsWithSavedStatus = async ({ page, limit, userEmail }) => {
+  const offset = (page - 1) * limit;
+  const groups = await Group.findAll({ offset, limit });
+
+  const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
+  const savedGroupIds = savedGroups.map(sg => sg.groupId);
+
+  return groups.map(group => ({
+    ...group.toJSON(),
+    isSaved: savedGroupIds.includes(group.id)
+  }));
+};
+
 module.exports = {
-  create, getGroup
+  create, getGroup, getGroupsWithSavedStatus
 };
