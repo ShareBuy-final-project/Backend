@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('./db');
+const sequelize = require('../db');
 const { User, Group } = require('models');
 
 const SavedGroup = sequelize.define('savedGroup', {
