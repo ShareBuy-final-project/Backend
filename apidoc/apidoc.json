@@ -19,12 +19,16 @@
     "content": "<p>ShareBuy API documentation footer</p>"
   },
   "order": [
-    "Group",
     "User",
-    "Business"
+    "Authentication",
+    "Business",
+    "Group"
   ],
   "input": [
     "services/Group/api/",
-    "services/User/api/"
-  ]
+    "services/User/api/",
+    "services/Authentication/api/"
+  ],
+  "output": "doc",
+  "link": "https://htmlpreview.github.io/?https://github.com/ShareBuy-final-project/Backend/blob/60-add-api-call-for-fetche-deals-page/doc/index.html"
 }
