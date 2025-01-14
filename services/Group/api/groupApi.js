@@ -1,6 +1,7 @@
 const Group = require('../data/models/group');
 const { create, getGroup } = require('../domain/group');
 const express = require('express');
+
 module.exports = (app) => {
   app.use(express.json());
   app.post('/groups/create', async (req, res) => {// Implemnt function by calling the function register from 'domain/user'

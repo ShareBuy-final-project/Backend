@@ -1,14 +1,15 @@
 # This Dockerfile should be used to build the `Group` microservice.
 
-FROM node:latest
+FROM node:18
 
 WORKDIR /app
 
-COPY Group/package*.json ./
+COPY services/Group/package*.json ./
 RUN npm install
+RUN npm update
 
 # Copy the source code
-COPY Group/ ./Group
+COPY services/Group/ ./Group
 COPY config ./config
 
 WORKDIR /app/Group

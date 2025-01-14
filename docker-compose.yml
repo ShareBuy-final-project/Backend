@@ -46,6 +46,21 @@ services:
       db:
         condition: service_healthy
 
+  group-service:
+    build:
+      context: .
+      dockerfile: ./services/Group/Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=7000
+      - DB_HOST=db
+      - DB_USER=adminDB
+      - DB_PASS=adminDB
+      - DB_NAME=ShareBuyDB
+    depends_on:
+      db:
+        condition: service_healthy
+
   api-gateway:
     build:
       context: .
@@ -58,6 +73,7 @@ services:
     depends_on:
       - user-service
       - authentication-service
+      - group-service
 
 volumes:
   pgdata:
