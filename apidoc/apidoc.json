@@ -1,0 +1,34 @@
+{
+  "name": "ShareBuy API",
+  "version": "1.0.0",
+  "description": "API documentation for ShareBuy",
+  "title": "ShareBuy API Documentation",
+  "url": "http://api.sharebuy.com",
+  "sampleUrl": "http://api.sharebuy.com",
+  "template": {
+    "withCompare": true,
+    "withGenerator": true,
+    "forceLanguage": "en"
+  },
+  "header": {
+    "title": "Overview",
+    "content": "<h1>Welcome to the ShareBuy API documentation</h1>"
+  },
+  "footer": {
+    "title": "Footer",
+    "content": "<p>ShareBuy API documentation footer</p>"
+  },
+  "order": [
+    "User",
+    "Authentication",
+    "Business",
+    "Group"
+  ],
+  "input": [
+    "services/Group/api/",
+    "services/User/api/",
+    "services/Authentication/api/"
+  ],
+  "output": "doc",
+  "link": "https://htmlpreview.github.io/?https://github.com/ShareBuy-final-project/Backend/blob/60-add-api-call-for-fetche-deals-page/doc/index.html"
+}
