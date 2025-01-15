@@ -47,7 +47,7 @@ const Group = sequelize.define('group', {
       key: 'businessNumber'
     }
   },
-  active: {
+  isActive: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: true

@@ -1,6 +1,6 @@
-const { create, getGroup, getGroupsWithSavedStatus, saveGroup } = require('../domain/group');
+const { create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists } = require('../domain/group');
 const { validate } = require('../domain/validation');
-const { SavedGroup, Group } = require('models');
+const { SavedGroup, Group, GroupUser } = require('models');
 const express = require('express');
 
 module.exports = (app) => {
@@ -111,6 +111,48 @@ module.exports = (app) => {
       res.status(200).json({ message: 'Group saved successfully' });
     } catch (error) {
       res.status(400).json({ message: 'Error saving group', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /joinGroup Join a group
+   * @apiName JoinGroup
+   * @apiGroup Group
+   * 
+   * @apiBody {String} groupId ID of the group to join.
+   * 
+   * @apiSuccess {String} message Success message.
+   */
+  app.post('/joinGroup', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { groupId } = req.body;
+      await joinGroup({ groupId, userEmail });
+      res.status(200).json({ message: 'Joined group successfully' });
+    } catch (error) {
+      res.status(400).json({ message: 'Error joining group', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /leaveGroup Leave a group
+   * @apiName LeaveGroup
+   * @apiGroup Group
+   * 
+   * @apiBody {String} groupId ID of the group to leave.
+   * 
+   * @apiSuccess {String} message Success message.
+   */
+  app.post('/leaveGroup', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { groupId } = req.body;
+      await leaveGroup({ groupId, userEmail });
+      res.status(200).json({ message: 'Left group successfully' });
+    } catch (error) {
+      res.status(400).json({ message: 'Error leaving group', error: error.message });
     }
   });
 };
