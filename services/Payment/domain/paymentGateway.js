@@ -22,7 +22,7 @@ const makeTransfer = async ({items}) => {
         }
         ),
         mode: 'payment',
-        success_url: `${process.env.SERVER_URL}/home`,
+        success_url: `acme://pay`,
         cancel_url: `${process.env.SERVER_URL}/home`,
     });
     return {url: session.url}
