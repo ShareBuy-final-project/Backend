@@ -46,6 +46,11 @@ const Group = sequelize.define('group', {
       model: 'Businesses',
       key: 'businessNumber'
     }
+  },
+  active: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
   }
 }, {
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
