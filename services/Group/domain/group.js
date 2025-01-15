@@ -43,10 +43,16 @@ const getGroupsWithSavedStatus = async ({ page, limit, userEmail }) => {
   const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
   const savedGroupIds = savedGroups.map(sg => sg.groupId);
 
-  return groups.map(group => ({
-    ...group.toJSON(),
-    isSaved: savedGroupIds.includes(group.id)
+  const groupsWithUserCount = await Promise.all(groups.map(async group => {
+    const userCount = await GroupUser.count({ where: { groupId: group.id } });
+    return {
+      ...group.toJSON(),
+      isSaved: savedGroupIds.includes(group.id),
+      userCount
+    };
   }));
+
+  return groupsWithUserCount;
 };
 
 const saveGroup = async ({ userEmail, groupId }) => {
