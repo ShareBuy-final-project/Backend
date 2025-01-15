@@ -17,6 +17,11 @@ const GroupUser = sequelize.define('GroupUser', {
       model: 'Users',
       key: 'email'
     }
+  },
+  amount: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1
   }
 }, {
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields

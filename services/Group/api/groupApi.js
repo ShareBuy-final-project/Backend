@@ -120,6 +120,7 @@ module.exports = (app) => {
    * @apiGroup Group
    * 
    * @apiBody {String} groupId ID of the group to join.
+   * @apiBody {Number} amount Amount the user wants to buy from the group deal.
    * 
    * @apiSuccess {String} message Success message.
    */
@@ -127,8 +128,8 @@ module.exports = (app) => {
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
-      const { groupId } = req.body;
-      await joinGroup({ groupId, userEmail });
+      const { groupId, amount } = req.body;
+      await joinGroup({ groupId, userEmail, amount });
       res.status(200).json({ message: 'Joined group successfully' });
     } catch (error) {
       res.status(400).json({ message: 'Error joining group', error: error.message });

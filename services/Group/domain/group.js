@@ -43,16 +43,16 @@ const getGroupsWithSavedStatus = async ({ page, limit, userEmail }) => {
   const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
   const savedGroupIds = savedGroups.map(sg => sg.groupId);
 
-  const groupsWithUserCount = await Promise.all(groups.map(async group => {
-    const userCount = await GroupUser.count({ where: { groupId: group.id } });
+  const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
+    const totalAmount = await GroupUser.sum('amount', { where: { groupId: group.id } });
     return {
       ...group.toJSON(),
       isSaved: savedGroupIds.includes(group.id),
-      userCount
+      totalAmount
     };
   }));
 
-  return groupsWithUserCount;
+  return groupsWithTotalAmount;
 };
 
 const saveGroup = async ({ userEmail, groupId }) => {
@@ -76,9 +76,9 @@ const checkGroupExists = async (groupId) => {
   }
 };
 
-const joinGroup = async ({ groupId, userEmail }) => {
+const joinGroup = async ({ groupId, userEmail, amount }) => {
   await checkGroupExists(groupId);
-  await GroupUser.create({ groupId, userEmail });
+  await GroupUser.create({ groupId, userEmail, amount });
 };
 
 const leaveGroup = async ({ groupId, userEmail }) => {
