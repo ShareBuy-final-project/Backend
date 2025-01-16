@@ -1,4 +1,4 @@
-const { create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists } = require('../domain/group');
+const { create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser } = require('models');
 const express = require('express');
@@ -18,13 +18,14 @@ module.exports = (app) => {
    * @apiBody {Number} price Price of the group.
    * @apiBody {Number} discount Discount on the group.
    * @apiBody {String} size Size of the group.
+   * @apiBody {String} category Category of the group.
    * 
    * @apiSuccess {Object} group The newly created group.
    */
   app.post('/create', async (req, res) => {
     try {
-      const { name, user, details, image, price, discount, size } = req.body;
-      const newGroup = await create({ name, user, details, image, price, discount, size });
+      const { name, user, details, image, price, discount, size, category } = req.body;
+      const newGroup = await create({ name, user, details, image, price, discount, size, category });
       res.status(201).json({ message: 'Group created successfully', group: newGroup });
       console.log('Group created successfully');
     } catch (error) {
@@ -48,28 +49,6 @@ module.exports = (app) => {
       res.status(200).json(group);
     } catch (error) {
       res.status(400).json({ message: 'Error fetching group', error: error.message });
-    }
-  });
-
-  /**
-   * @api {get} /getPage Get groups with saved status
-   * @apiName GetGroupsWithSavedStatus
-   * @apiGroup Group
-   * 
-   * @apiParam {Number} [page=1] Page number.
-   * @apiParam {Number} [limit=10] Number of groups per page.
-   * 
-   * @apiSuccess {Object[]} groups List of groups with saved status.
-   */
-  app.get('/getPage', async (req, res) => {
-    try {
-      const { page = 1, limit = 10 } = req.query;
-      const accessToken = req.headers.authorization.split(' ')[1];
-      const { userEmail } = await validate(accessToken);
-      const groupsWithSavedStatus = await getGroupsWithSavedStatus({ page, limit, userEmail });
-      res.status(200).json(groupsWithSavedStatus);
-    } catch (error) {
-      res.status(400).json({ message: 'Error fetching groups', error: error.message });
     }
   });
 
@@ -154,6 +133,27 @@ module.exports = (app) => {
       res.status(200).json({ message: 'Left group successfully' });
     } catch (error) {
       res.status(400).json({ message: 'Error leaving group', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /getPage return the next groups by filters
+   * @apiName getNextGroupsPage
+   * @apiGroup Group
+   * 
+   * @apiBody {Object} filters Filters to search groups.
+   * @apiBody {Number} [page=1] Page number.
+   * @apiBody {Number} [limit=10] Number of groups per page.
+   * 
+   * @apiSuccess {Object[]} groups List of groups matching the search criteria.
+   */
+  app.post('/getPage', async (req, res) => {
+    try {
+      const { filters, page = 1, limit = 10 } = req.body;
+      const groups = await searchGroups({ filters, page, limit });
+      res.status(200).json(groups);
+    } catch (error) {
+      res.status(400).json({ message: 'Error searching groups', error: error.message });
     }
   });
 };
