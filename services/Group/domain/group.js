@@ -1,4 +1,4 @@
-const { Group, User, SavedGroup } = require('models');
+const { Group, User, SavedGroup, GroupUser } = require('models');
 const { validate } = require('./validation');
 
 const create = async ({ name, accessToken, details, image, price, discount, size }) => {
@@ -43,10 +43,16 @@ const getGroupsWithSavedStatus = async ({ page, limit, userEmail }) => {
   const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
   const savedGroupIds = savedGroups.map(sg => sg.groupId);
 
-  return groups.map(group => ({
-    ...group.toJSON(),
-    isSaved: savedGroupIds.includes(group.id)
+  const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
+    const totalAmount = await GroupUser.sum('amount', { where: { groupId: group.id } });
+    return {
+      ...group.toJSON(),
+      isSaved: savedGroupIds.includes(group.id),
+      totalAmount
+    };
   }));
+
+  return groupsWithTotalAmount;
 };
 
 const saveGroup = async ({ userEmail, groupId }) => {
@@ -63,6 +69,23 @@ const saveGroup = async ({ userEmail, groupId }) => {
   }
 };
 
+const checkGroupExists = async (groupId) => {
+  const group = await Group.findByPk(groupId);
+  if (!group) {
+    throw new Error('Group does not exist');
+  }
+};
+
+const joinGroup = async ({ groupId, userEmail, amount }) => {
+  await checkGroupExists(groupId);
+  await GroupUser.create({ groupId, userEmail, amount });
+};
+
+const leaveGroup = async ({ groupId, userEmail }) => {
+  await checkGroupExists(groupId);
+  await GroupUser.destroy({ where: { groupId, userEmail } });
+};
+
 module.exports = {
-  create, getGroup, getGroupsWithSavedStatus, saveGroup
+  create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists
 };
