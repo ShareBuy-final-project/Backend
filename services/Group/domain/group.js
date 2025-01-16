@@ -2,7 +2,7 @@ const { Group, User, SavedGroup, GroupUser } = require('models');
 const { validate } = require('./validation');
 const { Op } = require('sequelize');
 
-const create = async ({ name, accessToken, details, image, price, discount, size }) => {
+const create = async ({ name, accessToken, details, image, price, discount, size, category }) => {
   if (!name || !price || !discount || !size) {
     throw new Error('Missing required fields');
   }
@@ -14,7 +14,7 @@ const create = async ({ name, accessToken, details, image, price, discount, size
   try {
     let { userEmail } = await validate(accessToken);
     let obj = {
-      name, creator: userEmail, description: details, image, price, discount, size
+      name, creator: userEmail, description: details, image, price, discount, size, category
     };
     console.log(obj);
     const newGroup = new Group(obj);
@@ -87,14 +87,23 @@ const leaveGroup = async ({ groupId, userEmail }) => {
   await GroupUser.destroy({ where: { groupId, userEmail } });
 };
 
-const searchGroups = async ({ name, page, limit }) => {
+const searchGroups = async ({ filters, page, limit }) => {
   const offset = (page - 1) * limit;
+  const whereClause = {};
+
+  if (filters.name) {
+    whereClause.name = { [Op.like]: `%${filters.name}%` };
+  }
+  if (filters.category) {
+    whereClause.category = filters.category;
+  }
+  if (filters.price) {
+    whereClause.price = { [Op.lte]: filters.price };
+  }
+  // Add more filters as needed
+
   const groups = await Group.findAll({
-    where: {
-      name: {
-        [Op.like]: `%${name}%`
-      }
-    },
+    where: whereClause,
     offset,
     limit
   });
