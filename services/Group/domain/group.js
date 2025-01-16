@@ -1,5 +1,6 @@
 const { Group, User, SavedGroup, GroupUser } = require('models');
 const { validate } = require('./validation');
+const { Op } = require('sequelize');
 
 const create = async ({ name, accessToken, details, image, price, discount, size }) => {
   if (!name || !price || !discount || !size) {
@@ -86,6 +87,21 @@ const leaveGroup = async ({ groupId, userEmail }) => {
   await GroupUser.destroy({ where: { groupId, userEmail } });
 };
 
+const searchGroups = async ({ name, page, limit }) => {
+  const offset = (page - 1) * limit;
+  const groups = await Group.findAll({
+    where: {
+      name: {
+        [Op.like]: `%${name}%`
+      }
+    },
+    offset,
+    limit
+  });
+
+  return groups;
+};
+
 module.exports = {
-  create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists
+  create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups
 };

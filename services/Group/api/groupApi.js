@@ -1,4 +1,4 @@
-const { create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists } = require('../domain/group');
+const { create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser } = require('models');
 const express = require('express');
@@ -154,6 +154,27 @@ module.exports = (app) => {
       res.status(200).json({ message: 'Left group successfully' });
     } catch (error) {
       res.status(400).json({ message: 'Error leaving group', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /search Search groups by name
+   * @apiName SearchGroups
+   * @apiGroup Group
+   * 
+   * @apiBody {String} name Name of the group to search.
+   * @apiBody {Number} [page=1] Page number.
+   * @apiBody {Number} [limit=10] Number of groups per page.
+   * 
+   * @apiSuccess {Object[]} groups List of groups matching the search criteria.
+   */
+  app.post('/search', async (req, res) => {
+    try {
+      const { name, page = 1, limit = 10 } = req.body;
+      const groups = await searchGroups({ name, page, limit });
+      res.status(200).json(groups);
+    } catch (error) {
+      res.status(400).json({ message: 'Error searching groups', error: error.message });
     }
   });
 };
