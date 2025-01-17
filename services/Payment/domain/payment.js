@@ -6,7 +6,7 @@ const {makeTransfer} = require('./paymentGateway');
 const pay = async ({items, accessToken}) => {
     try{
         //const {userEmail} = validate(accessToken);
-        const a = await makeTransfer({items});
+        return await makeTransfer({items});
 
         // Transaction.create({
         //     userEmail: id,
@@ -14,7 +14,6 @@ const pay = async ({items, accessToken}) => {
         //     amount: credit,
         //     Date: Date.now(),
         // });
-        return { a };
     }
     catch(error){
         throw new Error('Error making payment');
