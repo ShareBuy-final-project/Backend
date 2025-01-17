@@ -111,6 +111,27 @@ const searchGroups = async ({ filters, page, limit }) => {
   return groups;
 };
 
+const getBusinessHistory = async (userEmail) => {
+  try {
+    const business = await Business.findOne({ where: { userEmail } });
+
+    if (!business) {
+      return { message: 'User does not have an associated business' };
+    }
+
+    const groups = await Group.findAll({
+      where: {
+        businessNumber: business.businessNumber,
+        purchaseMade: true
+      }
+    });
+
+    return groups;
+  } catch (error) {
+    throw new Error(error.toString());
+  }
+};
+
 module.exports = {
-  create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups
+  create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory
 };

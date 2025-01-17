@@ -27,12 +27,12 @@ const Business = sequelize.define('Business', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  userId: {
-    type: DataTypes.INTEGER,
+  userEmail: {
+    type: DataTypes.STRING,
     allowNull: false,
     references: {
       model: 'Users',
-      key: 'id'
+      key: 'email'
     }
   }
 }, {

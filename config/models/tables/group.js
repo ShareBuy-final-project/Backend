@@ -55,6 +55,11 @@ const Group = sequelize.define('group', {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: true
+  },
+  purchaseMade: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 }, {
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
