@@ -43,6 +43,15 @@ const authServiceProxy = createProxyMiddleware({
   on: { proxyReq: onProxyReq },
 });
 
+const groupServiceProxy = createProxyMiddleware({
+  target: 'http://group-service:7000',
+  changeOrigin: true,
+  pathRewrite: {
+    '^/group': '', // remove /group prefix
+  },
+  on: { proxyReq: onProxyReq },
+});
+
 app.use('/user', (req, res, next) => {
   console.log(`Before proxy: ${req.method} ${req.originalUrl} with body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
   next();
@@ -52,6 +61,11 @@ app.use('/auth', (req, res, next) => {
   console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
   next();
 }, authServiceProxy);
+
+app.use('/group', (req, res, next) => {
+  console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
+  next();
+}, groupServiceProxy);
 
 app.use(cors());
 

@@ -1,0 +1,178 @@
+const { create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory } = require('../domain/group');
+const { validate } = require('../domain/validation');
+const { SavedGroup, Group, GroupUser } = require('models');
+const express = require('express');
+
+module.exports = (app) => {
+  app.use(express.json());
+
+  /**
+   * @api {post} /create Create a new group
+   * @apiName CreateGroup
+   * @apiGroup Group
+   * 
+   * @apiBody {String} name Name of the group.
+   * @apiBody {String} user User creating the group.
+   * @apiBody {String} details Details of the group.
+   * @apiBody {String} image Image URL of the group.
+   * @apiBody {Number} price Price of the group.
+   * @apiBody {Number} discount Discount on the group.
+   * @apiBody {String} size Size of the group.
+   * @apiBody {String} category Category of the group.
+   * 
+   * @apiSuccess {Object} group The newly created group.
+   */
+  app.post('/create', async (req, res) => {
+    try {
+      const { name, user, details, image, price, discount, size, category } = req.body;
+      const newGroup = await create({ name, user, details, image, price, discount, size, category });
+      res.status(201).json({ message: 'Group created successfully', group: newGroup });
+      console.log('Group created successfully');
+    } catch (error) {
+      res.status(400).json({ message: 'Error creating group', error: error.message });
+    }
+  });
+
+  /**
+   * @api {get} /get Get a group by ID
+   * @apiName GetGroup
+   * @apiGroup Group
+   * 
+   * @apiBody {String} id ID of the group.
+   * 
+   * @apiSuccess {Object} group The requested group.
+   */
+  app.get('/get', async (req, res) => {
+    try {
+      const { id } = req.body;
+      const group = await getGroup(id);
+      res.status(200).json(group);
+    } catch (error) {
+      res.status(400).json({ message: 'Error fetching group', error: error.message });
+    }
+  });
+
+  /**
+   * @api {get} /getSavedGroups Get saved groups for a user
+   * @apiName GetSavedGroups
+   * @apiGroup Group
+   * 
+   * @apiSuccess {Object[]} groups List of saved groups.
+   */
+  app.get('/getSavedGroups', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
+      const groupIds = savedGroups.map(sg => sg.groupId);
+      const groups = await Group.findAll({ where: { id: groupIds } });
+      res.status(200).json(groups);
+    } catch (error) {
+      res.status(400).json({ message: 'Error fetching saved groups', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /saveGroup Save a group for a user
+   * @apiName SaveGroup
+   * @apiGroup Group
+   * 
+   * @apiBody {String} groupId ID of the group to be saved.
+   * 
+   * @apiSuccess {String} message Success message.
+   */
+  app.post('/saveGroup', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { groupId } = req.body;
+      await saveGroup({ userEmail, groupId });
+      res.status(200).json({ message: 'Group saved successfully' });
+    } catch (error) {
+      res.status(400).json({ message: 'Error saving group', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /joinGroup Join a group
+   * @apiName JoinGroup
+   * @apiGroup Group
+   * 
+   * @apiBody {String} groupId ID of the group to join.
+   * @apiBody {Number} amount Amount the user wants to buy from the group deal.
+   * 
+   * @apiSuccess {String} message Success message.
+   */
+  app.post('/joinGroup', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { groupId, amount } = req.body;
+      await joinGroup({ groupId, userEmail, amount });
+      res.status(200).json({ message: 'Joined group successfully' });
+    } catch (error) {
+      res.status(400).json({ message: 'Error joining group', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /leaveGroup Leave a group
+   * @apiName LeaveGroup
+   * @apiGroup Group
+   * 
+   * @apiBody {String} groupId ID of the group to leave.
+   * 
+   * @apiSuccess {String} message Success message.
+   */
+  app.post('/leaveGroup', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { groupId } = req.body;
+      await leaveGroup({ groupId, userEmail });
+      res.status(200).json({ message: 'Left group successfully' });
+    } catch (error) {
+      res.status(400).json({ message: 'Error leaving group', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /getPage return the next groups by filters
+   * @apiName getNextGroupsPage
+   * @apiGroup Group
+   * 
+   * @apiBody {Object} filters Filters to search groups.
+   * @apiBody {Number} [page=1] Page number.
+   * @apiBody {Number} [limit=10] Number of groups per page.
+   * 
+   * @apiSuccess {Object[]} groups List of groups matching the search criteria.
+   */
+  app.post('/getPage', async (req, res) => {
+    try {
+      const { filters, page = 1, limit = 10 } = req.body;
+      const groups = await searchGroups({ filters, page, limit });
+      res.status(200).json(groups);
+    } catch (error) {
+      res.status(400).json({ message: 'Error searching groups', error: error.message });
+    }
+  });
+
+  /**
+   * @api {get} /businessHistory Get business history
+   * @apiName GetBusinessHistory
+   * @apiGroup Group
+   * 
+   * @apiSuccess {Object[]} groups List of groups with purchaseMade set to true.
+   */
+  app.get('/businessHistory', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const groups = await getBusinessHistory(userEmail);
+      res.status(200).json(groups);
+    } catch (error) {
+      res.status(400).json({ message: 'Error fetching business history', error: error.message });
+    }
+  });
+};
+

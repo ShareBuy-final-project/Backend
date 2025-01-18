@@ -1,8 +1,25 @@
-const User = require('../data/models/user');
-const Business = require('../data/models/business');
+const { User, Business } = require('models');
 const { register, getUser, registerBusiness } = require('../domain/user');
 
 module.exports = (app) => {
+  /**
+   * @api {post} /register Register a new user
+   * @apiName RegisterUser
+   * @apiGroup User
+   * 
+   * @apiBody {String} fullName User's full name
+   * @apiBody {String} password User's password
+   * @apiBody {String} email User's email
+   * @apiBody {String} phone User's phone number
+   * @apiBody {String} state User's state
+   * @apiBody {String} city User's city
+   * @apiBody {String} street User's street
+   * @apiBody {String} streetNumber User's street number
+   * @apiBody {String} zipCode User's zip code
+   * 
+   * @apiSuccess {String} message Success message
+   * @apiSuccess {Object} user Registered user object
+   */
   app.post('/register', async (req, res) => {
     console.log('User service received request to /register');
     console.log('Request body:', req.body);
@@ -20,6 +37,30 @@ module.exports = (app) => {
     }
   });
 
+  /**
+   * @api {post} /registerBusiness Register a new business
+   * @apiName RegisterBusiness
+   * @apiGroup Business
+   * 
+   * @apiBody {String} fullName User's full name
+   * @apiBody {String} password User's password
+   * @apiBody {String} email User's email
+   * @apiBody {String} phone User's phone number
+   * @apiBody {String} state User's state
+   * @apiBody {String} city User's city
+   * @apiBody {String} street User's street
+   * @apiBody {String} streetNumber User's street number
+   * @apiBody {String} zipCode User's zip code
+   * @apiBody {String} businessName Business name
+   * @apiBody {String} businessNumber Business number
+   * @apiBody {String} description Business description
+   * @apiBody {String} category Business category
+   * @apiBody {String} websiteLink Business website link
+   * @apiBody {String} contactEmail Business contact email
+   * 
+   * @apiSuccess {String} message Success message
+   * @apiSuccess {Object} business Registered business object
+   */
   app.post('/registerBusiness', async (req, res) => {
     console.log('User service received request to /registerBusiness');
     try {
@@ -36,6 +77,15 @@ module.exports = (app) => {
     }
   });
 
+  /**
+   * @api {get} /me Get current user details
+   * @apiName GetUser
+   * @apiGroup User
+   * 
+   * @apiHeader {String} Authorization User's access token
+   * 
+   * @apiSuccess {Object} user User object without password
+   */
   app.get('/me', async (req, res) => {
     console.log('User service received request to /me');
     try {
@@ -61,6 +111,24 @@ module.exports = (app) => {
     }
   });
 
+  /**
+   * @api {post} /update Update user details
+   * @apiName UpdateUser
+   * @apiGroup User
+   * 
+   * @apiHeader {String} Authorization User's access token
+   * 
+   * @apiBody {String} fullName User's full name
+   * @apiBody {String} email User's email
+   * @apiBody {String} phone User's phone number
+   * @apiBody {String} state User's state
+   * @apiBody {String} city User's city
+   * @apiBody {String} street User's street
+   * @apiBody {String} streetNumber User's street number
+   * @apiBody {String} zipCode User's zip code
+   * 
+   * @apiSuccess {String} message Success message
+   */
   app.post('/update', async (req, res) => {
     console.log('User service received request to /update');
     try {
@@ -89,6 +157,18 @@ module.exports = (app) => {
     }
   });
 
+  /**
+   * @api {post} /change-password Change user password
+   * @apiName ChangePassword
+   * @apiGroup User
+   * 
+   * @apiHeader {String} Authorization User's access token
+   * 
+   * @apiBody {String} currentPassword User's current password
+   * @apiBody {String} newPassword User's new password
+   * 
+   * @apiSuccess {String} message Success message
+   */
   app.post('/change-password', async (req, res) => {
     console.log('User service received request to /change-password');
     try {

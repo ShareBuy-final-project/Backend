@@ -1,4 +1,4 @@
-# This Dockerfile should be used to build the `User` microservice.
+# This Dockerfile should be used to build the `Group` microservice.
 
 # Builder stage
 FROM node:18 AS builder
@@ -15,7 +15,7 @@ FROM node:18
 
 WORKDIR /app
 
-COPY services/User/package*.json ./
+COPY services/Group/package*.json ./
 
 RUN npm install
 RUN npm update
@@ -27,8 +27,8 @@ COPY --from=builder /app/models/models-1.0.0.tgz /app/models-1.0.0.tgz
 RUN npm install /app/models-1.0.0.tgz
 
 # Copy the source code
-COPY services/User/ ./User
+COPY services/Group/ ./Group
 
-WORKDIR /app/User
+WORKDIR /app/Group
 
 CMD ["npm", "start"]

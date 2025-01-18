@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../../../config/db');
-const refreshToken = sequelize.define('RefreshToken', {
+const sequelize = require('../db');
+
+const RefreshToken = sequelize.define('RefreshToken', {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -12,4 +13,4 @@ const refreshToken = sequelize.define('RefreshToken', {
   },
 });
 
-module.exports = refreshToken;
+module.exports = RefreshToken;

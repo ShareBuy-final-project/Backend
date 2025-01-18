@@ -1,5 +1,4 @@
-const User = require('../data/models/userTest');
-const RefreshToken = require('../data/models/refreshToken');
+const { User } = require('models');
 const { verifyTokenJWT, generateToken, refreshTokenJWT, generateRefreshToken } = require('../utils/jwt');
 
 let refreshTokens = [];

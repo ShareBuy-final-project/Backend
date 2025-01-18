@@ -2,6 +2,16 @@ const { login, logout, verifyToken, refreshToken } = require('../domain/auth');
 
 module.exports = (app) => {
   /**
+   * @api {post} /login User login
+   * @apiName Login
+   * @apiGroup Authentication
+   * 
+   * @apiBody {String} email User's email
+   * @apiBody {String} password User's password
+   * 
+   * @apiSuccess {String} accessToken Access token
+   * @apiSuccess {String} refreshToken Refresh token
+   * 
    * Handles user login.
    * Input: req - The request body containing email and password.
    *        res - The response object.
@@ -20,6 +30,14 @@ module.exports = (app) => {
   });
 
   /**
+   * @api {delete} /logout User logout
+   * @apiName Logout
+   * @apiGroup Authentication
+   * 
+   * @apiBody {String} token Refresh token
+   * 
+   * @apiSuccess {String} message Success message
+   * 
    * Logs out a user by invalidating the provided refresh token.
    * Input: req - The request body containing the refresh token.
    *        res - The response object.
@@ -38,6 +56,15 @@ module.exports = (app) => {
   });
 
   /**
+   * @api {get} /validate-token Validate access token
+   * @apiName ValidateToken
+   * @apiGroup Authentication
+   * 
+   * @apiHeader {String} Authorization Access token
+   * 
+   * @apiSuccess {Boolean} valid Token validity
+   * @apiSuccess {Object} data Decoded token data
+   * 
    * Validates the provided access token.
    * Input: req - The request containing the access token in the Authorization header.
    *        res - The response object.
@@ -60,6 +87,14 @@ module.exports = (app) => {
   });
 
   /**
+   * @api {post} /token Refresh access token
+   * @apiName RefreshToken
+   * @apiGroup Authentication
+   * 
+   * @apiBody {String} token Refresh token
+   * 
+   * @apiSuccess {String} accessToken New access token
+   * 
    * Refreshes the access token using the provided refresh token.
    * Input: req - The request containing the refresh token.
    *        res - The response object.
