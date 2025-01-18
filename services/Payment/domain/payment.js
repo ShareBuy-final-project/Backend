@@ -1,24 +1,21 @@
 // const bcrypt = require('bcrypt');
 const Transaction = require('../data/models/transaction');
 const { validate } = require('./validation');
-const {makeTransfer} = require('./paymentGateway');
+const {createPaymentIntent} = require('./paymentGateway');
 
-const pay = async ({items, accessToken}) => {
+const handlePayment = async () => {
     try{
-        //const {userEmail} = validate(accessToken);
-        return await makeTransfer({items});
-
-        // Transaction.create({
-        //     userEmail: id,
-        //     groupId: group_id,
-        //     amount: credit,
-        //     Date: Date.now(),
-        // });
+        console.log('handling payment');
+        const data =  await createPaymentIntent();
+        paymentIntentId = data.paymentIntentId;
+        
+        console.log('Payment processed successfully');
+        return data;
     }
     catch(error){
         throw new Error('Error making payment');
     }
     
 } 
-module.exports = {pay};
+module.exports = {handlePayment};
     

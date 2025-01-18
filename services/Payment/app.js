@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 // const sequelize = require('../config/db');
 const paymentApi = require('./api/paymentApi');
-
+ 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
