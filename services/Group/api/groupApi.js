@@ -1,4 +1,4 @@
-const { create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory } = require('../domain/group');
+const { create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser } = require('models');
 const express = require('express');
@@ -149,8 +149,10 @@ module.exports = (app) => {
    */
   app.post('/getPage', async (req, res) => {
     try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
       const { filters, page = 1, limit = 10 } = req.body;
-      const groups = await searchGroups({ filters, page, limit });
+      const groups = await searchGroups({ filters, page, limit, userEmail });
       res.status(200).json(groups);
     } catch (error) {
       res.status(400).json({ message: 'Error searching groups', error: error.message });

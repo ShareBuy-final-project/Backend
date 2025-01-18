@@ -25,7 +25,7 @@ const create = async ({ name, accessToken, details, image, price, discount, size
   } catch (error) {
     throw new Error(error.toString());
   }
-}
+};
 
 const getGroup = async (id) => {
   try {
@@ -35,25 +35,6 @@ const getGroup = async (id) => {
   catch (error) {
     throw new Error('Invalid id');
   }
-}
-
-const getGroupsWithSavedStatus = async ({ page, limit, userEmail }) => {
-  const offset = (page - 1) * limit;
-  const groups = await Group.findAll({ offset, limit });
-
-  const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
-  const savedGroupIds = savedGroups.map(sg => sg.groupId);
-
-  const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
-    const totalAmount = await GroupUser.sum('amount', { where: { groupId: group.id } });
-    return {
-      ...group.toJSON(),
-      isSaved: savedGroupIds.includes(group.id),
-      totalAmount
-    };
-  }));
-
-  return groupsWithTotalAmount;
 };
 
 const saveGroup = async ({ userEmail, groupId }) => {
@@ -87,7 +68,7 @@ const leaveGroup = async ({ groupId, userEmail }) => {
   await GroupUser.destroy({ where: { groupId, userEmail } });
 };
 
-const searchGroups = async ({ filters, page, limit }) => {
+const searchGroups = async ({ filters, page, limit, userEmail }) => {
   const offset = (page - 1) * limit;
   const whereClause = {};
 
@@ -108,7 +89,20 @@ const searchGroups = async ({ filters, page, limit }) => {
     limit
   });
 
-  return groups;
+  const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
+  const savedGroupIds = savedGroups.map(sg => sg.groupId);
+
+  const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
+    const totalAmount = await GroupUser.sum('amount', { where: { groupId: group.id } });
+    const { description, category, creator, ...groupData } = group.toJSON();
+    return {
+      ...groupData,
+      isSaved: savedGroupIds.includes(group.id),
+      totalAmount
+    };
+  }));
+
+  return groupsWithTotalAmount;
 };
 
 const getBusinessHistory = async (userEmail) => {
@@ -133,5 +127,5 @@ const getBusinessHistory = async (userEmail) => {
 };
 
 module.exports = {
-  create, getGroup, getGroupsWithSavedStatus, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory
+  create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory
 };
