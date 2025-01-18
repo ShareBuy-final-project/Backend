@@ -2,8 +2,6 @@ const bcrypt = require('bcrypt');
 const { Business, User } = require('models');
 const { validate } = require('./validation');
 
-
-
 const register = async ({ fullName, password, email, phone, state, city, street, streetNumber, zipCode }) => {
   if (!fullName || !password || !email || !phone || !state || !city || !street || !streetNumber) {
     throw new Error('All fields are required');
