@@ -1,5 +1,6 @@
 const { User, Business } = require('models');
 const { register, getUser, registerBusiness } = require('../domain/user');
+const { comparePassword } = require('../domain/utils');
 
 module.exports = (app) => {
   /**
@@ -152,6 +153,9 @@ module.exports = (app) => {
       await user.save();
       res.status(200).json({ message: 'Update successful' });
     } catch (error) {
+      if (error.message === 'Invalid token') {
+        return res.status(401).json({ message: 'Invalid token' });
+      }
       console.error('Error updating user:', error);
       res.status(400).json({ message: 'Error updating user', error: error.message });
     }
@@ -180,7 +184,7 @@ module.exports = (app) => {
         return res.status(401).json({ message: 'Invalid token' });
       }
 
-      const isMatch = await user.comparePassword(currentPassword);
+      const isMatch = await comparePassword(user, currentPassword);
       if (!isMatch) {
         return res.status(400).json({ message: 'Current password is incorrect' });
       }
@@ -189,6 +193,9 @@ module.exports = (app) => {
       await user.save();
       res.status(200).json({ message: 'Password change successful' });
     } catch (error) {
+      if (error.message === 'Invalid token') {
+        return res.status(401).json({ message: 'Invalid token' });
+      }
       console.error('Error changing password:', error);
       res.status(400).json({ message: 'Error changing password', error: error.message });
     }
