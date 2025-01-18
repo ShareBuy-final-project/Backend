@@ -2,9 +2,7 @@ const bcrypt = require('bcrypt');
 const { Business, User } = require('models');
 const { validate } = require('./validation');
 
-const comparePassword = async (user, currentPassword) => {
-  return bcrypt.compare(currentPassword, user.password);
-};
+
 
 const register = async ({ fullName, password, email, phone, state, city, street, streetNumber, zipCode }) => {
   if (!fullName || !password || !email || !phone || !state || !city || !street || !streetNumber) {
@@ -59,5 +57,4 @@ module.exports = {
   register,
   getUser,
   registerBusiness,
-  comparePassword,
 };
