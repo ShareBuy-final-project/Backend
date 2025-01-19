@@ -94,6 +94,27 @@ module.exports = (app) => {
   });
 
   /**
+   * @api {post} /unSaveGroup Unsave a group for a user
+   * @apiName UnSaveGroup
+   * @apiGroup Group
+   * 
+   * @apiBody {String} groupId ID of the group to be unsaved.
+   * 
+   * @apiSuccess {String} message Success message.
+   */
+  app.post('/unSaveGroup', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { groupId } = req.body;
+      await SavedGroup.destroy({ where: { userEmail, groupId } });
+      res.status(200).json({ message: 'Group unsaved successfully' });
+    } catch (error) {
+      res.status(400).json({ message: 'Error unsaving group', error: error.message });
+    }
+  });
+
+  /**
    * @api {post} /joinGroup Join a group
    * @apiName JoinGroup
    * @apiGroup Group
