@@ -1,16 +1,16 @@
 const {handlePayment}= require('../domain/payment');
-const {createPaymentIntent} = require('../domain/payment');
 require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 module.exports = (app) => {
-  app.post('/payment', async (req, res) => {
+  app.post('/payment/paymentIntent', async (req, res) => {
     console.log('Payment service received request to /payment');
     try {
       const accessToken = req.headers['authorization'][1];
-      const items = req.body.items;
+      const groupId = req.body.groupId;
+      const amount = req.body.amount;
       console.log('Payment service received items');
-      const data = await createPaymentIntent();
+      const data = await handlePayment(groupId, amount, accessToken);
       res.status(201).json(data);
     } catch (error) {
       console.error('Error making payment:', error);
