@@ -22,7 +22,17 @@ const GroupUser = sequelize.define('GroupUser', {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 1
-  }
+  },
+  paymentConfirmed: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
+  paymentIntentId: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    primaryKey: true,
+  },
 }, {
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
 });
