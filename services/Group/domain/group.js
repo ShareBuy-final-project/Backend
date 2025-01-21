@@ -83,14 +83,17 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
   }
   // Add more filters as needed
 
+  console.log('where clause', whereClause);
   const groups = await Group.findAll({
     where: whereClause,
     offset,
     limit
   });
 
+  console.log('groups', groups);
   const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
   const savedGroupIds = savedGroups.map(sg => sg.groupId);
+  console.log('savedGroupIds', savedGroupIds);
 
   const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
     const totalAmount = await GroupUser.sum('amount', { where: { groupId: group.id } });
@@ -101,6 +104,7 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
       totalAmount
     };
   }));
+  console.log('groupsWithTotalAmount', groupsWithTotalAmount);
 
   return groupsWithTotalAmount;
 };

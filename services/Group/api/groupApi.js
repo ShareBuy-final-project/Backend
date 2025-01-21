@@ -178,6 +178,7 @@ module.exports = (app) => {
       const groups = await searchGroups({ filters, page, limit, userEmail });
       res.status(200).json(groups);
     } catch (error) {
+      console.log('error searching groups',error);
       res.status(400).json({ message: 'Error searching groups', error: error.message });
     }
   });
