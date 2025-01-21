@@ -45,6 +45,7 @@ const login = async ({ email, password }) => {
 
         return { token, refreshUserToken };
     } catch (err) {
+        console.log('Error logging in', err);
         throw new Error('Error logging in');
     }
 };
