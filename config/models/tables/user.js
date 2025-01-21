@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const bcrypt = require('bcrypt');
 
 const User = sequelize.define('User', {
   fullName: {
@@ -77,6 +78,10 @@ const insertInitialUsers = async () => {
     { fullName: 'User 24', email: 'user24@example.com', password: 'password24', phone: '1234567813', state: 'State 24', city: 'City 24', street: 'Street 24', streetNumber: '24', zipCode: '10024' },
     { fullName: 'User 25', email: 'user25@example.com', password: 'password25', phone: '1234567814', state: 'State 25', city: 'City 25', street: 'Street 25', streetNumber: '25', zipCode: '10025' }
   ];
+
+  for (const user of users) {
+    user.password = await bcrypt.hash(user.password, 10);
+  }
 
   await User.bulkCreate(users);
   console.log('Initial users inserted');
