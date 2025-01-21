@@ -1,4 +1,4 @@
-const { create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory } = require('../domain/group');
+const { create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser } = require('models');
 const express = require('express');
@@ -53,19 +53,21 @@ module.exports = (app) => {
   });
 
   /**
-   * @api {get} /getSavedGroups Get saved groups for a user
+   * @api {post} /getSavedGroups Get saved groups for a user
    * @apiName GetSavedGroups
    * @apiGroup Group
    * 
+   * @apiBody {Number} [page=1] Page number.
+   * @apiBody {Number} [limit=10] Number of groups per page.
+   * 
    * @apiSuccess {Object[]} groups List of saved groups.
    */
-  app.get('/getSavedGroups', async (req, res) => {
+  app.post('/getSavedGroups', async (req, res) => {
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
-      const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
-      const groupIds = savedGroups.map(sg => sg.groupId);
-      const groups = await Group.findAll({ where: { id: groupIds } });
+      const { page = 1, limit = 10 } = req.body;
+      const groups = await getSavedGroups({ userEmail, page, limit });
       res.status(200).json(groups);
     } catch (error) {
       res.status(400).json({ message: 'Error fetching saved groups', error: error.message });
@@ -181,20 +183,68 @@ module.exports = (app) => {
   });
 
   /**
-   * @api {get} /businessHistory Get business history
+   * @api {post} /businessHistory Get business history
    * @apiName GetBusinessHistory
    * @apiGroup Group
    * 
+   * @apiBody {Number} [page=1] Page number.
+   * @apiBody {Number} [limit=10] Number of groups per page.
+   * 
    * @apiSuccess {Object[]} groups List of groups with purchaseMade set to true.
    */
-  app.get('/businessHistory', async (req, res) => {
+  app.post('/businessHistory', async (req, res) => {
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
-      const groups = await getBusinessHistory(userEmail);
+      const { page = 1, limit = 10 } = req.body;
+      const groups = await getBusinessHistory(userEmail, page, limit);
       res.status(200).json(groups);
     } catch (error) {
       res.status(400).json({ message: 'Error fetching business history', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /userHistory Get user history
+   * @apiName GetUserHistory
+   * @apiGroup Group
+   * 
+   * @apiBody {Number} [page=1] Page number.
+   * @apiBody {Number} [limit=10] Number of groups per page.
+   * 
+   * @apiSuccess {Object[]} groups List of groups with purchaseMade set to true.
+   */
+  app.post('/userHistory', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { page = 1, limit = 10 } = req.body;
+      const groups = await getUserHistory(userEmail, page, limit);
+      res.status(200).json(groups);
+    } catch (error) {
+      res.status(400).json({ message: 'Error fetching user history', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /userGroups Get user groups
+   * @apiName GetUserGroups
+   * @apiGroup Group
+   * 
+   * @apiBody {Number} [page=1] Page number.
+   * @apiBody {Number} [limit=10] Number of groups per page.
+   * 
+   * @apiSuccess {Object[]} groups List of groups with purchaseMade set to false and isActive set to true.
+   */
+  app.post('/userGroups', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { page = 1, limit = 10 } = req.body;
+      const groups = await getUserGroups(userEmail, page, limit);
+      res.status(200).json(groups);
+    } catch (error) {
+      res.status(400).json({ message: 'Error fetching user groups', error: error.message });
     }
   });
 };
