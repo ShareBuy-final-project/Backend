@@ -1,12 +1,14 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const User = require('./user');
+const Group = require('./group');
 
 const GroupUser = sequelize.define('GroupUser', {
   groupId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Group',
+      model: Group,
       key: 'id'
     }
   },
@@ -14,7 +16,7 @@ const GroupUser = sequelize.define('GroupUser', {
     type: DataTypes.STRING,
     allowNull: false,
     references: {
-      model: 'User',
+      model: User,
       key: 'email'
     }
   },
