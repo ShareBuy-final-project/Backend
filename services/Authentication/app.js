@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 // Import other models as needed:
-const { sequelize, RefreshToken }= require('models');
+const { sequelize, RefreshToken, User }= require('models');
 require('dotenv').config();
 
 const app = express();
