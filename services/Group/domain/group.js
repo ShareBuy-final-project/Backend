@@ -90,7 +90,6 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
     limit
   });
 
-  console.log('groups', groups);
   const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
   const savedGroupIds = savedGroups.map(sg => sg.groupId);
   console.log('savedGroupIds', savedGroupIds);
@@ -104,7 +103,7 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
       totalAmount
     };
   }));
-  console.log('groupsWithTotalAmount', groupsWithTotalAmount);
+  //console.log('groupsWithTotalAmount', groupsWithTotalAmount);
 
   return groupsWithTotalAmount;
 };
