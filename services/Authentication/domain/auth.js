@@ -32,10 +32,15 @@ const login = async ({ email, password }) => {
         if (!user) throw new Error('Invalid credentials');
         const isMatch = await User.comparePassword(password);
         if (!isMatch) throw new Error('Invalid credentials');
+        console.log('User logged in successfully');
         const token = generateToken(email);
+        console.log('token', token);
         const refreshUserToken = generateRefreshToken(email);
+        console.log('refreshUserToken', refreshUserToken);
         // RefreshToken.create({ email, token: refreshUserToken });
         refreshTokens.push(refreshUserToken);
+        console.log('Logged in successfully');
+
         return { token, refreshUserToken };
     } catch (err) {
         throw new Error('Error logging in');
