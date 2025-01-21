@@ -6,7 +6,7 @@ const GroupUser = sequelize.define('GroupUser', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Groups',
+      model: 'Group',
       key: 'id'
     }
   },
@@ -14,7 +14,7 @@ const GroupUser = sequelize.define('GroupUser', {
     type: DataTypes.STRING,
     allowNull: false,
     references: {
-      model: 'Users',
+      model: 'User',
       key: 'email'
     }
   },
