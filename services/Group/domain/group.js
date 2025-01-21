@@ -105,8 +105,17 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
   return groupsWithTotalAmount;
 };
 
-const getBusinessHistory = async (userEmail) => {
+const getSavedGroups = async ({ userEmail, page = 1, limit = 10 }) => {
+  const offset = (page - 1) * limit;
+  const savedGroups = await SavedGroup.findAll({ where: { userEmail }, offset, limit });
+  const groupIds = savedGroups.map(sg => sg.groupId);
+  const groups = await Group.findAll({ where: { id: groupIds } });
+  return groups;
+};
+
+const getBusinessHistory = async (userEmail, page = 1, limit = 10) => {
   try {
+    const offset = (page - 1) * limit;
     const business = await Business.findOne({ where: { userEmail } });
 
     if (!business) {
@@ -117,7 +126,52 @@ const getBusinessHistory = async (userEmail) => {
       where: {
         businessNumber: business.businessNumber,
         purchaseMade: true
-      }
+      },
+      offset,
+      limit
+    });
+
+    return groups;
+  } catch (error) {
+    throw new Error(error.toString());
+  }
+};
+
+const getUserHistory = async (userEmail, page = 1, limit = 10) => {
+  try {
+    const offset = (page - 1) * limit;
+    const groupUsers = await GroupUser.findAll({ where: { userEmail } });
+    const groupIds = groupUsers.map(gu => gu.groupId);
+
+    const groups = await Group.findAll({
+      where: {
+        id: groupIds,
+        purchaseMade: true
+      },
+      offset,
+      limit
+    });
+
+    return groups;
+  } catch (error) {
+    throw new Error(error.toString());
+  }
+};
+
+const getUserGroups = async (userEmail, page = 1, limit = 10) => {
+  try {
+    const offset = (page - 1) * limit;
+    const groupUsers = await GroupUser.findAll({ where: { userEmail } });
+    const groupIds = groupUsers.map(gu => gu.groupId);
+
+    const groups = await Group.findAll({
+      where: {
+        id: groupIds,
+        purchaseMade: false,
+        isActive: true
+      },
+      offset,
+      limit
     });
 
     return groups;
@@ -127,5 +181,5 @@ const getBusinessHistory = async (userEmail) => {
 };
 
 module.exports = {
-  create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory
+  create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups
 };
