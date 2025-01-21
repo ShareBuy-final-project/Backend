@@ -1,5 +1,6 @@
 const { User } = require('models');
 const { verifyTokenJWT, generateToken, refreshTokenJWT, generateRefreshToken } = require('../utils/jwt');
+const { comparePassword } = require('../domain/utils');
 
 let refreshTokens = [];
 
@@ -32,7 +33,7 @@ const login = async ({ email, password }) => {
         const user = await User.findOne({ where: { email } });
         console.log('user', user);
         if (!user) throw new Error('Invalid credentials');
-        const isMatch = await User.comparePassword(password);
+        const isMatch = await comparePassword(user, password);
         if (!isMatch) throw new Error('Invalid credentials');
         console.log('User logged in successfully');
         const token = generateToken(email);
