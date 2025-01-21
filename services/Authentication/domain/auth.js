@@ -29,21 +29,15 @@ const verifyToken = (token) => {
  */
 const login = async ({ email, password }) => {
     try {
-        console.log('Logging in user');
         const user = await User.findOne({ where: { email } });
-        console.log('user', user);
         if (!user) throw new Error('Invalid credentials');
         const isMatch = await comparePassword(user, password);
         if (!isMatch) throw new Error('Invalid credentials');
-        console.log('User logged in successfully');
         const token = generateToken(email);
-        console.log('token', token);
         const refreshUserToken = generateRefreshToken(email);
-        console.log('refreshUserToken', refreshUserToken);
         // RefreshToken.create({ email, token: refreshUserToken });
         refreshTokens.push(refreshUserToken);
         console.log('Logged in successfully');
-
         return { token, refreshUserToken };
     } catch (err) {
         console.log('Error logging in', err);
