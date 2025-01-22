@@ -1,7 +1,7 @@
 const { Group, User, SavedGroup, GroupUser } = require('models');
 const { validate } = require('./validation');
 const { Op } = require('sequelize');
-import axios from 'axios';
+const axios = require('axios');
 require('dotenv').config();
 
 const create = async ({ name, accessToken, details, image, price, discount, size, category }) => {
