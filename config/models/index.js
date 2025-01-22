@@ -3,6 +3,7 @@ const Group = require('./tables/group');
 const SavedGroup = require('./tables/savedGroup');
 const Business = require('./tables/business');
 const RefreshToken = require('./tables/refreshToken');
+const GroupUser = require('./tables/groupUser');
 const sequelize = require('./db');
 
 module.exports = {
@@ -11,5 +12,6 @@ module.exports = {
   SavedGroup,
   Business,
   RefreshToken,
+  GroupUser,
   sequelize
 };

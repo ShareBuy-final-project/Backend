@@ -175,9 +175,13 @@ module.exports = (app) => {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { filters, page = 1, limit = 10 } = req.body;
+      console.log('filters', filters);
+      console.log('page', page);
+      console.log('limit', limit);
       const groups = await searchGroups({ filters, page, limit, userEmail });
       res.status(200).json(groups);
     } catch (error) {
+      console.log('error searching groups',error);
       res.status(400).json({ message: 'Error searching groups', error: error.message });
     }
   });
