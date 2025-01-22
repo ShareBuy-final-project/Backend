@@ -64,6 +64,7 @@ const Group = sequelize.define('group', {
     defaultValue: false
   }
 }, {
+  tableName: 'Group', // Specify the table name
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
 });
 

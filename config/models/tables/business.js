@@ -37,6 +37,7 @@ const Business = sequelize.define('Business', {
     }
   }
 }, {
+  tableName: 'Business', // Specify the table name
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
 });
 
