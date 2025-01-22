@@ -84,7 +84,7 @@ const joinGroup = async ({accessToken ,groupId, userEmail, amount }) => {
   const headers = {
     'Authorization': `Bearer ${accessToken}`
   };
-  const body = {groupId, userEmail, amount}
+  const body = {groupId, amount}
   const response = await axios({
     method: 'post',
     url: `${process.env.PAYMENT_SERVICE_URL}/payment/paymentIntent`,
