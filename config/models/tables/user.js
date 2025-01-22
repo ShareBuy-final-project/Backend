@@ -52,7 +52,7 @@ const insertInitialUsers = async () => {
     return;
   }
 
-  const user = [
+  const users = [
     { fullName: 'User 1', email: 'user1@example.com', password: 'password1', phone: '1234567890', state: 'State 1', city: 'City 1', street: 'Street 1', streetNumber: '1', zipCode: '10001' },
     { fullName: 'User 2', email: 'user2@example.com', password: 'password2', phone: '1234567891', state: 'State 2', city: 'City 2', street: 'Street 2', streetNumber: '2', zipCode: '10002' },
     { fullName: 'User 3', email: 'user3@example.com', password: 'password3', phone: '1234567892', state: 'State 3', city: 'City 3', street: 'Street 3', streetNumber: '3', zipCode: '10003' },
@@ -80,11 +80,11 @@ const insertInitialUsers = async () => {
     { fullName: 'User 25', email: 'user25@example.com', password: 'password25', phone: '1234567814', state: 'State 25', city: 'City 25', street: 'Street 25', streetNumber: '25', zipCode: '10025' }
   ];
 
-  for (const user_ of user) {
-    user_.password = await bcrypt.hash(user.password, 10);
+  for (const user of users) {
+    user.password = await bcrypt.hash(user.password, 10);
   }
 
-  await User.bulkCreate(user);
+  await User.bulkCreate(users);
   console.log('Initial users inserted');
 };
 
