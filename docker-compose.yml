@@ -61,6 +61,21 @@ services:
       db:
         condition: service_healthy
 
+   payment-service:
+    build:
+      context: .
+      dockerfile: ./services/Payment/Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=8000
+      - DB_HOST=db
+      - DB_USER=adminDB
+      - DB_PASS=adminDB
+      - DB_NAME=ShareBuyDB
+    depends_on:
+      db:
+        condition: service_healthy
+
   api-gateway:
     build:
       context: .
@@ -74,6 +89,7 @@ services:
       - user-service
       - authentication-service
       - group-service
+
 
 volumes:
   pgdata:

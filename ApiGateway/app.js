@@ -52,6 +52,15 @@ const groupServiceProxy = createProxyMiddleware({
   on: { proxyReq: onProxyReq },
 });
 
+const paymentServiceProxy = createProxyMiddleware({
+  target: 'http://payment-service:8000',
+  changeOrigin: true,
+  pathRewrite: {
+    '^/payment': '', // remove /payment prefix
+  },
+  on: { proxyReq: onProxyReq },
+});
+
 app.use('/user', (req, res, next) => {
   console.log(`Before proxy: ${req.method} ${req.originalUrl} with body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
   next();
@@ -66,6 +75,11 @@ app.use('/group', (req, res, next) => {
   console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
   next();
 }, groupServiceProxy);
+
+app.use('/payment', (req, res, next) => {
+  console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
+  next();
+}, paymentServiceProxy);
 
 app.use(cors());
 

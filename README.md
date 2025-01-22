@@ -173,4 +173,48 @@ To view the API documentation, open the following link in your browser:
 
 [API Documentation](https://htmlpreview.github.io/?https://github.com/ShareBuy-final-project/Backend/blob/main/doc/index.html)
 
+## Running Tests
+
+To run the tests for the backend services, follow these steps:
+
+1. **Install Dependencies:**
+
+   Ensure that all dependencies are installed by running:
+
+   ```sh
+   npm install
+   ```
+
+2. **Run Tests:**
+
+   To run the tests, use the following command:
+
+   ```sh
+   npm test
+   ```
+
+   This command will execute all the test cases defined in the project.
+
+3. **View Test Coverage:**
+
+   To view the test coverage, use the following command:
+
+   ```sh
+   npm run test:coverage
+   ```
+
+   This command will generate a coverage report that you can view to see which parts of the code are covered by tests.
+
+4. **Run Specific Test File:**
+
+   To run a specific test file, use the following command:
+
+   ```sh
+   npx jest path/to/test/file
+   ```
+
+   Replace `path/to/test/file` with the actual path to the test file you want to run.
+
+By following these instructions, you can run and manage tests for the backend services effectively.
+
 By following these instructions, you can manage the Docker services, access the database, generate API documentation, and use pgAdmin effectively while ensuring the persistence of your data.
