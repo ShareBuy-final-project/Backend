@@ -47,7 +47,7 @@ const insertInitialBusinesses = async () => {
     return;
   }
 
-  const businesses = [
+  const business = [
     { businessName: 'Business 1', businessNumber: 'B001', description: 'Description 1', category: 'Category 1', websiteLink: 'http://business1.com', contactEmail: 'contact1@business.com', userEmail: 'user1@example.com' },
     { businessName: 'Business 2', businessNumber: 'B002', description: 'Description 2', category: 'Category 2', websiteLink: 'http://business2.com', contactEmail: 'contact2@business.com', userEmail: 'user2@example.com' },
     { businessName: 'Business 3', businessNumber: 'B003', description: 'Description 3', category: 'Category 3', websiteLink: 'http://business3.com', contactEmail: 'contact3@business.com', userEmail: 'user3@example.com' },
@@ -75,7 +75,7 @@ const insertInitialBusinesses = async () => {
     { businessName: 'Business 25', businessNumber: 'B025', description: 'Description 25', category: 'Category 25', websiteLink: 'http://business25.com', contactEmail: 'contact25@business.com', userEmail: 'user25@example.com' }
   ];
 
-  await Business.bulkCreate(businesses);
+  await Business.bulkCreate(business);
   console.log('Initial businesses inserted');
 };
 
