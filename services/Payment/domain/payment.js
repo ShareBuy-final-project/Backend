@@ -1,5 +1,5 @@
 // const bcrypt = require('bcrypt');
-// const { Business, User } = require('models');
+const { Business, User, Group, GroupUser } = require('models');
 const { validate } = require('./validation');
 const {createPaymentIntent} = require('./paymentGateway');
 const e = require('express');
@@ -7,34 +7,28 @@ const e = require('express');
 const handlePayment = async ({group, accessToken}) => {
     try{
         console.log('handling payment');
-        // const group_id = group.id;
+        const id = group.id;
+        const amount = group.amount;
 
-        // const {customerEmail} = validate(accessToken);
-        // if(!customerEmail){
-        //     throw new Error('Invalid token');
-        // }
+        const {customerEmail} = validate(accessToken);
+        if(!customerEmail){
+            throw new Error('Invalid token');
+        }
 
-        // const group_data = getGroup(group_id);
-        // if(!group_data){
-        //     throw new Error('Group not found');
-        // }
+        const group_data = Group.findOne({ where: { id } });
+        if(!group_data){
+            throw new Error('Group not found');
+        }
         
-        // const {seller, price} = group_data;
-        const seller = 'acct_1JQg9a2GBz0nP5L';
-        const price = 100;
-        const payment_intent_data =  await createPaymentIntent({seller,price});
+        const {businessNumber, price, discount} = group_data;
+        const newPrice = (price * (100-discount) / 100) * amount
+        const {userEmail} = Business.findOne({ where: { businessNumber } });
+        const businessUserEmail = userEmail
+
+        const payment_intent_data =  await createPaymentIntent({businessUserEmail,price});
         if(!payment_intent_data.paymentIntentId){
             throw new Error('Error creating payment intent');
         }
-
-        // paymentIntentId = payment_intent_data.paymentIntentId;
-        // const transaction = new ({
-        //     paymentIntentId,
-        //     groupId,
-        //     customerEmail,
-        //     confirmed: false,
-        // });
-        // transaction.save();
 
         console.log('Payment processed successfully');
         return payment_intent_data;
@@ -45,5 +39,19 @@ const handlePayment = async ({group, accessToken}) => {
     }
     
 } 
-module.exports = {handlePayment};
+const updateCharged = async ({paymentIntentId}) => {
+    try{
+        console.log('updating confirmed to true for paymentIntent:', paymentIntentId);
+        await GroupUser.update(
+            { confirmed: true },
+            { where: { paymentIntentId } }
+          );
+    }
+    catch(error){
+        console.log(error.message);
+        throw new Error('Error updating payment');
+        ///TODO add logic, maybe inform user and remove from db
+    }
+}
+module.exports = {handlePayment, updateCharged};
     
