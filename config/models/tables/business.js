@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const User = require('./user');
 
 const Business = sequelize.define('Business', {
   businessName: {
@@ -31,7 +32,7 @@ const Business = sequelize.define('Business', {
     type: DataTypes.STRING,
     allowNull: false,
     references: {
-      model: 'Users',
+      model: User,
       key: 'email'
     }
   }
