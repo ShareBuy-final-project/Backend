@@ -1,6 +1,8 @@
 const { Group, User, SavedGroup, GroupUser } = require('models');
 const { validate } = require('./validation');
 const { Op } = require('sequelize');
+import axios from 'axios';
+require('dotenv').config();
 
 const create = async ({ name, accessToken, details, image, price, discount, size, category }) => {
   if (!name || !price || !discount || !size) {
@@ -58,9 +60,21 @@ const checkGroupExists = async (groupId) => {
   }
 };
 
-const joinGroup = async ({ groupId, userEmail, amount }) => {
+const joinGroup = async ({accessToken ,groupId, userEmail, amount }) => {
   await checkGroupExists(groupId);
-  await GroupUser.create({ groupId, userEmail, amount });
+  const headers = {
+    'Authorization': `Bearer ${accessToken}`
+  };
+  const body = {groupId, amount}
+  const response = await axios({
+    method: 'post',
+    url: `${process.env.PAYMENT_SERVICE_URL}/payment/paymentIntent`,
+    headers: headers,
+    data: body
+  });
+  const { paymentIntent } = response.data;
+  await GroupUser.create({ groupId, userEmail, amount, paymentIntent});
+  return response;
 };
 
 const leaveGroup = async ({ groupId, userEmail }) => {
