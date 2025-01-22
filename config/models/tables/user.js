@@ -88,7 +88,7 @@ const insertInitialUsers = async () => {
 };
 
 insertInitialUsers().catch(error => {
-  console.error('Error inserting initial users:', error);
+  console.error('Error inserting initial users:', error.message);
 });
 
 // This code will be executed when the module is loaded. 

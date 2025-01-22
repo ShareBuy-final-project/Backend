@@ -107,7 +107,7 @@ const insertInitialGroups = async () => {
 };
 
 insertInitialGroups().catch(error => {
-  console.error('Error inserting initial groups:', error);
+  console.error('Error inserting initial groups:', error.message);
 });
 
 // This code will be executed when the module is loaded. 

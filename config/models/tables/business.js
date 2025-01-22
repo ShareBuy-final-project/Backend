@@ -80,7 +80,7 @@ const insertInitialBusinesses = async () => {
 };
 
 insertInitialBusinesses().catch(error => {
-  console.error('Error inserting initial businesses:', error);
+  console.error('Error inserting initial businesses:', error.message);
 });
 
 module.exports = Business;
