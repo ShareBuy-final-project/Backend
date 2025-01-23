@@ -31,7 +31,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./images:/usr/src/app/images
+      - .config/models/images:/app/Group/images
 
   authentication-service:
     build:

@@ -71,14 +71,20 @@ const Group = sequelize.define('group', {
 });
 
 const readImage = (imagePath) => {
-  const resolvedPath = path.resolve('/usr/src/app/images', imagePath);
+  const resolvedPath = path.resolve('./images', imagePath);
   console.log(`Reading image from: ${resolvedPath}`);
+  try {
+    const files = fs.readdirSync('./images');
+    console.log('Files in ./images:', files);
+  } catch (err) {
+    console.error('Error reading ./images directory:', err.message);
+  }
   return fs.readFileSync(resolvedPath);
 };
 
 const insertInitialGroups = async () => {
   const existingGroups = await Group.findAll();
-  console.log('teying to Initial groups');
+  console.log('Trying to insert initial groups');
   // if (existingGroups.length > 0) {
   //   console.log('Initial groups already exist');
   //   return;
