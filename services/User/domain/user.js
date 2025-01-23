@@ -48,7 +48,7 @@ const registerBusiness = async (businessDetails) => {
   const newUser = await User.create({ fullName, password, email, phone, state, city, street, streetNumber, zipCode });
   const newBusiness = await Business.create({ businessName, businessNumber, description, category, websiteLink, contactEmail, userEmail: email });
 
-  return { user: newUser, business: newBusiness };
+  return newBusiness;
 };
 
 module.exports = {
