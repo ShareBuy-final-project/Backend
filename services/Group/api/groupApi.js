@@ -140,7 +140,7 @@ module.exports = (app) => {
       console.log('groupId', groupId);
       console.log('amount', amount);
       const response = await joinGroup({accessToken, groupId, userEmail, amount });
-      console.log('response', response);
+      console.log('response', response.data);
       res.status(200).json(response);
     } catch (error) {
       res.status(400).json({ message: 'Error joining group', error: error.message });
