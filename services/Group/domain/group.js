@@ -1,27 +1,30 @@
-const { Group, User, SavedGroup, GroupUser } = require('models');
+const { Group, User, SavedGroup, GroupUser, Business } = require('models');
 const { validate } = require('./validation');
 const { Op } = require('sequelize');
 const axios = require('axios');
 require('dotenv').config();
 
-const create = async ({ name, accessToken, details, image, price, discount, size, category }) => {
-  if (!name || !price || !discount || !size) {
+const create = async ({ name, creator, description, image, price, discount, size, category, businessNumber }) => {
+  if (!name || !price || !discount || !size || !category || !businessNumber) {
     throw new Error('Missing required fields');
   }
-  const existingGroup = await Group.findOne({ where: { name } });
-  if (existingGroup) {
-    throw new Error('name already exists');
-  }
+  // const existingGroup = await Group.findOne({ where: { name } });
+  // if (existingGroup) {
+  //   throw new Error('Name already exists');
+  // }
 
   try {
-    let { userEmail } = await validate(accessToken);
-    let obj = {
-      name, creator: userEmail, description: details, image, price, discount, size, category
-    };
-    console.log(obj);
-    const newGroup = new Group(obj);
-
-    await newGroup.save();
+    const newGroup = await Group.create({
+      name,
+      creator,
+      description,
+      image,
+      price,
+      discount,
+      size,
+      category,
+      businessNumber
+    });
 
     return newGroup;
   } catch (error) {
