@@ -71,13 +71,13 @@ const Group = sequelize.define('group', {
 });
 
 const readImage = (imagePath) => {
-  const resolvedPath = path.resolve('./images', imagePath);
+  const resolvedPath = path.resolve('/app/Group/images', imagePath);
   console.log(`Reading image from: ${resolvedPath}`);
   try {
-    const files = fs.readdirSync('./images');
-    console.log('Files in ./images:', files);
+    const files = fs.readdirSync('/app/Group/images');
+    console.log('Files in /app/Group/images:', files);
   } catch (err) {
-    console.error('Error reading ./images directory:', err.message);
+    console.error('Error reading /app/Group/images directory:', err.message);
   }
   return fs.readFileSync(resolvedPath);
 };
