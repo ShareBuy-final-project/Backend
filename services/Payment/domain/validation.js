@@ -1,6 +1,4 @@
-const e = require("express");
 const axios = require('axios');
-require('dotenv').config();
 
 const validate = async (accessToken) => {
     console.log('--------------------------------------------------------------------')
@@ -11,6 +9,7 @@ const validate = async (accessToken) => {
                 'Authorization': `Bearer ${accessToken}`
             }
         });
+        console.log("Received response from validation service");
         console.log("response", response);
         if (response.status === 200) {
             console.log('Token validated successfully');
