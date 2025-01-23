@@ -17,7 +17,7 @@ const validate = async (accessToken) => {
         }
     } catch (error) {
         console.error('Error validating token:', error.message);
-        throw new Error('Invalid token');
+        throw new Error('Invalid token 123 123');
     }
 }
 

@@ -10,10 +10,6 @@ const handlePayment = async (groupId, amount, accessToken) => {
         const id = groupId;
         console.log('accessToken:', accessToken);
         const {customerEmail} = validate(accessToken);
-        if(!customerEmail){
-            throw new Error('Invalid token');
-        }
-
         const group_data = Group.findOne({ where: { id } });
         if(!group_data){
             throw new Error('Group not found');
