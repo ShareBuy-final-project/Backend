@@ -1,7 +1,7 @@
 const { Group, User, SavedGroup, GroupUser } = require('models');
 const { validate } = require('./validation');
 const { Op } = require('sequelize');
-import axios from 'axios';
+const axios = require('axios');
 require('dotenv').config();
 
 const create = async ({ name, accessToken, details, image, price, discount, size, category }) => {
@@ -31,7 +31,7 @@ const create = async ({ name, accessToken, details, image, price, discount, size
 
 const getGroup = async (id) => {
   try {
-    const group = await Group.findOne({ id });
+    const group = await Group.findOne({where: {id} });
     return group;
   } 
   catch (error) {

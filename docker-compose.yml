@@ -61,7 +61,7 @@ services:
       db:
         condition: service_healthy
 
-   payment-service:
+  payment-service:
     build:
       context: .
       dockerfile: ./services/Payment/Dockerfile
@@ -72,6 +72,7 @@ services:
       - DB_USER=adminDB
       - DB_PASS=adminDB
       - DB_NAME=ShareBuyDB
+      - STRIPE_PRIVATE_KEY=sk_test_51Qg9a2GBz0nP5LooWmlsEb404mhwdvAvxatXAmUFCFv8bCC4U0kxhKqUJ2Xl2cXmBUH6kAmj2zWRtMY2T47StATT00PH1hFVZn
     depends_on:
       db:
         condition: service_healthy
