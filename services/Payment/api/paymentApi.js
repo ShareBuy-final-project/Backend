@@ -6,7 +6,7 @@ module.exports = (app) => {
   app.post('/paymentIntent', async (req, res) => {
     console.log('Payment service received request to /payment');
     try {
-      const accessToken = req.headers['authorization'][1];
+      const accessToken = req.headers.authorization.split(' ')[1];
       const groupId = req.body.groupId;
       const amount = req.body.amount;
       console.log('Payment service received items');
