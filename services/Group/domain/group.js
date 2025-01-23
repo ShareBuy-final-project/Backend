@@ -118,7 +118,8 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
     return {
       ...groupData,
       isSaved: savedGroupIds.includes(group.id),
-      totalAmount
+      totalAmount,
+      imageBase64
     };
   }));
   //console.log('groupsWithTotalAmount', groupsWithTotalAmount);
