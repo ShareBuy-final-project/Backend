@@ -46,7 +46,7 @@ const registerBusiness = async (businessDetails) => {
   const { fullName, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = businessDetails;
 
   const newUser = await User.create({ fullName, password, email, phone, state, city, street, streetNumber, zipCode });
-  const newBusiness = await Business.create({ businessName, businessNumber, description, category, websiteLink, contactEmail, userId: newUser.id });
+  const newBusiness = await Business.create({ businessName, businessNumber, description, category, websiteLink, contactEmail, userEmail: email });
 
   return { user: newUser, business: newBusiness };
 };
