@@ -3,6 +3,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const validate = async (accessToken) => {
+    console.log('--------------------------------------------------------------------')
     console.log(`Sending request to validate token: ${accessToken}`);
     try {
         const response = await axios.get('http://132.73.84.56:443/auth/validate-token', {
@@ -10,7 +11,7 @@ const validate = async (accessToken) => {
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-        console.log(response);
+        console.log("response", response);
         if (response.status === 200) {
             console.log('Token validated successfully');
             return { userEmail: response.data.data.email };
