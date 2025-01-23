@@ -20,7 +20,7 @@ module.exports = (app) => {
   app.post('/charge', async (req, res) => {
     console.log('Payment service received request to /payment/charge');
     try{
-      const paymentIntentId = req.body.data.object.payment_intent;
+      const paymentIntentId = req.paymentIntentId;
       updateCharged(paymentIntentId);
       res.status(200).json({ message: 'Payment processed successfully' });
     }
