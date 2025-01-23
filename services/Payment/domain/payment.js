@@ -7,7 +7,7 @@ const e = require('express');
 const handlePayment = async ({group, accessToken}) => {
     try{
         console.log('handling payment');
-        const id = group.id;
+        const id = group.groupId;
         const amount = group.amount;
 
         const {customerEmail} = validate(accessToken);
