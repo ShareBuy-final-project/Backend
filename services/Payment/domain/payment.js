@@ -10,9 +10,9 @@ const handlePayment = async (groupId, amount, accessToken) => {
         console.log('groupId:', groupId);
         const id = groupId;
         console.log('accessToken:', accessToken);
-        // const {customerEmail} = validate(accessToken);
-        // console.log('customerEmail:', customerEmail);
-        const group_data = Group.findOne({ where: { id } });
+        const {customerEmail} = await validate(accessToken);
+        console.log('customerEmail:', customerEmail);
+        const group_data = await Group.findOne({ where: { id } });
         if(!group_data){
             throw new Error('Group not found');
         }
@@ -20,7 +20,7 @@ const handlePayment = async (groupId, amount, accessToken) => {
         const {businessNumber, price, discount} = group_data;
         console.log('businessNumber:', businessNumber);
         const newPrice = (price * (100-discount) / 100) * amount
-        const {userEmail} = Business.findOne({ where: { businessNumber } });
+        const {userEmail} = await Business.findOne({ where: { businessNumber } });
         const businessUserEmail = userEmail
 
         const payment_intent_data =  await createPaymentIntent({businessUserEmail,price});
