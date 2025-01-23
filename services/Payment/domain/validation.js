@@ -10,10 +10,13 @@ const validate = async (accessToken) => {
                 'Authorization': `Bearer ${accessToken}`
             }
         });
-
+        console.log(response);
         if (response.status === 200) {
             console.log('Token validated successfully');
             return { userEmail: response.data.data.email };
+        }
+        else{
+            throw new Error('status code not 200');
         }
     } catch (error) {
         console.error('Error validating token:', error.message);
