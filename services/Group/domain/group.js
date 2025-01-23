@@ -31,7 +31,7 @@ const create = async ({ name, accessToken, details, image, price, discount, size
 
 const getGroup = async (id) => {
   try {
-    const group = await Group.findOne({ id });
+    const group = await Group.findOne({where: {id} });
     return group;
   } 
   catch (error) {
