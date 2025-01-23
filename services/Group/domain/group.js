@@ -70,7 +70,7 @@ const joinGroup = async ({accessToken ,groupId, userEmail, amount }) => {
   console.log('body', body);
   const response = await axios({
     method: 'post',
-    url: `${process.env.GATE_WAY_URL}/payment/blablaIntent`,
+    url: `${process.env.GATE_WAY_URL}/payment/paymentIntent`,
     headers: headers,
     data: body
   });
