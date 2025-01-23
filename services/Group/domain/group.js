@@ -75,8 +75,9 @@ const joinGroup = async ({accessToken ,groupId, userEmail, amount }) => {
     data: body
   });
   console.log('response', response.data);
-  const  paymentIntentId  = response.data.paymentIntent;
-  console.log('paymentIntent', paymentIntent);
+  const { paymentIntentId } = response.data;
+  console.log('paymentIntent', paymentIntentId);
+
   await GroupUser.create({ groupId, userEmail, amount, paymentIntentId});
   return response;
 };
