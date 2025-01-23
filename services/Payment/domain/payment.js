@@ -4,11 +4,10 @@ const { validate } = require('./validation');
 const {createPaymentIntent} = require('./paymentGateway');
 const e = require('express');
 
-const handlePayment = async ({group, accessToken}) => {
+const handlePayment = async (groupId, amount, accessToken) => {
     try{
         console.log('handling payment');
-        const id = group.groupId;
-        const amount = group.amount;
+        const id = groupId;
 
         const {customerEmail} = validate(accessToken);
         if(!customerEmail){
