@@ -44,11 +44,15 @@ module.exports = (app) => {
    */
   app.get('/get', async (req, res) => {
     try {
-      const { id } = req.body;
+      const { id } = req.query; 
+      if (!id) {
+        return res.status(400).json({ message: 'Missing required "id" query parameter' });
+      }
+  
       const group = await getGroup(id);
       res.status(200).json(group);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching group', error: error.message });
+      res.status(400).json({ message: 'Error fetching group', error: error.message });
     }
   });
 
