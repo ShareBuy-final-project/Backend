@@ -37,7 +37,7 @@ const handlePayment = async (groupId, amount, accessToken) => {
     }
     
 } 
-const updateCharged = async ({paymentIntentId}) => {
+const updateCharged = async (paymentIntentId) => {
     try{
         console.log('updating confirmed to true for paymentIntent:', paymentIntentId);
         await GroupUser.update(
