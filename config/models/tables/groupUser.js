@@ -36,6 +36,7 @@ const GroupUser = sequelize.define('GroupUser', {
     primaryKey: true,
   },
 }, {
+  tableName: 'GroupUser', // Specify the table name
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
 });
 
