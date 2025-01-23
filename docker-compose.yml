@@ -30,6 +30,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./images:/usr/src/app/images
 
   authentication-service:
     build:
@@ -45,6 +47,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./images:/usr/src/app/images
 
   group-service:
     build:
@@ -60,6 +64,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./images:/usr/src/app/images
 
   payment-service:
     build:
@@ -75,6 +81,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./images:/usr/src/app/images
 
   api-gateway:
     build:
