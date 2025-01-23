@@ -1,11 +1,11 @@
-const axios = require('axios');
 
 const validate = async (accessToken) => {
     console.log('--------------------------------------------------------------------')
     console.log(`Sending request to validate token: ${accessToken}`);
     try {
         console.log('Sending request to validation service');
-        const response = await axios.get('http://132.73.84.56:443/auth/validate-token', {
+        const response = await fetch('http://132.73.84.56:443/auth/validate-token', {
+            method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
