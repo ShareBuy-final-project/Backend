@@ -61,7 +61,7 @@ services:
       db:
         condition: service_healthy
 
-   payment-service:
+  payment-service:
     build:
       context: .
       dockerfile: ./services/Payment/Dockerfile

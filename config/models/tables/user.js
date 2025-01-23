@@ -41,6 +41,7 @@ const User = sequelize.define('User', {
     allowNull: false,
   },
 }, {
+  tableName: 'User', // Specify the table name
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
 });
 
@@ -88,7 +89,7 @@ const insertInitialUsers = async () => {
 };
 
 insertInitialUsers().catch(error => {
-  console.error('Error inserting initial users:', error);
+  console.error('Error inserting initial users:', error.message);
 });
 
 // This code will be executed when the module is loaded. 
