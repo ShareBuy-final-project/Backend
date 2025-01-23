@@ -21,6 +21,7 @@ module.exports = (app) => {
     console.log('Payment service received request to /payment/charge');
     try{
       const {paymentIntentId} = req.body;
+      console.log(req.body);
       updateCharged(paymentIntentId);
       res.status(200).json({ message: 'Payment processed successfully' });
     }
