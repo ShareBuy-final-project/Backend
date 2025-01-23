@@ -4,6 +4,7 @@ const validate = async (accessToken) => {
     console.log('--------------------------------------------------------------------')
     console.log(`Sending request to validate token: ${accessToken}`);
     try {
+        console.log('Sending request to validation service');
         const response = await axios.get('http://132.73.84.56:443/auth/validate-token', {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
@@ -19,6 +20,7 @@ const validate = async (accessToken) => {
             throw new Error('status code not 200');
         }
     } catch (error) {
+        console.log("Error validating token");
         console.error('Error validating token:', error.message);
         throw new Error('Invalid token 123 123');
     }
