@@ -135,10 +135,7 @@ module.exports = (app) => {
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
-      console.log('userEmail', userEmail);
       const { groupId, amount } = req.body;
-      console.log('groupId', groupId);
-      console.log('amount', amount);
       const response = await joinGroup({accessToken, groupId, userEmail, amount });
       console.log('response----', response.data);
       res.status(200).json(response);
