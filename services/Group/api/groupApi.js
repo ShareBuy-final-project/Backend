@@ -44,7 +44,7 @@ module.exports = (app) => {
    */
   app.get('/get', async (req, res) => {
     try {
-      const { id } = req.query; 
+      const { id } = req.query.id; 
       if (!id) {
         return res.status(400).json({ message: 'Missing required "id" query parameter' });
       }
