@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 
 const connectWithRetry = async () => {
   try {
-    await sequelize.sync();
+    // await sequelize.sync();
     console.log('Database synchronized');
     // Start the server after the database is synchronized
     const PORT = process.env.PORT || 8000;
