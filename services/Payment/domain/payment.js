@@ -7,10 +7,11 @@ const e = require('express');
 const handlePayment = async (groupId, amount, accessToken) => {
     try{
         console.log('handling payment');
+        console.log('groupId:', groupId);
         const id = groupId;
         console.log('accessToken:', accessToken);
-        const {customerEmail} = validate(accessToken);
-        console.log('customerEmail:', customerEmail);
+        // const {customerEmail} = validate(accessToken);
+        // console.log('customerEmail:', customerEmail);
         const group_data = Group.findOne({ where: { id } });
         if(!group_data){
             throw new Error('Group not found');

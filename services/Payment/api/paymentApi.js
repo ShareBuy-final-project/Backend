@@ -9,7 +9,7 @@ module.exports = (app) => {
       const accessToken = req.headers.authorization.split(' ')[1];
       const groupId = req.body.groupId;
       const amount = req.body.amount;
-      console.log('Payment service received items');
+      console.log('Payment service received items groupid:', groupId, "amount:", amount);
       const data = await handlePayment(groupId, amount, accessToken);
       res.status(201).json(data);
     } catch (error) {
