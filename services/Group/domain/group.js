@@ -62,16 +62,19 @@ const checkGroupExists = async (groupId) => {
 
 const joinGroup = async ({accessToken ,groupId, userEmail, amount }) => {
   await checkGroupExists(groupId);
+  console.log('checked group exists');
   const headers = {
     'Authorization': `Bearer ${accessToken}`
   };
   const body = {groupId, amount}
+  console.log('body', body);
   const response = await axios({
     method: 'post',
     url: `${process.env.PAYMENT_SERVICE_URL}/payment/paymentIntent`,
     headers: headers,
     data: body
   });
+  console.log('response', response.data);
   const { paymentIntent } = response.data;
   await GroupUser.create({ groupId, userEmail, amount, paymentIntent});
   return response;
