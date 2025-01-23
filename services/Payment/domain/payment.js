@@ -8,7 +8,7 @@ const handlePayment = async (groupId, amount, accessToken) => {
     try{
         console.log('handling payment');
         const id = groupId;
-
+        console.log('accessToken:', accessToken);
         const {customerEmail} = validate(accessToken);
         if(!customerEmail){
             throw new Error('Invalid token');

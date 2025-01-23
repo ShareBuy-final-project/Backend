@@ -5,7 +5,7 @@ require('dotenv').config();
 const validate = async (accessToken) => {
     console.log(`Sending request to validate token: ${accessToken}`);
     try {
-        const response = await axios.get(`${process.env.AUTH_URL}/validate-token`, {
+        const response = await axios.get(`${process.env.GATE_WAY_URL}/auth/validate-token`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             }
