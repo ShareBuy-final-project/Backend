@@ -41,7 +41,7 @@ const create = async ({ name, creator, description, image, price, discount, size
 const getGroup = async (id) => {
   try {
     const group = await Group.findOne({where: {id} });
-    totalAmount = await getTotalAmount(id);
+    const totalAmount = await getTotalAmount(id);
     group.totalAmount = totalAmount;
     return group;
   } 
