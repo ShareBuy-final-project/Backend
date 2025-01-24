@@ -35,6 +35,8 @@ const create = async ({ name, creator, description, image, price, discount, size
 const getGroup = async (id) => {
   try {
     const group = await Group.findOne({where: {id} });
+    totalAmount =await toatalAmount(id);
+    group.totalAmount = totalAmount;
     return group;
   } 
   catch (error) {
@@ -113,7 +115,7 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
   console.log('savedGroupIds', savedGroupIds);
 
   const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
-    const totalAmount = await GroupUser.sum('amount', { where: { groupId: group.id, paymentConfirmed: true  } });
+    const totalAmount = totalAmount(group.groupId);
     const { description, category, creator, image, ...groupData } = group.toJSON();
 
     // Convert BLOB to base64 string if image exists
@@ -206,6 +208,9 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
   }
 };
 
+const toatalAmount = async (id) =>{ 
+  await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
+)};
 module.exports = {
   create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups
 };
