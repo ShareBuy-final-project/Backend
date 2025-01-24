@@ -90,8 +90,8 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
   const offset = (page - 1) * limit;
   const whereClause = {};
 
-  if (filters.name) {
-    whereClause.name = { [Op.like]: `%${filters.name}%` };
+  if (filters.text) {
+    whereClause.name = { [Op.like]: `%${filters.text}%` };
   }
   if (filters.category) {
     whereClause.category = filters.category;
