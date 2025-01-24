@@ -3,7 +3,7 @@ const { Business, User, Group, GroupUser } = require('models');
 const { validate } = require('./validation');
 const {createPaymentIntent, makePaymentTranscations} = require('./paymentGateway');
 const e = require('express');
-const { update } = require('../../../config/models/tables/user');
+
 
 const handlePayment = async (groupId, amount, accessToken) => {
     try{
