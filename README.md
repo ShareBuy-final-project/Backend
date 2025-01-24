@@ -103,7 +103,7 @@ To set up a connection to the database via pgAdmin using the SSH tunnel feature,
 
 1. **Open pgAdmin and create a new server:**
 
-   - Right-click on "Servers" and select "Create" -> "Server..."
+   - Right-click on "Servers" and select "Register" -> "Server..."
 
 2. **General Tab:**
 
@@ -120,9 +120,9 @@ To set up a connection to the database via pgAdmin using the SSH tunnel feature,
 4. **SSH Tunnel Tab:**
 
    - Use SSH tunneling: `Yes`
-   - Host name/address: `<your_server_ip>`
+   - Host name/address: `132.73.84.56`
    - Port: `22`
-   - Username: `<your_ssh_username>`
+   - Username: `admin`
    - Authentication: `Password` or `Identity file`
    - Password: `<your_ssh_password>` (if using password authentication)
    - Identity file: `<path_to_your_private_key>` (if using identity file authentication)

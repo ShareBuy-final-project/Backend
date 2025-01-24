@@ -22,8 +22,8 @@ module.exports = (app) => {
     console.log('login');
     const { email, password } = req.body;
     try {
-      const { token, refreshUserToken } = await login({ email, password });
-      res.status(200).json({ accessToken: token, refreshToken: refreshUserToken });
+      const { token, refreshUserToken, isBusiness } = await login({ email, password });
+      res.status(200).json({ accessToken: token, refreshToken: refreshUserToken, isBusiness });
     } catch (error) {
       console.log('error logining in', error);
       res.status(400).json({ message: 'Error logging in', error: error.message });
