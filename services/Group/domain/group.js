@@ -204,7 +204,7 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
 
 const getGroupGeneric = async (userEmail, groupIds) => {
   console.log('groupIds', groupIds);
-  const groups = await Group.findAll({ where: { id: groupIds } });
+  const groups = await Group.findAll({ where: { id: groupIds, isActive: true } });
 
   const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
   const savedGroupIds = savedGroups.map(sg => sg.groupId);
