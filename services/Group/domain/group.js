@@ -91,7 +91,7 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
   const whereClause = {};
 
   if (filters.text) {
-    whereClause.name = { [Op.like]: `%${filters.text}%` };
+    whereClause.name = { [Op.iLike]: `%${filters.text}%` };
   }
   if (filters.category) {
     whereClause.category = filters.category;
