@@ -49,7 +49,7 @@ module.exports = (app) => {
     console.log('logout');
     try {
       const token = req.body.token;
-      logout(token);
+      await logout(token);
       res.status(200).json({ message: 'Logged out successfully' });
     } catch (err) {
       res.status(400).json({ message: 'Error logging out', error: err.message });
