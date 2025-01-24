@@ -5,7 +5,6 @@ const { get } = require('lodash');
 require('dotenv').config();
 
 const getTotalAmount = async (id) =>{ 
-  console.log('getting total amount');
   return await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
 )};
 
