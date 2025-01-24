@@ -39,13 +39,9 @@ const handlePayment = async (groupId, amount, accessToken) => {
 } 
 const updateCharged = async (paymentIntentId) => {
     try{
-        console.log('updating confirmed to true for paymentIntent:', paymentIntentId);
         const group_user = await GroupUser.findOne({ where: { paymentIntentId: paymentIntentId }})
-        console.log(group_user)
         group_user.update({ paymentConfirmed: true });
         await group_user.save();
-        const group_user2 = await GroupUser.findOne({ where: { paymentIntentId: paymentIntentId }})
-        console.log(group_user2)
     }
     catch(error){
         console.log(error.message);

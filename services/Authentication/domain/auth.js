@@ -30,7 +30,6 @@ const verifyToken = (token) => {
 const login = async ({ email, password }) => {
     try {
         const user = await User.findOne({ where: { email } });
-        console.log(user)
         if (!user) throw new Error('Invalid credentials');
         const isMatch = await comparePassword(user, password);
         if (!isMatch) throw new Error('Invalid credentials');
