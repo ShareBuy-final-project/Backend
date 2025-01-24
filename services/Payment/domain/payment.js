@@ -41,7 +41,7 @@ const updateCharged = async (paymentIntentId) => {
     try{
         console.log('updating confirmed to true for paymentIntent:', paymentIntentId);
         const group_user = await GroupUser.findOne({ where: { paymentIntentId: paymentIntentId }})
-        group_user.confirmed = true;
+        group_user.changed('paymentConfirmed', true);
         await group_user.save();
     }
     catch(error){
