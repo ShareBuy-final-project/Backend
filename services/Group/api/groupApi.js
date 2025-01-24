@@ -61,12 +61,14 @@ module.exports = (app) => {
   app.get('/get', async (req, res) => {
     try {
       console.log('req.query', req.query);
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
       const  id  = req.query.id; 
       if (!id) {
         return res.status(400).json({ message: 'Missing required "id" query parameter' });
       }
-  
-      const group = await getGroup(id);
+      
+      const group = await getGroup(userEmail, id);
       res.status(200).json(group);
     } catch (error) {
       res.status(400).json({ message: 'Error fetching group', error: error.message });
@@ -239,8 +241,9 @@ module.exports = (app) => {
    * 
    * @apiSuccess {Object[]} groups List of groups with purchaseMade set to true.
    */
-  app.post('/userHistory', async (req, res) => {
+  app.post('/getUserHistory', async (req, res) => {
     try {
+      console.log('userHistory');
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { page = 1, limit = 10 } = req.body;
@@ -261,7 +264,7 @@ module.exports = (app) => {
    * 
    * @apiSuccess {Object[]} groups List of groups with purchaseMade set to false and isActive set to true.
    */
-  app.post('/userGroups', async (req, res) => {
+  app.post('/getUserGroups', async (req, res) => {
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);

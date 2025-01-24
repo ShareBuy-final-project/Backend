@@ -1,8 +1,11 @@
 const { Group, User, SavedGroup, GroupUser, Business } = require('models');
-const { validate } = require('./validation');
 const { Op } = require('sequelize');
 const axios = require('axios');
 require('dotenv').config();
+
+const getTotalAmount = async (id) =>{ 
+  return await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
+)};
 
 const create = async ({ name, creator, description, image, price, discount, size, category, businessNumber }) => {
   if (!name || !price || !discount || !size || !category || !businessNumber) {
@@ -12,6 +15,8 @@ const create = async ({ name, creator, description, image, price, discount, size
   // if (existingGroup) {
   //   throw new Error('Name already exists');
   // }
+
+
 
   try {
     const newGroup = await Group.create({
@@ -32,15 +37,14 @@ const create = async ({ name, creator, description, image, price, discount, size
   }
 };
 
-const getGroup = async (id) => {
+const getGroup = async (userEmail ,id) => {
   try {
-    const group = await Group.findOne({where: {id} });
-    const { image, ...groupData } = group.toJSON();
-    const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
-    return {
-      ...groupData,
-      imageBase64
-    };
+    console.log('id inside domain', id);
+    const group = await getGroupGeneric(userEmail, [id]);
+    if(group.length === 0){
+      throw new Error('Group does not exist');
+    }
+    return group[0];
   } 
   catch (error) {
     throw new Error('Invalid id');
@@ -94,7 +98,7 @@ const leaveGroup = async ({ groupId, userEmail }) => {
 const searchGroups = async ({ filters, page, limit, userEmail }) => {
   const offset = (page - 1) * limit;
   const whereClause = {};
-
+  console.log('filters', filters);
   if (filters.text) {
     whereClause.name = { [Op.iLike]: `%${filters.text}%` };
   }
@@ -113,34 +117,16 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
     limit
   });
 
-  const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
-  const savedGroupIds = savedGroups.map(sg => sg.groupId);
-  console.log('savedGroupIds', savedGroupIds);
-
-  const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
-    const totalAmount = await GroupUser.sum('amount', { where: { groupId: group.id } });
-    const { description, category, creator, image, ...groupData } = group.toJSON();
-
-    // Convert BLOB to base64 string if image exists
-    const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
-
-    return {
-      ...groupData,
-      isSaved: savedGroupIds.includes(group.id),
-      totalAmount,
-      imageBase64
-    };
-  }));
-  //console.log('groupsWithTotalAmount', groupsWithTotalAmount);
-
-  return groupsWithTotalAmount;
+  const groupIds = groups.map(g => g.id);
+  const groupsToReturn = await getGroupGeneric(userEmail, groupIds);
+  return groupsToReturn;
 };
 
 const getSavedGroups = async ({ userEmail, page = 1, limit = 10 }) => {
   const offset = (page - 1) * limit;
   const savedGroups = await SavedGroup.findAll({ where: { userEmail }, offset, limit });
   const groupIds = savedGroups.map(sg => sg.groupId);
-  const groups = await Group.findAll({ where: { id: groupIds } });
+  const groups = getGroupGeneric(userEmail ,groupIds);
   return groups;
 };
 
@@ -170,10 +156,11 @@ const getBusinessHistory = async (userEmail, page = 1, limit = 10) => {
 
 const getUserHistory = async (userEmail, page = 1, limit = 10) => {
   try {
+    console.log('userEmail', userEmail);
     const offset = (page - 1) * limit;
     const groupUsers = await GroupUser.findAll({ where: { userEmail } });
     const groupIds = groupUsers.map(gu => gu.groupId);
-
+    console.log('groupIds', groupIds);
     const groups = await Group.findAll({
       where: {
         id: groupIds,
@@ -182,7 +169,7 @@ const getUserHistory = async (userEmail, page = 1, limit = 10) => {
       offset,
       limit
     });
-
+    console.log('groups', groups);
     return groups;
   } catch (error) {
     throw new Error(error.toString());
@@ -192,7 +179,7 @@ const getUserHistory = async (userEmail, page = 1, limit = 10) => {
 const getUserGroups = async (userEmail, page = 1, limit = 10) => {
   try {
     const offset = (page - 1) * limit;
-    const groupUsers = await GroupUser.findAll({ where: { userEmail } });
+    const groupUsers = await GroupUser.findAll({ where: { userEmail,  paymentConfirmed:true} });
     const groupIds = groupUsers.map(gu => gu.groupId);
 
     const groups = await Group.findAll({
@@ -204,13 +191,37 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
       offset,
       limit
     });
-
-    return groups;
+    const ids = groups.map(g => g.id);
+    const groupsToReturn = await getGroupGeneric(userEmail, ids);
+    return groupsToReturn;
   } catch (error) {
     throw new Error(error.toString());
   }
 };
 
+const getGroupGeneric = async (userEmail, groupIds) => {
+  console.log('groupIds', groupIds);
+  const groups = await Group.findAll({ where: { id: groupIds } });
+
+  const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
+  const savedGroupIds = savedGroups.map(sg => sg.groupId);
+
+  const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
+    const totalAmount = await getTotalAmount(group.id);
+    const {image, ...groupData } = group.toJSON();
+
+    // Convert BLOB to base64 string if image exists
+    const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
+
+    return {
+      ...groupData,
+      isSaved: savedGroupIds.includes(group.id),
+      totalAmount,
+      imageBase64
+    };
+  }));
+  return groupsWithTotalAmount;
+}
 module.exports = {
   create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups
 };
