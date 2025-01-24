@@ -56,9 +56,9 @@ const updateCharged = async (paymentIntentId) => {
 
 const isGroupFUll = async (groupId) => {
 console.log('checking if group is full');
-  const currentAmount = await getTotalAmount(groupId);
+  const amount = await getTotalAmount(groupId);
   const group = Group.findByPk(groupId); 
-  return  currentAmount + amount == group.size;
+  return  amount == group.size;
 }
 
 const getTotalAmount = async (id) =>{ 
