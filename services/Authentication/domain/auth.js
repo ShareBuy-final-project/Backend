@@ -1,4 +1,4 @@
-const { User, Business } = require('models');
+const { User, Business, RefreshToken } = require('models');
 const { verifyTokenJWT, generateToken, refreshTokenJWT, generateRefreshToken } = require('../utils/jwt');
 const { comparePassword } = require('../domain/utils');
 
@@ -35,7 +35,12 @@ const login = async ({ email, password }) => {
         if (!isMatch) throw new Error('Invalid credentials');
         const token = generateToken(email);
         const refreshUserToken = generateRefreshToken(email);
-        refreshTokens.push(refreshUserToken);
+        const newRefreshUserToken = new RefreshToken({
+            email,
+            token:RefreshToken,
+          });
+        
+          await newRefreshUserToken.save();
         
         const business = await Business.findOne({ where: { userEmail: email } });
         const isBusiness = !!business;
@@ -53,10 +58,8 @@ const login = async ({ email, password }) => {
  * @param {string} token - The refresh token to invalidate.
  * @throws {Error} - If no token is provided.
  */
-const logout = (token) => {
-    if (!token) throw new Error('No token provided');
-    // RefreshToken.destroy({ where: { token } });
-    refreshTokens = refreshTokens.filter(t => t !== token);
+const logout = async (token) => {
+    await RefreshToken.destroy({ where: { token } });
 };
 
 /**
