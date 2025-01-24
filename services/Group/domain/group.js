@@ -2,6 +2,7 @@ const { Group, User, SavedGroup, GroupUser, Business } = require('models');
 const { validate } = require('./validation');
 const { Op } = require('sequelize');
 const axios = require('axios');
+const { get } = require('lodash');
 require('dotenv').config();
 
 const getTotalAmount = async (id) =>{ 
@@ -40,10 +41,11 @@ const create = async ({ name, creator, description, image, price, discount, size
 
 const getGroup = async (id) => {
   try {
-    const group = await Group.findOne({where: {id} });
-    const totalAmount = await getTotalAmount(id);
-    group.totalAmount = totalAmount;
-    return group;
+    const group = await getGroupGeneric(userEmail, [id]);
+    if(group.length === 0){
+      throw new Error('Group does not exist');
+    }
+    return group[0];
   } 
   catch (error) {
     throw new Error('Invalid id');
@@ -116,34 +118,16 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
     limit
   });
 
-  const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
-  const savedGroupIds = savedGroups.map(sg => sg.groupId);
-  console.log('savedGroupIds', savedGroupIds);
-
-  const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
-    const totalAmount = await getTotalAmount(group.id);
-    const { description, category, creator, image, ...groupData } = group.toJSON();
-
-    // Convert BLOB to base64 string if image exists
-    const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
-
-    return {
-      ...groupData,
-      isSaved: savedGroupIds.includes(group.id),
-      totalAmount,
-      imageBase64
-    };
-  }));
-  //console.log('groupsWithTotalAmount', groupsWithTotalAmount);
-
-  return groupsWithTotalAmount;
+  const groupIds = groups.map(g => g.id);
+  const groupsToReturn = await getGroupGeneric(userEmail, groupIds);
+  return groupsToReturn;
 };
 
 const getSavedGroups = async ({ userEmail, page = 1, limit = 10 }) => {
   const offset = (page - 1) * limit;
   const savedGroups = await SavedGroup.findAll({ where: { userEmail }, offset, limit });
   const groupIds = savedGroups.map(sg => sg.groupId);
-  const groups = await Group.findAll({ where: { id: groupIds } });
+  const groups = getGroupGeneric(userEmail ,groupIds);
   return groups;
 };
 
@@ -195,7 +179,7 @@ const getUserHistory = async (userEmail, page = 1, limit = 10) => {
 const getUserGroups = async (userEmail, page = 1, limit = 10) => {
   try {
     const offset = (page - 1) * limit;
-    const groupUsers = await GroupUser.findAll({ where: { userEmail } });
+    const groupUsers = await GroupUser.findAll({ where: { userEmail,  paymentConfirmed:true} });
     const groupIds = groupUsers.map(gu => gu.groupId);
 
     const groups = await Group.findAll({
@@ -207,14 +191,36 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
       offset,
       limit
     });
-
-    return groups;
+    const ids = groups.map(g => g.id);
+    const groupsToReturn = await getGroupGeneric(ids);
+    return groupsToReturn;
   } catch (error) {
     throw new Error(error.toString());
   }
 };
 
+const getGroupGeneric = async (userEmail, groupIds) => {
+  const groups = await Group.findAll({ where: { id: groupIds } });
 
+  const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
+  const savedGroupIds = savedGroups.map(sg => sg.groupId);
+
+  const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
+    const totalAmount = await getTotalAmount(group.id);
+    const { description, category, creator, image, ...groupData } = group.toJSON();
+
+    // Convert BLOB to base64 string if image exists
+    const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
+
+    return {
+      ...groupData,
+      isSaved: savedGroupIds.includes(group.id),
+      totalAmount,
+      imageBase64
+    };
+  }));
+  return groupsWithTotalAmount;
+}
 module.exports = {
   create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups
 };
