@@ -3,9 +3,8 @@ const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 
 
-const createPaymentIntent = async ({businessUserEmail,price}) => {
+const createPaymentIntent = async (businessUserEmail,price) => {
   //const account = await stripe.accounts.retrieve(businessUserEmail);
-
   const customer = await stripe.customers.create();
   const ephemeralKey = await stripe.ephemeralKeys.create(
     {customer: customer.id},

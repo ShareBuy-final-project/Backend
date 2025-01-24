@@ -6,10 +6,9 @@ module.exports = (app) => {
   app.post('/paymentIntent', async (req, res) => {
     console.log('Payment service received request to /payment');
     try {
-      const accessToken = req.headers['authorization'][1];
+      const accessToken = req.headers.authorization.split(' ')[1];
       const groupId = req.body.groupId;
       const amount = req.body.amount;
-      console.log('Payment service received items');
       const data = await handlePayment(groupId, amount, accessToken);
       res.status(201).json(data);
     } catch (error) {
@@ -20,7 +19,7 @@ module.exports = (app) => {
   app.post('/charge', async (req, res) => {
     console.log('Payment service received request to /payment/charge');
     try{
-      const paymentIntentId = req.body.data.object.payment_intent;
+      const {paymentIntentId} = req.body;
       updateCharged(paymentIntentId);
       res.status(200).json({ message: 'Payment processed successfully' });
     }

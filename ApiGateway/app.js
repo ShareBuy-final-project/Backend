@@ -56,7 +56,7 @@ const paymentServiceProxy = createProxyMiddleware({
   target: 'http://payment-service:8000',
   changeOrigin: true,
   pathRewrite: {
-    '^/payment': '', // remove /payment prefix
+    '^/payment/': '/', // remove /payment prefix
   },
   on: { proxyReq: onProxyReq },
 });
