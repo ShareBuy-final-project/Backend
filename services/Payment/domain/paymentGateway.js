@@ -32,4 +32,13 @@ const createPaymentIntent = async (businessUserEmail,price) => {
     paymentIntentId: paymentIntent.id
   }; 
 }
-module.exports = {createPaymentIntent};
+
+const makePaymentTranscations = async (paymentIntentIds) => {
+  for (const paymentIntentId of paymentIntentIds) {
+    const paymentIntent = await stripe.paymentIntents.capture(
+      paymentIntentId,
+    );
+    console.log('Payment intent confirmed:', paymentIntent.id);
+  }
+}
+module.exports = {createPaymentIntent, makePaymentTranscations};

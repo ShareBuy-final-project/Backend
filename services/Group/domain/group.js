@@ -1,6 +1,7 @@
 const { Group, User, SavedGroup, GroupUser, Business } = require('models');
 const { Op } = require('sequelize');
 const axios = require('axios');
+const { get } = require('lodash');
 require('dotenv').config();
 
 const getTotalAmount = async (id) =>{ 
@@ -74,6 +75,7 @@ const checkGroupExists = async (groupId) => {
 
 const joinGroup = async ({accessToken ,groupId, userEmail, amount }) => {
   await checkGroupExists(groupId);
+  await checkGroupCapacity(groupId, amount);
   const headers = {
     'Authorization': `Bearer ${accessToken}`
   };
@@ -221,6 +223,14 @@ const getGroupGeneric = async (userEmail, groupIds) => {
     };
   }));
   return groupsWithTotalAmount;
+}
+
+const checkGroupCapacity = async (groupId, amount) => {
+  const currentAmount = getTotalAmount(groupId);
+  const group = Group.findByPk(groupId); 
+  if (currentAmount + amount > group.size) {
+    throw new Error('Amount exceeds group capacity');
+  }
 }
 module.exports = {
   create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups
