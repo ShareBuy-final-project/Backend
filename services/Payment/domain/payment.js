@@ -13,6 +13,7 @@ const handlePayment = async (groupId, amount, accessToken) => {
         if(!group_data){
             throw new Error('Group not found');
         }
+        console.log('Group found datatatat:', group_data);
         const {businessNumber, price, discount} = group_data;
         console.log('amount:', amount);
         console.log('Group found:', businessNumber, price, discount);
