@@ -158,10 +158,11 @@ const getBusinessHistory = async (userEmail, page = 1, limit = 10) => {
 
 const getUserHistory = async (userEmail, page = 1, limit = 10) => {
   try {
+    console.log('userEmail', userEmail);
     const offset = (page - 1) * limit;
     const groupUsers = await GroupUser.findAll({ where: { userEmail } });
     const groupIds = groupUsers.map(gu => gu.groupId);
-
+    console.log('groupIds', groupIds);
     const groups = await Group.findAll({
       where: {
         id: groupIds,
@@ -170,7 +171,7 @@ const getUserHistory = async (userEmail, page = 1, limit = 10) => {
       offset,
       limit
     });
-
+    console.log('groups', groups);
     return groups;
   } catch (error) {
     throw new Error(error.toString());
