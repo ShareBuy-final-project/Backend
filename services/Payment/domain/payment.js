@@ -55,16 +55,19 @@ const updateCharged = async (paymentIntentId) => {
 }
 
 const isGroupFUll = async (groupId) => {
+console.log('checking if group is full');
   const currentAmount = await getTotalAmount(groupId);
   const group = Group.findByPk(groupId); 
   return  currentAmount + amount == group.size;
 }
 
 const getTotalAmount = async (id) =>{ 
+    console.log('getting total amount');
     return await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
   )};
 
 const makeTranscations = async (groupId) => {
+    console.log('making transcations');
     const group_users = await GroupUser.findAll({ where: { groupId: groupId, paymentConfirmed: true  } });
     const paymentIntentIds = group_users.map(group_user => group_user.paymentIntentId);
     await makePaymentTranscations(paymentIntentIds);
@@ -73,6 +76,7 @@ const makeTranscations = async (groupId) => {
 }
 
 const updateGroupToPurchased = async (groupId) => {
+    console.log('updating group to purchased');
     const group = await Group.findByPk(groupId);
     group.update({ isActive: false, purchaseMade: true });
     await group.save();

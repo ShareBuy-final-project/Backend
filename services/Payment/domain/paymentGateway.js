@@ -34,6 +34,7 @@ const createPaymentIntent = async (businessUserEmail,price) => {
 }
 
 const makePaymentTranscations = async (paymentIntentIds) => {
+  console.log('Confirming payment intents...');
   for (const paymentIntentId of paymentIntentIds) {
     const paymentIntent = await stripe.paymentIntents.capture(
       paymentIntentId,
