@@ -100,7 +100,7 @@ const leaveGroup = async ({ groupId, userEmail }) => {
 const searchGroups = async ({ filters, page, limit, userEmail }) => {
   const offset = (page - 1) * limit;
   const whereClause = {};
-
+  console.log('filters', filters);
   if (filters.text) {
     whereClause.name = { [Op.iLike]: `%${filters.text}%` };
   }
@@ -209,7 +209,7 @@ const getGroupGeneric = async (userEmail, groupIds) => {
 
   const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
     const totalAmount = await getTotalAmount(group.id);
-    const { description, category, creator, image, ...groupData } = group.toJSON();
+    const {image, ...groupData } = group.toJSON();
 
     // Convert BLOB to base64 string if image exists
     const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
