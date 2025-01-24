@@ -17,7 +17,7 @@ const handlePayment = async (groupId, amount, accessToken) => {
         const {businessNumber, price, discount} = group_data;
         console.log('amount:', amount);
         console.log('Group found:', businessNumber, price, discount);
-        const newPrice = (parseFloat(price) * (100-discount) / 100) * amount
+        const newPrice = discount * amount
         const {userEmail} = await Business.findOne({ where: { businessNumber } });
         const businessUserEmail = userEmail
 
