@@ -3,7 +3,7 @@ const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 
 
-const createPaymentIntent = async ({businessUserEmail,price}) => {
+const createPaymentIntent = async (businessUserEmail,price) => {
   //const account = await stripe.accounts.retrieve(businessUserEmail);
 console.log("price 123123:", price);
   const customer = await stripe.customers.create();

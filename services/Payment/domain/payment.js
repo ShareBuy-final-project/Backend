@@ -14,11 +14,12 @@ const handlePayment = async (groupId, amount, accessToken) => {
             throw new Error('Group not found');
         }
         const {businessNumber, price, discount} = group_data;
+        console.log('Group found:', businessNumber, price, discount);
         const newPrice = (price * (100-discount) / 100) * amount
         const {userEmail} = await Business.findOne({ where: { businessNumber } });
         const businessUserEmail = userEmail
 
-        const payment_intent_data =  await createPaymentIntent({businessUserEmail,newPrice});
+        const payment_intent_data =  await createPaymentIntent(businessUserEmail,newPrice);
         if(!payment_intent_data.paymentIntentId){
             throw new Error('Error creating payment intent');
         }
