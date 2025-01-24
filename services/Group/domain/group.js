@@ -1,7 +1,6 @@
 const { Group, User, SavedGroup, GroupUser, Business } = require('models');
 const { Op } = require('sequelize');
 const axios = require('axios');
-const { get } = require('lodash');
 require('dotenv').config();
 
 const getTotalAmount = async (id) =>{ 
