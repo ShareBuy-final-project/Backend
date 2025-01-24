@@ -121,7 +121,9 @@ const searchGroups = async ({ filters, page, limit, userEmail }) => {
   console.log('savedGroupIds', savedGroupIds);
 
   const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
+    console.log('group', group);  
     const totalAmount = await getTotalAmount(group.groupId);
+    console.log('totalAmount', totalAmount);
     const { description, category, creator, image, ...groupData } = group.toJSON();
 
     // Convert BLOB to base64 string if image exists
