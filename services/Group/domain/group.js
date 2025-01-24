@@ -194,7 +194,7 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
       limit
     });
     const ids = groups.map(g => g.id);
-    const groupsToReturn = await getGroupGeneric(ids);
+    const groupsToReturn = await getGroupGeneric(userEmail, ids);
     return groupsToReturn;
   } catch (error) {
     throw new Error(error.toString());
