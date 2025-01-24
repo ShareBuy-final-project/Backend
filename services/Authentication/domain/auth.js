@@ -37,7 +37,7 @@ const login = async ({ email, password }) => {
         const refreshUserToken = generateRefreshToken(email);
         const newRefreshUserToken = new RefreshToken({
             email,
-            token:RefreshToken,
+            token:refreshUserToken,
           });
         
           await newRefreshUserToken.save();
@@ -71,8 +71,7 @@ const logout = async (token) => {
 const refreshToken = async (token) => {
     try {
         if (!token) throw new Error('No token provided');
-        // if (RefreshToken.findOne({ where: { token } }) === null) throw new Error('Invalid token');
-        if (!refreshTokens.includes(token)) throw new Error('Invalid token');
+        if (RefreshToken.findOne({ where: { token } }) === null) throw new Error('Invalid token');
         const newAccessToken = refreshTokenJWT(token);
         return newAccessToken;
     } catch (err) {
