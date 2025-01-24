@@ -5,7 +5,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const getTotalAmount = async (id) =>{ 
-  await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
+  return await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
 )};
 
 const create = async ({ name, creator, description, image, price, discount, size, category, businessNumber }) => {
