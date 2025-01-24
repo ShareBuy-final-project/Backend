@@ -61,12 +61,14 @@ module.exports = (app) => {
   app.get('/get', async (req, res) => {
     try {
       console.log('req.query', req.query);
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
       const  id  = req.query.id; 
       if (!id) {
         return res.status(400).json({ message: 'Missing required "id" query parameter' });
       }
-  
-      const group = await getGroup(id);
+      
+      const group = await getGroup(userEmail, id);
       console.log('group', group);
       res.status(200).json(group);
     } catch (error) {

@@ -39,7 +39,7 @@ const create = async ({ name, creator, description, image, price, discount, size
   }
 };
 
-const getGroup = async (id) => {
+const getGroup = async (userEmail ,id) => {
   try {
     console.log('id inside domain', id);
     const group = await getGroupGeneric(userEmail, [id]);
