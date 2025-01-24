@@ -241,8 +241,9 @@ module.exports = (app) => {
    * 
    * @apiSuccess {Object[]} groups List of groups with purchaseMade set to true.
    */
-  app.post('/userHistory', async (req, res) => {
+  app.post('/getUserHistory', async (req, res) => {
     try {
+      console.log('userHistory');
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { page = 1, limit = 10 } = req.body;
