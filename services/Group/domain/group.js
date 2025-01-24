@@ -35,7 +35,12 @@ const create = async ({ name, creator, description, image, price, discount, size
 const getGroup = async (id) => {
   try {
     const group = await Group.findOne({where: {id} });
-    return group;
+    const { image, ...groupData } = group.toJSON();
+    const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
+    return {
+      ...groupData,
+      imageBase64
+    };
   } 
   catch (error) {
     throw new Error('Invalid id');
