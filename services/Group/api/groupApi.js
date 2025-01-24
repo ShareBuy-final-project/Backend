@@ -1,6 +1,6 @@
 const { create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
-const { SavedGroup, Group, GroupUser } = require('models');
+const { SavedGroup, Group, GroupUser, Business } = require('models');
 const express = require('express');
 
 module.exports = (app) => {
@@ -12,20 +12,36 @@ module.exports = (app) => {
    * @apiGroup Group
    * 
    * @apiBody {String} name Name of the group.
-   * @apiBody {String} user User creating the group.
-   * @apiBody {String} details Details of the group.
+   * @apiBody {String} description Description of the group.
    * @apiBody {String} image Image URL of the group.
    * @apiBody {Number} price Price of the group.
    * @apiBody {Number} discount Discount on the group.
-   * @apiBody {String} size Size of the group.
-   * @apiBody {String} category Category of the group.
+   * @apiBody {Number} size Size of the group.
    * 
    * @apiSuccess {Object} group The newly created group.
    */
   app.post('/create', async (req, res) => {
     try {
-      const { name, user, details, image, price, discount, size, category } = req.body;
-      const newGroup = await create({ name, user, details, image, price, discount, size, category });
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { name, description, image, price, discount, size } = req.body;
+
+      const business = await Business.findOne({ where: { userEmail } });
+      if (!business) {
+        return res.status(400).json({ message: 'No business found for the user' });
+      }
+
+      const newGroup = await create({ 
+        name, 
+        creator: userEmail, 
+        description, 
+        image, 
+        price, 
+        discount, 
+        size, 
+        category: business.category, 
+        businessNumber: business.businessNumber 
+      });
       res.status(201).json({ message: 'Group created successfully', group: newGroup });
       console.log('Group created successfully');
     } catch (error) {
