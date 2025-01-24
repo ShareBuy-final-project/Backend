@@ -74,6 +74,7 @@ const checkGroupExists = async (groupId) => {
 
 const joinGroup = async ({accessToken ,groupId, userEmail, amount }) => {
   await checkGroupExists(groupId);
+  await checkGroupCapacity(groupId, amount);
   const headers = {
     'Authorization': `Bearer ${accessToken}`
   };
@@ -201,7 +202,7 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
 
 const getGroupGeneric = async (userEmail, groupIds) => {
   console.log('groupIds', groupIds);
-  const groups = await Group.findAll({ where: { id: groupIds } });
+  const groups = await Group.findAll({ where: { id: groupIds, isActive: true } });
 
   const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
   const savedGroupIds = savedGroups.map(sg => sg.groupId);
@@ -221,6 +222,15 @@ const getGroupGeneric = async (userEmail, groupIds) => {
     };
   }));
   return groupsWithTotalAmount;
+}
+
+const checkGroupCapacity = async (groupId, amount) => {
+  console.log('checking group capacity');
+  const currentAmount = await getTotalAmount(groupId);
+  const group = await Group.findByPk(groupId); 
+  if (currentAmount + amount > group.size) {
+    throw new Error('Amount exceeds group capacity');
+  }
 }
 module.exports = {
   create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups

@@ -20,8 +20,8 @@ module.exports = (app) => {
     console.log('Payment service received request to /payment/charge');
     try{
       const {paymentIntentId} = req.body;
-      updateCharged(paymentIntentId);
-      res.status(200).json({ message: 'Payment processed successfully' });
+      const result = await updateCharged(paymentIntentId);
+      res.status(200).json(result);
     }
     catch(error){
       console.error('Error processing payment:', error);
