@@ -71,12 +71,13 @@ const joinGroup = async ({accessToken ,groupId, userEmail, amount }) => {
   const body = {groupId, amount}
   const response = await axios({
     method: 'post',
-    url: `${process.env.PAYMENT_SERVICE_URL}/payment/paymentIntent`,
+    url: `${process.env.GATE_WAY_URL}/payment/paymentIntent`,
     headers: headers,
     data: body
   });
-  const { paymentIntent } = response.data;
-  await GroupUser.create({ groupId, userEmail, amount, paymentIntent});
+  const { paymentIntentId } = response.data;
+
+  await GroupUser.create({ groupId, userEmail, amount, paymentIntentId});
   return response;
 };
 

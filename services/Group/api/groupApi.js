@@ -152,8 +152,8 @@ module.exports = (app) => {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { groupId, amount } = req.body;
-      await joinGroup({accessToken, groupId, userEmail, amount });
-      res.status(200).json({ message: 'Joined group successfully' });
+      const response = await joinGroup({accessToken, groupId, userEmail, amount });
+      res.status(200).json(response.data);
     } catch (error) {
       res.status(400).json({ message: 'Error joining group', error: error.message });
     }

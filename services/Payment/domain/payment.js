@@ -4,28 +4,21 @@ const { validate } = require('./validation');
 const {createPaymentIntent} = require('./paymentGateway');
 const e = require('express');
 
-const handlePayment = async ({group, accessToken}) => {
+const handlePayment = async (groupId, amount, accessToken) => {
     try{
         console.log('handling payment');
-        const id = group.id;
-        const amount = group.amount;
-
-        const {customerEmail} = validate(accessToken);
-        if(!customerEmail){
-            throw new Error('Invalid token');
-        }
-
-        const group_data = Group.findOne({ where: { id } });
+        const id = groupId;
+        const {customerEmail} = await validate(accessToken);
+        const group_data = await Group.findOne({ where: { id } });
         if(!group_data){
             throw new Error('Group not found');
         }
-        
         const {businessNumber, price, discount} = group_data;
-        const newPrice = (price * (100-discount) / 100) * amount
-        const {userEmail} = Business.findOne({ where: { businessNumber } });
+        const newPrice = discount * amount
+        const {userEmail} = await Business.findOne({ where: { businessNumber } });
         const businessUserEmail = userEmail
 
-        const payment_intent_data =  await createPaymentIntent({businessUserEmail,price});
+        const payment_intent_data =  await createPaymentIntent(businessUserEmail,newPrice);
         if(!payment_intent_data.paymentIntentId){
             throw new Error('Error creating payment intent');
         }
@@ -39,13 +32,11 @@ const handlePayment = async ({group, accessToken}) => {
     }
     
 } 
-const updateCharged = async ({paymentIntentId}) => {
+const updateCharged = async (paymentIntentId) => {
     try{
-        console.log('updating confirmed to true for paymentIntent:', paymentIntentId);
-        await GroupUser.update(
-            { confirmed: true },
-            { where: { paymentIntentId } }
-          );
+        const group_user = await GroupUser.findOne({ where: { paymentIntentId: paymentIntentId }})
+        group_user.update({ paymentConfirmed: true });
+        await group_user.save();
     }
     catch(error){
         console.log(error.message);
