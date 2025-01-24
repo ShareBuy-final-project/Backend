@@ -41,6 +41,7 @@ const create = async ({ name, creator, description, image, price, discount, size
 
 const getGroup = async (id) => {
   try {
+    console.log('id inside domain', id);
     const group = await getGroupGeneric(userEmail, [id]);
     if(group.length === 0){
       throw new Error('Group does not exist');
@@ -200,6 +201,7 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
 };
 
 const getGroupGeneric = async (userEmail, groupIds) => {
+  console.log('groupIds', groupIds);
   const groups = await Group.findAll({ where: { id: groupIds } });
 
   const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
