@@ -264,7 +264,7 @@ module.exports = (app) => {
    * 
    * @apiSuccess {Object[]} groups List of groups with purchaseMade set to false and isActive set to true.
    */
-  app.post('/userGroups', async (req, res) => {
+  app.post('/getUserGroups', async (req, res) => {
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
