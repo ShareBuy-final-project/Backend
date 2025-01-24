@@ -7,23 +7,18 @@ const e = require('express');
 const handlePayment = async (groupId, amount, accessToken) => {
     try{
         console.log('handling payment');
-        console.log('groupId:', groupId);
         const id = groupId;
-        console.log('accessToken:', accessToken);
         const {customerEmail} = await validate(accessToken);
-        console.log('customerEmail:', customerEmail);
         const group_data = await Group.findOne({ where: { id } });
         if(!group_data){
             throw new Error('Group not found');
         }
-        console.log('group_data:', group_data);
         const {businessNumber, price, discount} = group_data;
-        console.log('businessNumber:', businessNumber);
         const newPrice = (price * (100-discount) / 100) * amount
         const {userEmail} = await Business.findOne({ where: { businessNumber } });
         const businessUserEmail = userEmail
 
-        const payment_intent_data =  await createPaymentIntent({businessUserEmail,price});
+        const payment_intent_data =  await createPaymentIntent({businessUserEmail,newPrice});
         if(!payment_intent_data.paymentIntentId){
             throw new Error('Error creating payment intent');
         }
