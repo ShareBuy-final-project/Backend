@@ -226,8 +226,9 @@ const getGroupGeneric = async (userEmail, groupIds) => {
 }
 
 const checkGroupCapacity = async (groupId, amount) => {
-  const currentAmount = getTotalAmount(groupId);
-  const group = Group.findByPk(groupId); 
+  console.log('checking group capacity');
+  const currentAmount = await getTotalAmount(groupId);
+  const group = await Group.findByPk(groupId); 
   if (currentAmount + amount > group.size) {
     throw new Error('Amount exceeds group capacity');
   }
