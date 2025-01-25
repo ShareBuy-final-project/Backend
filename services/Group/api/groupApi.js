@@ -1,4 +1,4 @@
-const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBuisnessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
+const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser, Business } = require('models');
 const express = require('express');
@@ -24,7 +24,7 @@ module.exports = (app) => {
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
-      const { name, description, image, price, discount, size } = req.body;
+      const { name, description, base64Image, price, discount, size } = req.body;
 
       const business = await Business.findOne({ where: { userEmail } });
       if (!business) {
@@ -35,7 +35,7 @@ module.exports = (app) => {
         name, 
         creator: userEmail, 
         description, 
-        image, 
+        base64Image, 
         price, 
         discount, 
         size, 
@@ -260,6 +260,7 @@ module.exports = (app) => {
    */
   app.post('/businessHistory', async (req, res) => {
     try {
+      console.log('businessHistory');
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { page = 1, limit = 10 } = req.body;
@@ -345,7 +346,7 @@ app.post('/getBuisnessGroups', async (req, res) => {
     const accessToken = req.headers.authorization.split(' ')[1];
     const { userEmail } = await validate(accessToken);
     const { page = 1, limit = 10 } = req.body;
-    const groups = await getBuisnessGroups(userEmail, page, limit);
+    const groups = await getBusinessGroups(userEmail, page, limit);
     res.status(200).json(groups);
   } catch (error) {
     if(error.response.status == 401){
