@@ -158,7 +158,7 @@ module.exports = (app) => {
       res.status(200).json(response.data);
     } catch (error) {
       console.log('error12341234', error.message);
-      res.status(400).json({ message: 'Error joining group', error: error.message });
+      res.status(400).json({ error: error.message });
     }
   });
 
