@@ -7,18 +7,19 @@ const getTotalAmount = async (id) =>{
   return await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
 )};
 
-const create = async ({ name, creator, description, image, price, discount, size, category, businessNumber }) => {
+const create = async ({ name, creator, description, base64Image, price, discount, size, category, businessNumber }) => {
   if (!name || !price || !discount || !size || !category || !businessNumber) {
     throw new Error('Missing required fields');
   }
-  // const existingGroup = await Group.findOne({ where: { name } });
-  // if (existingGroup) {
-  //   throw new Error('Name already exists');
-  // }
-
-
 
   try {
+    let image = null;
+    if (base64Image) {
+      // Remove the "data:image/jpeg;base64," prefix if it exists
+      const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
+      image = Buffer.from(base64Data, 'base64');
+    }
+
     const newGroup = await Group.create({
       name,
       creator,
@@ -211,7 +212,7 @@ const getGroupGeneric = async (userEmail, groupIds) => {
     const totalAmount = await getTotalAmount(group.id);
     const {image, ...groupData } = group.toJSON();
 
-    // Convert BLOB to base64 string if image exists
+    // Add the complete base64 string with data URI prefix
     const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
 
     return {
