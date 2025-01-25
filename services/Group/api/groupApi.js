@@ -330,7 +330,16 @@ module.exports = (app) => {
     }
   });
 
-
+/**
+   * @api {post} /getBuisnessGroups Get user groups
+   * @apiName getBuisnessGroups
+   * @apiGroup Group
+   * 
+   * @apiBody {Number} [page=1] Page number.
+   * @apiBody {Number} [limit=10] Number of groups per page.
+   * 
+   * @apiSuccess {Object[]} groups List of groups with purchaseMade set to false and isActive set to true.
+   */
 app.post('/getBuisnessGroups', async (req, res) => {
   try {
     const accessToken = req.headers.authorization.split(' ')[1];
