@@ -83,7 +83,7 @@ module.exports = (app) => {
       const decoded = verifyToken(token);
       res.status(200).json({ valid: true, data: decoded });
     } catch (error) {
-      res.status(400).json({ valid: false, message: 'Invalid token', error: error.message });
+      res.status(401).json({ valid: false, message: 'Unauthorized', error: 'Unauthorized' });
     }
   });
 
