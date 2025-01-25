@@ -1,4 +1,4 @@
-const { create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
+const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBuisnessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser, Business } = require('models');
 const express = require('express');
@@ -329,5 +329,24 @@ module.exports = (app) => {
       }
     }
   });
+
+
+app.post('/getBuisnessGroups', async (req, res) => {
+  try {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const { userEmail } = await validate(accessToken);
+    const { page = 1, limit = 10 } = req.body;
+    const groups = await getBuisnessGroups(userEmail, page, limit);
+    res.status(200).json(groups);
+  } catch (error) {
+    if(error.response.status == 401){
+      res.status(401).json({ message: 'Unauthorized', error: error.message });
+    }
+    else{
+      res.status(400).json({ message: 'Error fetching user groups', error: error.message });
+    }
+  }
+});
 };
+
 
