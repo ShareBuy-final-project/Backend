@@ -8,7 +8,7 @@ const generateToken = (userEmail) => {
             { email: userEmail }, 
             process.env.JWT_SECRET,
             { 
-                expiresIn: '15s'
+                expiresIn: '15m'
             }
         );
         return token;
