@@ -200,10 +200,22 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
   }
 };
 
+const getBuisnessGroups = async (email, page = 1, limit = 10) => {
+  try {
+    const offset = (page - 1) * limit;
+    const groups = await Group.findAll({ where: { creator: email }, offset, limit });
+    const groupsIds = groups.map(g => g.id);
+    const groupsToReturn = await getGroupGeneric(email, groupsIds);
+    return groupsToReturn;
+  } catch (error) {
+    throw new Error(error.toString());
+  }
+}
+
 const getGroupGeneric = async (userEmail, groupIds) => {
   console.log('groupIds', groupIds);
   const groups = await Group.findAll({ where: { id: groupIds, isActive: true } });
-
+  console.log('groups', groups.map(g=>g.id));
   const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
   const savedGroupIds = savedGroups.map(sg => sg.groupId);
 
@@ -232,6 +244,8 @@ const checkGroupCapacity = async (groupId, amount) => {
     throw new Error('Amount exceeds group capacity');
   }
 }
+
+
 module.exports = {
-  create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups
+  create, getGroup, saveGroup, joinGroup, leaveGroup,getBuisnessGroups, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups
 };
