@@ -71,6 +71,7 @@ module.exports = (app) => {
       const group = await getGroup(userEmail, id);
       res.status(200).json(group);
     } catch (error) {
+      console.log("status code:",error.statusCode)
       console.log("error in get:",error)
       console.log("error message in get:",error.message)
       res.status(400).json({ message: 'Error fetching group', error: error.message });
