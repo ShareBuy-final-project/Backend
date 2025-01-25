@@ -106,6 +106,7 @@ module.exports = (app) => {
     console.log('refresh token');
     try {
       const { refreshToken } = req.body;
+      console.log("----------",refreshToken)
       const newToken = await refreshAccessToken(refreshToken);
       res.status(200).json({ accessToken: newToken });
     } catch (err) {
