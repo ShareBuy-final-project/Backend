@@ -2,22 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { createProxyMiddleware } = require('http-proxy-middleware');
-// const https = require('https');
-// const fs = require('fs');
 
 const app = express();
 
-app.use(bodyParser.json());
-
-// Increase payload size limit to 10MB
-app.use(express.json({limit: '50mb'}));
+// Increase payload size limit to 50MB - Move these configurations to the top
+app.use(express.json({limit: '50mb', extended: true}));
 app.use(express.urlencoded({limit: '50mb', extended: true}));
-
-//app.use(bodyParser.urlencoded({ extended: true }));
-
-// const privateKey = fs.readFileSync('../sslKeys/private.key', 'utf8');
-// const certificate = fs.readFileSync('../sslKeys/certificate.crt', 'utf8');
-// const credentials = { key: privateKey, cert: certificate };
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 const onProxyReq = function (proxyReq, req, res) {
   console.log(`Request made to ${req.originalUrl} with method ${req.method} and body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
@@ -30,40 +22,43 @@ const onProxyReq = function (proxyReq, req, res) {
   }
 };
 
-const userServiceProxy = createProxyMiddleware({
-  target: 'http://user-service:5000',
+const proxyConfig = {
   changeOrigin: true,
+  onProxyReq,
+  proxyTimeout: 60000, // Add timeout
+  timeout: 60000,      // Add timeout
+};
+
+const userServiceProxy = createProxyMiddleware({
+  ...proxyConfig,
+  target: 'http://user-service:5000',
   pathRewrite: {
     '^/user': '', // remove /user prefix
   },
-  on: { proxyReq: onProxyReq },
 });
 
 const authServiceProxy = createProxyMiddleware({
+  ...proxyConfig,
   target: 'http://authentication-service:6000',
-  changeOrigin: true,
   pathRewrite: {
     '^/auth': '', // remove /auth prefix
   },
-  on: { proxyReq: onProxyReq },
 });
 
 const groupServiceProxy = createProxyMiddleware({
+  ...proxyConfig,
   target: 'http://group-service:7000',
-  changeOrigin: true,
   pathRewrite: {
     '^/group': '', // remove /group prefix
   },
-  on: { proxyReq: onProxyReq },
 });
 
 const paymentServiceProxy = createProxyMiddleware({
+  ...proxyConfig,
   target: 'http://payment-service:8000',
-  changeOrigin: true,
   pathRewrite: {
     '^/payment/': '/', // remove /payment prefix
   },
-  on: { proxyReq: onProxyReq },
 });
 
 app.use('/user', (req, res, next) => {
@@ -92,9 +87,3 @@ const PORT = process.env.PORT || 443;
 app.listen(PORT, () => {
   console.log(`API Gateway running on port ${PORT}`);
 });
-
-// const httpsServer = https.createServer(credentials, app);
-// // const PORT = process.env.PORT || 3000;
-// httpsServer.listen(443, () => {
-//   console.log('HTTPS Server running on port 443');
-// });
