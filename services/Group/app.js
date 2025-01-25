@@ -6,14 +6,12 @@ const groupApi = require('./api/groupApi');
 const { sequelize, Group, SavedGroup, GroupUser } = require('models');
 
 const app = express();
+app.use(cors());
+app.use(bodyParser.json({limit: '50mb'}));
 
-// Increase payload size limit to 50MB - Move these configurations to the top
+// Increase payload size limit to 10MB
 app.use(express.json({limit: '50mb', extended: true}));
 app.use(express.urlencoded({limit: '50mb', extended: true}));
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-
-app.use(cors());
 
 console.log('Starting Group service...');
 
