@@ -134,8 +134,11 @@ const getSavedGroups = async ({ userEmail, page = 1, limit = 10 }) => {
 
 const getBusinessHistory = async (userEmail, page = 1, limit = 10) => {
   try {
+    console.log('business history');
     const offset = (page - 1) * limit;
     const business = await Business.findOne({ where: { userEmail } });
+
+    console.log('business', business);
 
     if (!business) {
       return { message: 'User does not have an associated business' };
@@ -149,6 +152,8 @@ const getBusinessHistory = async (userEmail, page = 1, limit = 10) => {
       offset,
       limit
     });
+
+    console.log('groups', groups);  
 
     const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
       const totalAmount = await getTotalAmount(group.id);

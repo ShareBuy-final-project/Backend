@@ -222,6 +222,7 @@ module.exports = (app) => {
    */
   app.post('/businessHistory', async (req, res) => {
     try {
+      console.log('businessHistory');
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { page = 1, limit = 10 } = req.body;
