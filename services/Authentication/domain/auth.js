@@ -70,12 +70,9 @@ const logout = async (token) => {
  */
 const refreshAccessToken = async (token) => {
     try {
-        console.log('refresh jwt-1-1-1-1-1', token);
         if (!token) throw new Error('No token provided');
         if (RefreshToken.findOne({ where: { token } }) === null) throw new Error('Invalid token');
-        console.log('refresh jwt-2-2-2-2-2', token);
         const newAccessToken = refreshTokenJWT(token);
-        console.log('refresh jwt-3-3-3-3-3', token);
         return newAccessToken;
     } catch (err) {
         throw new Error("Error refreshing token ", err);
