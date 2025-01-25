@@ -220,6 +220,18 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
   }
 };
 
+const getBusinessGroups = async (email, page = 1, limit = 10) => {
+  try {
+    const offset = (page - 1) * limit;
+    const groups = await Group.findAll({ where: { creator: email }, offset, limit });
+    const groupsIds = groups.map(g => g.id);
+    const groupsToReturn = await getGroupGeneric(email, groupsIds);
+    return groupsToReturn;
+  } catch (error) {
+    throw new Error(error.toString());
+  }
+}
+
 const getGroupGeneric = async (userEmail, groupIds) => {
   console.log('groupIds', groupIds);
   const groups = await Group.findAll({ where: { id: groupIds, isActive: true } });
@@ -253,44 +265,44 @@ const checkGroupCapacity = async (groupId, amount) => {
   }
 }
 
-const getBusinessGroups = async (userEmail, page = 1, limit = 10) => {
-  try {
-    const offset = (page - 1) * limit;
-    const business = await Business.findOne({ where: { userEmail } });
+// const getBusinessGroups = async (userEmail, page = 1, limit = 10) => {
+//   try {
+//     const offset = (page - 1) * limit;
+//     const business = await Business.findOne({ where: { userEmail } });
 
-    if (!business) {
-      return { message: 'No business found for the user' };
-    }
+//     if (!business) {
+//       return { message: 'No business found for the user' };
+//     }
 
-    const groups = await Group.findAll({
-      where: {
-        businessNumber: business.businessNumber,
-        purchaseMade: false,
-        isActive: true
-      },
-      offset,
-      limit
-    });
+//     const groups = await Group.findAll({
+//       where: {
+//         businessNumber: business.businessNumber,
+//         purchaseMade: false,
+//         isActive: true
+//       },
+//       offset,
+//       limit
+//     });
 
-    const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
-      const totalAmount = await getTotalAmount(group.id);
-      const { image, ...groupData } = group.toJSON();
+//     const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
+//       const totalAmount = await getTotalAmount(group.id);
+//       const { image, ...groupData } = group.toJSON();
 
-      // Convert BLOB to base64 string if image exists
-      const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
+//       // Convert BLOB to base64 string if image exists
+//       const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
 
-      return {
-        ...groupData,
-        totalAmount,
-        imageBase64
-      };
-    }));
+//       return {
+//         ...groupData,
+//         totalAmount,
+//         imageBase64
+//       };
+//     }));
 
-    return groupsWithTotalAmount;
-  } catch (error) {
-    throw new Error(error.toString());
-  }
-};
+//     return groupsWithTotalAmount;
+//   } catch (error) {
+//     throw new Error(error.toString());
+//   }
+// };
 
 module.exports = {
   create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups, getBusinessGroups
