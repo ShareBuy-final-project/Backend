@@ -150,7 +150,21 @@ const getBusinessHistory = async (userEmail, page = 1, limit = 10) => {
       limit
     });
 
-    return groups;
+    const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
+      const totalAmount = await getTotalAmount(group.id);
+      const { image, ...groupData } = group.toJSON();
+
+      // Convert BLOB to base64 string if image exists
+      const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
+
+      return {
+        ...groupData,
+        totalAmount,
+        imageBase64
+      };
+    }));
+
+    return groupsWithTotalAmount;
   } catch (error) {
     throw new Error(error.toString());
   }
