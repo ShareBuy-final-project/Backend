@@ -24,7 +24,7 @@ module.exports = (app) => {
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
-      const { name, description, image, price, discount, size } = req.body;
+      const { name, description, base64Image, price, discount, size } = req.body;
 
       const business = await Business.findOne({ where: { userEmail } });
       if (!business) {
@@ -35,7 +35,7 @@ module.exports = (app) => {
         name, 
         creator: userEmail, 
         description, 
-        image, 
+        base64Image, 
         price, 
         discount, 
         size, 
