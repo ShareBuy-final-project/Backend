@@ -1,4 +1,4 @@
-const { create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups, getBusinessGroups } = require('../domain/group');
+const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser, Business } = require('models');
 const express = require('express');
@@ -45,7 +45,12 @@ module.exports = (app) => {
       res.status(201).json({ message: 'Group created successfully', group: newGroup });
       console.log('Group created successfully');
     } catch (error) {
-      res.status(400).json({ message: 'Error creating group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error creating group', error: error.message });
+      }
     }
   });
 
@@ -71,7 +76,12 @@ module.exports = (app) => {
       const group = await getGroup(userEmail, id);
       res.status(200).json(group);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching group', error: error.message });
+      }
     }
   });
 
@@ -93,7 +103,12 @@ module.exports = (app) => {
       const groups = await getSavedGroups({ userEmail, page, limit });
       res.status(200).json(groups);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching saved groups', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching saved groups', error: error.message });
+      }
     }
   });
 
@@ -114,7 +129,12 @@ module.exports = (app) => {
       await saveGroup({ userEmail, groupId });
       res.status(200).json({ message: 'Group saved successfully' });
     } catch (error) {
-      res.status(400).json({ message: 'Error saving group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error saving group', error: error.message });
+      }
     }
   });
 
@@ -135,7 +155,12 @@ module.exports = (app) => {
       await SavedGroup.destroy({ where: { userEmail, groupId } });
       res.status(200).json({ message: 'Group unsaved successfully' });
     } catch (error) {
-      res.status(400).json({ message: 'Error unsaving group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error unsaving group', error: error.message });
+      }
     }
   });
 
@@ -157,8 +182,12 @@ module.exports = (app) => {
       const response = await joinGroup({accessToken, groupId, userEmail, amount });
       res.status(200).json(response.data);
     } catch (error) {
-      console.log('error12341234', error.message);
-      res.status(400).json({ message: 'Error joining group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error joining group', error: error.message });
+      }
     }
   });
 
@@ -179,7 +208,12 @@ module.exports = (app) => {
       await leaveGroup({ groupId, userEmail });
       res.status(200).json({ message: 'Left group successfully' });
     } catch (error) {
-      res.status(400).json({ message: 'Error leaving group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error leaving group', error: error.message });
+      }
     }
   });
 
@@ -205,8 +239,12 @@ module.exports = (app) => {
       const groups = await searchGroups({ filters, page, limit, userEmail });
       res.status(200).json(groups);
     } catch (error) {
-      console.log('error searching groups',error);
-      res.status(400).json({ message: 'Error searching groups', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error searching groups', error: error.message });
+      }
     }
   });
 
@@ -229,7 +267,12 @@ module.exports = (app) => {
       const groups = await getBusinessHistory(userEmail, page, limit);
       res.status(200).json(groups);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching business history', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching business history', error: error.message });
+      }
     }
   });
 
@@ -252,7 +295,12 @@ module.exports = (app) => {
       const groups = await getUserHistory(userEmail, page, limit);
       res.status(200).json(groups);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching user history', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching user history', error: error.message });
+      }
     }
   });
 
@@ -274,7 +322,12 @@ module.exports = (app) => {
       const groups = await getUserGroups(userEmail, page, limit);
       res.status(200).json(groups);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching user groups', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching user groups', error: error.message });
+      }
     }
   });
 
@@ -305,4 +358,5 @@ app.post('/getBuisnessGroups', async (req, res) => {
   }
 });
 };
+
 
