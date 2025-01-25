@@ -71,6 +71,8 @@ module.exports = (app) => {
       const group = await getGroup(userEmail, id);
       res.status(200).json(group);
     } catch (error) {
+      console.log("error in get:",error)
+      console.log("error message in get:",error.message)
       res.status(400).json({ message: 'Error fetching group', error: error.message });
     }
   });
@@ -205,7 +207,8 @@ module.exports = (app) => {
       const groups = await searchGroups({ filters, page, limit, userEmail });
       res.status(200).json(groups);
     } catch (error) {
-      console.log('error searching groups',error);
+      console.log("error in get:",error)
+      console.log("error message in get:",error.message)
       res.status(400).json({ message: 'Error searching groups', error: error.message });
     }
   });
