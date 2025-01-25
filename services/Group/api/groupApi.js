@@ -1,4 +1,4 @@
-const { create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
+const { create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups, getBusinessGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser, Business } = require('models');
 const express = require('express');
@@ -275,6 +275,28 @@ module.exports = (app) => {
       res.status(200).json(groups);
     } catch (error) {
       res.status(400).json({ message: 'Error fetching user groups', error: error.message });
+    }
+  });
+
+  /**
+   * @api {post} /getBuisnessGroups Get business groups
+   * @apiName GetBuisnessGroups
+   * @apiGroup Group
+   * 
+   * @apiBody {Number} [page=1] Page number.
+   * @apiBody {Number} [limit=10] Number of groups per page.
+   * 
+   * @apiSuccess {Object[]} groups List of groups with purchaseMade set to false and isActive set to true.
+   */
+  app.post('/getBuisnessGroups', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { page = 1, limit = 10 } = req.body;
+      const groups = await getBusinessGroups(userEmail, page, limit);
+      res.status(200).json(groups);
+    } catch (error) {
+      res.status(400).json({ message: 'Error fetching business groups', error: error.message });
     }
   });
 };

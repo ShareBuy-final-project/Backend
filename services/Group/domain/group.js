@@ -252,6 +252,46 @@ const checkGroupCapacity = async (groupId, amount) => {
     throw new Error('Amount exceeds group capacity');
   }
 }
+
+const getBusinessGroups = async (userEmail, page = 1, limit = 10) => {
+  try {
+    const offset = (page - 1) * limit;
+    const business = await Business.findOne({ where: { userEmail } });
+
+    if (!business) {
+      return { message: 'No business found for the user' };
+    }
+
+    const groups = await Group.findAll({
+      where: {
+        businessNumber: business.businessNumber,
+        purchaseMade: false,
+        isActive: true
+      },
+      offset,
+      limit
+    });
+
+    const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
+      const totalAmount = await getTotalAmount(group.id);
+      const { image, ...groupData } = group.toJSON();
+
+      // Convert BLOB to base64 string if image exists
+      const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
+
+      return {
+        ...groupData,
+        totalAmount,
+        imageBase64
+      };
+    }));
+
+    return groupsWithTotalAmount;
+  } catch (error) {
+    throw new Error(error.toString());
+  }
+};
+
 module.exports = {
-  create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups
+  create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups, getBusinessGroups
 };
