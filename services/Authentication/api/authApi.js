@@ -1,4 +1,4 @@
-const { login, logout, verifyToken, refreshToken } = require('../domain/auth');
+const { login, logout, verifyToken, refreshAccessToken } = require('../domain/auth');
 
 module.exports = (app) => {
   /**
@@ -105,8 +105,8 @@ module.exports = (app) => {
   app.post('/token', async (req, res) => {
     console.log('refresh token');
     try {
-      const { token } = req.body;
-      const newToken = await refreshToken(token);
+      const { refreshToken } = req.body;
+      const newToken = await refreshAccessToken(refreshToken);
       res.status(200).json({ accessToken: newToken });
     } catch (err) {
       res.status(400).json({ message: 'Error refreshing token', error: err.message });

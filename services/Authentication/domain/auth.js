@@ -68,7 +68,7 @@ const logout = async (token) => {
  * @returns {string} - The new access token.
  * @throws {Error} - If the refresh token is invalid.
  */
-const refreshToken = async (token) => {
+const refreshAccessToken = async (token) => {
     try {
         if (!token) throw new Error('No token provided');
         if (RefreshToken.findOne({ where: { token } }) === null) throw new Error('Invalid token');
@@ -83,5 +83,5 @@ module.exports = {
     verifyToken,
     login,
     logout,
-    refreshToken,
+    refreshAccessToken,
 };
