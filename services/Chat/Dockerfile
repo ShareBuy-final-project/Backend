@@ -21,10 +21,10 @@ RUN npm install
 RUN npm update
 
 # Copy the models tarball from the builder stage
-COPY --from=builder /app/models/models-1.0.0.tgz /app/models-1.0.0.tgz
+COPY --from=builder /app/models/*.tgz /app/models.tgz
 
 # Install the models package from the tarball
-RUN npm install /app/models-1.0.0.tgz
+RUN npm install /app/models.tgz
 
 # Copy the source code
 COPY services/Chat/ ./Chat
