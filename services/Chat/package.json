@@ -1,0 +1,17 @@
+{
+  "name": "chat-service",
+  "version": "1.0.0",
+  "description": "Chat microservice for ShareBuy",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "http": "^0.0.1-security",
+    "socket.io": "^4.0.0",
+    "sequelize": "^6.6.2",
+    "pg": "^8.6.0",
+    "models": "file:../models/models-1.0.0.tgz"
+  }
+}
