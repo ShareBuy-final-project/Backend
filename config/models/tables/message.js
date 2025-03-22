@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
-const Chat = require('./chat');
+const groupChat = require('./groupChat');
 const User = require('./user');
 
 const Message = sequelize.define('Message', {
@@ -8,7 +8,7 @@ const Message = sequelize.define('Message', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Chat,
+      model: groupChat,
       key: 'groupId'
     }
   },
