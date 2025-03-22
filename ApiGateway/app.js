@@ -12,7 +12,10 @@ const app = express();
 
 const server = http.createServer(app);
 const io = socketIo(server, {
-  path: '/socket.io',
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
 });
 
 io.on('connection', (socket) => {
