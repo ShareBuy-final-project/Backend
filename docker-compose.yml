@@ -83,8 +83,6 @@ services:
     build:
       context: .
       dockerfile: ./services/Chat/Dockerfile
-    ports:
-      - "443:9000"
     environment:
       - NODE_ENV=production
       - PORT=9000

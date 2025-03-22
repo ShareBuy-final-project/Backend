@@ -11,6 +11,34 @@ const app = express();
 
 const server = http.createServer(app);
 
+  
+ // Create Socket.IO instance
+ const io = socketIo(server, {
+   cors: {
+     origin: "*",  // Configure this according to your security needs
+     methods: ["GET", "POST"],
+     credentials: true
+   },
+ });
+
+ // Socket.IO connection handling
+ io.on('connection', (socket) => {
+   console.log('User connected to chat service');
+   socket.on('sendMessage', async ({ groupId, userEmail, content }) => {
+     try {
+       await sendMessage(io, groupId, userEmail, content);
+       console.log(`Message sent to group ${groupId} by ${userEmail}`);
+     } catch (error) {
+       console.error('Error sending message:', error);
+     }
+   });
+
+   socket.on('disconnect', () => {
+     console.log('User disconnected from chat service');
+   });
+ });
+
+
 app.use(bodyParser.json({limit: '50mb'}));
 
 // Increase payload size limit to 10MB
