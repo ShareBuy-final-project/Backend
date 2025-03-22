@@ -124,7 +124,10 @@ app.use('/chat', (req, res, next) => {
 app.use(cors());
 
 const PORT = process.env.PORT || 443;
-app.listen(PORT, () => {
+// app.listen(PORT, () => {
+//   console.log(`API Gateway running on port ${PORT}`);
+// });
+server.listen(PORT, () => {
   console.log(`API Gateway running on port ${PORT}`);
 });
 
