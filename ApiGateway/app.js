@@ -66,6 +66,15 @@ const paymentServiceProxy = createProxyMiddleware({
   on: { proxyReq: onProxyReq },
 });
 
+const chatServiceProxy = createProxyMiddleware({
+  target: 'http://chat-service:9000',
+  changeOrigin: true,
+  pathRewrite: {
+    '^/chat/': '/', // remove /chat prefix
+  },
+  on: { proxyReq: onProxyReq },
+});
+
 app.use('/user', (req, res, next) => {
   console.log(`Before proxy: ${req.method} ${req.originalUrl} with body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
   next();
@@ -85,6 +94,11 @@ app.use('/payment', (req, res, next) => {
   console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
   next();
 }, paymentServiceProxy);
+
+app.use('/chat', (req, res, next) => {
+  console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
+  next();
+}, chatServiceProxy);
 
 app.use(cors());
 
