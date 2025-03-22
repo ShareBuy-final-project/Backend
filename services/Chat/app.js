@@ -6,7 +6,9 @@ const chatApi = require('./api/chatApi');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  path: '/socket.io',
+});
 
 console.log('Starting Chat service...');
 
