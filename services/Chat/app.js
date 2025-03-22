@@ -12,13 +12,6 @@ console.log('Starting Chat service...');
 
 app.use(express.json());
 
-io.on('connection', (socket) => {
-  console.log('New client connected');
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
-});
-
 const connectWithRetry = async () => {
   try {
     await sequelize.sync();

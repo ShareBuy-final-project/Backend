@@ -26,6 +26,8 @@ module.exports = (app, io) => {
   });
 
   io.on('connection', (socket) => {
+    console.log('User connected');
+    
     socket.on('joinGroup', async ({ groupId, userEmail }) => {
       await joinGroup(socket, groupId, userEmail);
     });
