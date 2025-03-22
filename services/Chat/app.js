@@ -31,4 +31,4 @@ const connectWithRetry = async () => {
 };
 
 connectWithRetry();
-chatApi(app, io);
+chatApi(app);
