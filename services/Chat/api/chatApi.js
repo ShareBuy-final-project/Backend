@@ -31,5 +31,5 @@ module.exports = (app) => {
   });
 
   // Return both app and server so they can be used in your main file
-  return { app, server };
+  return { app };
 };
