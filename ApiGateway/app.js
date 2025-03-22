@@ -5,7 +5,27 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 // const https = require('https');
 // const fs = require('fs');
 
+const http = require('http');
+const socketIo = require('socket.io');
+
 const app = express();
+
+const server = http.createServer(app);
+const io = socketIo(server, {
+  path: '/socket.io',
+});
+
+io.on('connection', (socket) => {
+  console.log('User connected');
+  
+  socket.on('joinGroup', async ({ groupId, userEmail }) => {
+    await joinGroup(socket, groupId, userEmail);
+  });
+
+  socket.on('sendMessage', async ({ groupId, userEmail, content }) => {
+    await sendMessage(io, groupId, userEmail, content);
+  });
+});
 
 app.use(bodyParser.json({limit: '50mb'}));
 
