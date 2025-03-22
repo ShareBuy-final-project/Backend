@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+
 // const https = require('https');
 // const fs = require('fs');
 
@@ -13,6 +14,12 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   path: '/socket.io',
+  cors: {
+    origin: "*",  // Or specify your client's origin
+    methods: ["GET", "POST"],
+    allowedHeaders: ["*"],
+    credentials: true
+}
 });
 
 io.on('connection', (socket) => {
