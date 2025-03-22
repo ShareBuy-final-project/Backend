@@ -18,7 +18,7 @@ const io = socketIo(server, {
     origin: "*",  // Or specify your client's origin
     methods: ["GET", "POST"],
     allowedHeaders: ["*"],
-    credentials: true
+    credentials: true
 }
 });
 
