@@ -71,7 +71,7 @@ const chatServiceProxy = createProxyMiddleware({
   changeOrigin: true,
   ws: true, // Enable WebSocket proxying
   pathRewrite: {
-    '^/chat/': '/', // remove /chat prefix
+    '^/chat': '', // remove /chat prefix
   },
   on: { proxyReq: onProxyReq },
 });
