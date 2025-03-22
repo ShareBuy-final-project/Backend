@@ -69,7 +69,7 @@ const paymentServiceProxy = createProxyMiddleware({
 const chatServiceProxy = createProxyMiddleware({
   target: 'http://chat-service:9000',
   changeOrigin: true,
-  ws: true, // Enable WebSocket proxying
+  //ws: true, // Enable WebSocket proxying
   pathRewrite: {
     '^/chat/': '/', // remove /chat prefix
   },
