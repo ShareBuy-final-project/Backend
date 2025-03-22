@@ -101,7 +101,10 @@ app.use('/payment', (req, res, next) => {
   next();
 }, paymentServiceProxy);
 
-app.use('/chat', chatServiceProxy);
+app.use('/chat', (req, res, next) => {
+  console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
+  next();
+}, chatServiceProxy);
 
 app.use(cors());
 
