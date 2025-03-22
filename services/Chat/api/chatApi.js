@@ -2,7 +2,7 @@ const { getGroupChat, getGroupChatsOfUser, joinGroup, sendMessage } = require('.
 const { validate } = require('../domain/validation');
 
 module.exports = (app, io) => {
-  app.post('/chat/group/getGroupChat', async (req, res) => {
+  app.post('/group/getGroupChat', async (req, res) => {
     const { groupId } = req.body;
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
@@ -14,7 +14,7 @@ module.exports = (app, io) => {
     }
   });
 
-  app.get('/chat/group/getGroupChatsOfUser', async (req, res) => {
+  app.get('/group/getGroupChatsOfUser', async (req, res) => {
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
