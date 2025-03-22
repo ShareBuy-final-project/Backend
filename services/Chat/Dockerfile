@@ -31,4 +31,6 @@ COPY services/Chat/ ./Chat
 
 WORKDIR /app/Chat
 
+EXPOSE 9000
+
 CMD ["npm", "start"]
