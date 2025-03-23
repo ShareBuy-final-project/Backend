@@ -147,7 +147,7 @@ app.listen(PORT, () => {
 // });
 
 // Handle WebSocket upgrade requests
-server.on('upgrade', chatServiceProxy.upgrade);
+app.on('upgrade', chatServiceProxy.upgrade);
 
 // const httpsServer = https.createServer(credentials, app);
 // // const PORT = process.env.PORT || 3000;
