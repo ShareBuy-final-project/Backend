@@ -7,7 +7,12 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
+
+// Increase payload size limit to 10MB
+app.use(express.json({limit: '50mb', extended: true}));
+app.use(express.urlencoded({limit: '50mb', extended: true}));
+
 //app.use(bodyParser.urlencoded({ extended: true }));
 
 // const privateKey = fs.readFileSync('../sslKeys/private.key', 'utf8');
@@ -56,7 +61,7 @@ const paymentServiceProxy = createProxyMiddleware({
   target: 'http://payment-service:8000',
   changeOrigin: true,
   pathRewrite: {
-    '^/payment': '', // remove /payment prefix
+    '^/payment/': '/', // remove /payment prefix
   },
   on: { proxyReq: onProxyReq },
 });

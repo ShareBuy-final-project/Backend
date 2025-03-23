@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
+const User = require('./user');
 
 const Business = sequelize.define('Business', {
   businessName: {
@@ -31,11 +32,12 @@ const Business = sequelize.define('Business', {
     type: DataTypes.STRING,
     allowNull: false,
     references: {
-      model: 'Users',
+      model: User,
       key: 'email'
     }
   }
 }, {
+  tableName: 'Business', // Specify the table name
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
 });
 
@@ -79,7 +81,7 @@ const insertInitialBusinesses = async () => {
 };
 
 insertInitialBusinesses().catch(error => {
-  console.error('Error inserting initial businesses:', error);
+  console.error('Error inserting initial businesses:', error.message);
 });
 
 module.exports = Business;
