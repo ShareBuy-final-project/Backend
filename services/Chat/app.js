@@ -3,6 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const { sequelize } = require('models');
 const chatApi = require('./api/chatApi');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
@@ -12,6 +13,7 @@ const io = socketIo(server, {
     methods: ["GET", "POST"],
     credentials: true
   },
+  path: '/socket.io',
 });
 
 console.log('Starting Chat service...');
