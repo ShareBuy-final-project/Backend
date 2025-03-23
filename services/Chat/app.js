@@ -26,6 +26,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Define the namespace
+const chatNamespace = io.of('/chat');
+
 io.on('connection', (socket) => {
   console.log('User connected to chat service');
   socket.on('sendMessage', async ({ groupId, userEmail, content }) => {
