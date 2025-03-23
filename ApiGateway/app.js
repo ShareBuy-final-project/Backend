@@ -10,7 +10,7 @@ const socketIo = require('socket.io');
 
 const app = express();
 
-// const server = http.createServer(app);
+const server = http.createServer(app);
 
   
 //  // Create Socket.IO instance
@@ -139,15 +139,15 @@ app.use('/chat', (req, res, next) => {
 app.use(cors());
 
 const PORT = process.env.PORT || 443;
-app.listen(PORT, () => {
-  console.log(`API Gateway running on port ${PORT}`);
-});
-// server.listen(PORT, () => {
+// app.listen(PORT, () => {
 //   console.log(`API Gateway running on port ${PORT}`);
 // });
+server.listen(PORT, () => {
+  console.log(`API Gateway running on port ${PORT}`);
+});
 
 // Handle WebSocket upgrade requests
-app.on('upgrade', chatServiceProxy.upgrade);
+server.on('upgrade', chatServiceProxy.upgrade);
 
 // const httpsServer = https.createServer(credentials, app);
 // // const PORT = process.env.PORT || 3000;
