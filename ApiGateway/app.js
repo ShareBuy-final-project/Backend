@@ -146,6 +146,9 @@ server.listen(PORT, () => {
   console.log(`API Gateway running on port ${PORT}`);
 });
 
+// Handle WebSocket upgrade requests
+server.on('upgrade', chatServiceProxy.upgrade);
+
 // const httpsServer = https.createServer(credentials, app);
 // // const PORT = process.env.PORT || 3000;
 // httpsServer.listen(443, () => {
