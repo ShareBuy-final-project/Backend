@@ -130,6 +130,11 @@ app.use('/payment', (req, res, next) => {
   next();
 }, paymentServiceProxy);
 
+app.use('', (req, res, next) => {
+  console.log(`check socket proxy: ${req.method} ${req.originalUrl}`);
+  next();
+}, chatServiceProxy);
+
 
 app.use(cors());
 
