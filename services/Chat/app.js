@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 // Define the namespace
 const chatNamespace = io.of('/chat');
 
-io.on('connection', (socket) => {
+chatNamespace.on('connection', (socket) => {
   console.log('User connected to chat service');
   socket.on('sendMessage', async ({ groupId, userEmail, content }) => {
     try {
@@ -51,7 +51,7 @@ const connectWithRetry = async () => {
     console.log('Database synchronized');
     // Start the server after the database is synchronized
     const PORT = process.env.PORT || 9000;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (err) {
     console.error('Unable to synchronize the database:', err);
     setTimeout(connectWithRetry, 5000); // Retry after 5 seconds
