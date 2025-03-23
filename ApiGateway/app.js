@@ -6,38 +6,38 @@ const socketIo = require('socket.io');
 // const https = require('https');
 // const fs = require('fs');
 
-const http = require('http');
+// const http = require('http');
 
 const app = express();
 
-const server = http.createServer(app);
+// const server = http.createServer(app);
 
   
- // Create Socket.IO instance
- const io = socketIo(server, {
-   cors: {
-     origin: "*",  // Configure this according to your security needs
-     methods: ["GET", "POST"],
-     credentials: true
-   },
- });
+//  // Create Socket.IO instance
+//  const io = socketIo(server, {
+//    cors: {
+//      origin: "*",  // Configure this according to your security needs
+//      methods: ["GET", "POST"],
+//      credentials: true
+//    },
+//  });
 
- // Socket.IO connection handling
- io.on('connection', (socket) => {
-   console.log('User connected to chat service');
-   socket.on('sendMessage', async ({ groupId, userEmail, content }) => {
-     try {
-       await sendMessage(io, groupId, userEmail, content);
-       console.log(`Message sent to group ${groupId} by ${userEmail}`);
-     } catch (error) {
-       console.error('Error sending message:', error);
-     }
-   });
+//  // Socket.IO connection handling
+//  io.on('connection', (socket) => {
+//    console.log('User connected to chat service');
+//    socket.on('sendMessage', async ({ groupId, userEmail, content }) => {
+//      try {
+//        await sendMessage(io, groupId, userEmail, content);
+//        console.log(`Message sent to group ${groupId} by ${userEmail}`);
+//      } catch (error) {
+//        console.error('Error sending message:', error);
+//      }
+//    });
 
-   socket.on('disconnect', () => {
-     console.log('User disconnected from chat service');
-   });
- });
+//    socket.on('disconnect', () => {
+//      console.log('User disconnected from chat service');
+//    });
+//  });
 
 
 app.use(bodyParser.json({limit: '50mb'}));
@@ -131,7 +131,7 @@ app.use('/payment', (req, res, next) => {
 }, paymentServiceProxy);
 
 app.use('/chat', (req, res, next) => {
-  console.log(`check socket proxy: ${req.method} ${req.originalUrl}`);
+  console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
   next();
 }, chatServiceProxy);
 
@@ -139,12 +139,12 @@ app.use('/chat', (req, res, next) => {
 app.use(cors());
 
 const PORT = process.env.PORT || 443;
-// app.listen(PORT, () => {
-//   console.log(`API Gateway running on port ${PORT}`);
-// });
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`API Gateway running on port ${PORT}`);
 });
+// server.listen(PORT, () => {
+//   console.log(`API Gateway running on port ${PORT}`);
+// });
 
 // Handle WebSocket upgrade requests
 server.on('upgrade', chatServiceProxy.upgrade);
