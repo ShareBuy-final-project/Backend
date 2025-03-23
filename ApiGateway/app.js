@@ -130,7 +130,7 @@ app.use('/payment', (req, res, next) => {
   next();
 }, paymentServiceProxy);
 
-app.use('', (req, res, next) => {
+app.use('/chat', (req, res, next) => {
   console.log(`check socket proxy: ${req.method} ${req.originalUrl}`);
   next();
 }, chatServiceProxy);
