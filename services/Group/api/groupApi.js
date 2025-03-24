@@ -1,4 +1,4 @@
-const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
+const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserGroups, getUserGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser, Business } = require('models');
 const express = require('express');
@@ -278,7 +278,7 @@ module.exports = (app) => {
 
   /**
    * @api {post} /userHistory Get user history
-   * @apiName GetUserHistory
+   * @apiName getUserGroups
    * @apiGroup Group
    * 
    * @apiBody {Number} [page=1] Page number.
@@ -286,13 +286,13 @@ module.exports = (app) => {
    * 
    * @apiSuccess {Object[]} groups List of groups with purchaseMade set to true.
    */
-  app.post('/getUserHistory', async (req, res) => {
+  app.post('/getUserGroups', async (req, res) => {
     try {
       console.log('userHistory');
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { page = 1, limit = 10 } = req.body;
-      const groups = await getUserHistory(userEmail, page, limit);
+      const groups = await getUserGroups(userEmail, page, limit);
       res.status(200).json(groups);
     } catch (error) {
       if(error.response.status == 401){
