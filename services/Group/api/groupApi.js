@@ -239,7 +239,7 @@ module.exports = (app) => {
       const groups = await searchGroups({ filters, page, limit, userEmail });
       res.status(200).json(groups);
     } catch (error) {
-      if(error.response.status == 401){
+      if(error.response && error.response.status == 401){
         res.status(401).json({ message: 'Unauthorized', error: error.message });
       }
       else{
