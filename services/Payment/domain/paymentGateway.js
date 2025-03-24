@@ -44,10 +44,12 @@ const makePaymentTranscations = async (paymentIntentIds) => {
 }
 
 const createConnectedAccount = async (businessUserEmail) => {
+  console.log('Creating connected before stripe@@@@@@@@@ account');
   const account = await stripe.accounts.create({
     type: 'express', 
     email: businessUserEmail, 
   });
+  console.log('Creating connected after stripe@@@@@@@@@ account');
   return account.id;
 }
 
