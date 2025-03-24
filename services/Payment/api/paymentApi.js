@@ -1,4 +1,4 @@
-const {handlePayment, updateCharged, createConnectedAccount}= require('../domain/payment');
+const {handlePayment, updateCharged, createBusinessAccount}= require('../domain/payment');
 require('dotenv').config();
 const stripe = require('stripe')('sk_test_51Qg9a2GBz0nP5LooWmlsEb404mhwdvAvxatXAmUFCFv8bCC4U0kxhKqUJ2Xl2cXmBUH6kAmj2zWRtMY2T47StATT00PH1hFVZn');
 
@@ -34,7 +34,7 @@ module.exports = (app) => {
       console.log('Creating connected account');
       const {businessUserEmail} = req.body;
       console.log('1231233businessUserEmail:', businessUserEmail);
-      const accountId = await createConnectedAccount(businessUserEmail);
+      const accountId = await createBusinessAccount(businessUserEmail);
       res.json({ id: accountId }); // The generated account ID is returned to the client
     } catch (error) {
       res.status(500).json({ error: error.message });
