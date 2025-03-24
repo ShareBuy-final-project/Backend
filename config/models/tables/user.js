@@ -45,6 +45,9 @@ const User = sequelize.define('User', {
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
 });
 
+// This code will be executed when the module is loaded. 
+// It will insert the initial users into the database if they do not already exist.
+
 const insertInitialUsers = async () => {
   const existingUsers = await User.findAll();
   if (existingUsers.length > 0) {
@@ -92,6 +95,4 @@ insertInitialUsers().catch(error => {
   console.error('Error inserting initial users:', error.message);
 });
 
-// This code will be executed when the module is loaded. 
-// It will insert the initial users into the database if they do not already exist.
 module.exports = User;
