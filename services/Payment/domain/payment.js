@@ -56,7 +56,6 @@ const updateCharged = async (paymentIntentId) => {
 
 const createBusinessAccount = async (businessUserEmail) => {
       const accountId = await createConnectedAccount(businessUserEmail);
-      console.log('accountId in domain:', accountId);
       return accountId;
 }
 
