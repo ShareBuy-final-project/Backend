@@ -85,10 +85,10 @@ const readImage = (imagePath) => {
 const insertInitialGroups = async () => {
   const existingGroups = await Group.findAll();
   console.log('Trying to insert initial groups');
-  // if (existingGroups.length > 0) {
-  //   console.log('Initial groups already exist');
-  //   return;
-  // }
+  if (existingGroups.length > 0) {
+    console.log('Initial groups already exist');
+    return;
+  }
 
   const groups = [
     { name: 'iPhone 13', creator: 'user1@example.com', description: 'Join the group to get a discount on the latest iPhone 13.', image: readImage('iPhone 13.jpeg'), price: 1000, discount: 100, size: 5, category: 'Electronics', businessNumber: 'B001' },
