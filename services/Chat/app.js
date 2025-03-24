@@ -4,6 +4,7 @@ const socketIo = require('socket.io');
 const { sequelize } = require('models');
 const chatApi = require('./api/chatApi');
 const path = require('path');
+const { sendMessage } = require('./domain/chat');
 
 const app = express();
 const server = http.createServer(app);
