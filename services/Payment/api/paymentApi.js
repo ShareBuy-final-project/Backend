@@ -31,7 +31,9 @@ module.exports = (app) => {
 
   app.post('/create-connected-account', async (req, res) => {
     try {
-      const businessUserEmail = req.body.businessUserEmail;
+      console.log('Creating connected account');
+      const {businessUserEmail} = req.body;
+      console.log('1231233businessUserEmail:', businessUserEmail);
       const accountId = await createConnectedAccount(businessUserEmail);
       res.json({ id: accountId }); // The generated account ID is returned to the client
     } catch (error) {
