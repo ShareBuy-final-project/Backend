@@ -36,7 +36,7 @@ module.exports = (app) => {
       console.log('1231233businessUserEmail:', businessUserEmail);
       const accountId = await createBusinessAccount(businessUserEmail);
       console.log('accountId in api:', accountId);
-      res.json({ id: accountId }); // The generated account ID is returned to the client
+      res.status(200).json({ id: accountId }); // The generated account ID is returned to the client
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
