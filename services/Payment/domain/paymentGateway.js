@@ -42,4 +42,24 @@ const makePaymentTranscations = async (paymentIntentIds) => {
     console.log('Payment intent confirmed:', paymentIntent.id);
   }
 }
-module.exports = {createPaymentIntent, makePaymentTranscations};
+
+const createConnectedAccount = async (businessUserEmail) => {
+  const account = await stripe.accounts.create({
+    type: 'express', 
+    email: businessUserEmail, 
+  });
+  return account.id;
+}
+
+const createAccountLink = async (accountId) => {
+  const accountLink = await stripe.accountLinks.create({
+    account: accountId,
+    refresh_url: 'https://example.com/reauth',
+    return_url: 'https://e875-89-138-169-65.ngrok-free.app/account-onboarding-success',
+    type: 'account_onboarding',
+  });
+  return accountLink.url;
+}
+
+
+module.exports = {createPaymentIntent, makePaymentTranscations, createConnectedAccount, createAccountLink};
