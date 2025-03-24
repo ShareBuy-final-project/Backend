@@ -50,6 +50,7 @@ const createConnectedAccount = async (businessUserEmail) => {
     email: businessUserEmail, 
   });
   console.log('Creating connected after stripe@@@@@@@@@ account');
+  console.log('account:', account);
   return account.id;
 }
 
