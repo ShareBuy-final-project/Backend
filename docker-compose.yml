@@ -79,6 +79,21 @@ services:
       db:
         condition: service_healthy
 
+  chat-service:
+    build:
+      context: .
+      dockerfile: ./services/Chat/Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=9000
+      - DB_HOST=db
+      - DB_USER=adminDB
+      - DB_PASS=adminDB
+      - DB_NAME=ShareBuyDB
+    depends_on:
+      db:
+        condition: service_healthy
+
   api-gateway:
     build:
       context: .
