@@ -45,10 +45,11 @@ const getUser = async (accessToken) => {
 const registerBusiness = async (businessDetails) => {
   const { fullName, password, email, phone, state, city, street, streetNumber, zipCode, businessName, businessNumber, description, category, websiteLink, contactEmail } = businessDetails;
 
-  const newUser = await User.create({ fullName, password, email, phone, state, city, street, streetNumber, zipCode });
-  const newBusiness = await Business.create({ businessName, businessNumber, description, category, websiteLink, contactEmail, userId: newUser.id });
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = await User.create({ fullName, password: hashedPassword, email, phone, state, city, street, streetNumber, zipCode });
+  const newBusiness = await Business.create({ businessName, businessNumber, description, category, websiteLink, contactEmail, userEmail: email });
 
-  return { user: newUser, business: newBusiness };
+  return newBusiness;
 };
 
 module.exports = {

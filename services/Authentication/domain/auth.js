@@ -1,4 +1,4 @@
-const { User } = require('models');
+const { User, Business, RefreshToken } = require('models');
 const { verifyTokenJWT, generateToken, refreshTokenJWT, generateRefreshToken } = require('../utils/jwt');
 const { comparePassword } = require('../domain/utils');
 
@@ -35,10 +35,18 @@ const login = async ({ email, password }) => {
         if (!isMatch) throw new Error('Invalid credentials');
         const token = generateToken(email);
         const refreshUserToken = generateRefreshToken(email);
-        // RefreshToken.create({ email, token: refreshUserToken });
-        refreshTokens.push(refreshUserToken);
+        const newRefreshUserToken = new RefreshToken({
+            email,
+            token:refreshUserToken,
+          });
+        
+          await newRefreshUserToken.save();
+        
+        const business = await Business.findOne({ where: { userEmail: email } });
+        const isBusiness = !!business;
+
         console.log('Logged in successfully');
-        return { token, refreshUserToken };
+        return { token, refreshUserToken, isBusiness };
     } catch (err) {
         console.log('Error logging in', err);
         throw new Error('Error logging in');
@@ -50,10 +58,8 @@ const login = async ({ email, password }) => {
  * @param {string} token - The refresh token to invalidate.
  * @throws {Error} - If no token is provided.
  */
-const logout = (token) => {
-    if (!token) throw new Error('No token provided');
-    // RefreshToken.destroy({ where: { token } });
-    refreshTokens = refreshTokens.filter(t => t !== token);
+const logout = async (token) => {
+    await RefreshToken.destroy({ where: { token } });
 };
 
 /**
@@ -62,11 +68,10 @@ const logout = (token) => {
  * @returns {string} - The new access token.
  * @throws {Error} - If the refresh token is invalid.
  */
-const refreshToken = async (token) => {
+const refreshAccessToken = async (token) => {
     try {
         if (!token) throw new Error('No token provided');
-        // if (RefreshToken.findOne({ where: { token } }) === null) throw new Error('Invalid token');
-        if (!refreshTokens.includes(token)) throw new Error('Invalid token');
+        if (RefreshToken.findOne({ where: { token } }) === null) throw new Error('Invalid token');
         const newAccessToken = refreshTokenJWT(token);
         return newAccessToken;
     } catch (err) {
@@ -78,5 +83,5 @@ module.exports = {
     verifyToken,
     login,
     logout,
-    refreshToken,
+    refreshAccessToken,
 };

@@ -1,6 +1,6 @@
-const { create, getGroup, saveGroup, joinGroup, leaveGroup, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
+const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
-const { SavedGroup, Group, GroupUser } = require('models');
+const { SavedGroup, Group, GroupUser, Business } = require('models');
 const express = require('express');
 
 module.exports = (app) => {
@@ -12,24 +12,45 @@ module.exports = (app) => {
    * @apiGroup Group
    * 
    * @apiBody {String} name Name of the group.
-   * @apiBody {String} user User creating the group.
-   * @apiBody {String} details Details of the group.
+   * @apiBody {String} description Description of the group.
    * @apiBody {String} image Image URL of the group.
    * @apiBody {Number} price Price of the group.
    * @apiBody {Number} discount Discount on the group.
-   * @apiBody {String} size Size of the group.
-   * @apiBody {String} category Category of the group.
+   * @apiBody {Number} size Size of the group.
    * 
    * @apiSuccess {Object} group The newly created group.
    */
   app.post('/create', async (req, res) => {
     try {
-      const { name, user, details, image, price, discount, size, category } = req.body;
-      const newGroup = await create({ name, user, details, image, price, discount, size, category });
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { name, description, base64Image, price, discount, size } = req.body;
+
+      const business = await Business.findOne({ where: { userEmail } });
+      if (!business) {
+        return res.status(400).json({ message: 'No business found for the user' });
+      }
+
+      const newGroup = await create({ 
+        name, 
+        creator: userEmail, 
+        description, 
+        base64Image, 
+        price, 
+        discount, 
+        size, 
+        category: business.category, 
+        businessNumber: business.businessNumber 
+      });
       res.status(201).json({ message: 'Group created successfully', group: newGroup });
       console.log('Group created successfully');
     } catch (error) {
-      res.status(400).json({ message: 'Error creating group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error creating group', error: error.message });
+      }
     }
   });
 
@@ -44,11 +65,23 @@ module.exports = (app) => {
    */
   app.get('/get', async (req, res) => {
     try {
-      const { id } = req.body;
-      const group = await getGroup(id);
+      console.log('req.query', req.query);
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const  id  = req.query.id; 
+      if (!id) {
+        return res.status(400).json({ message: 'Missing required "id" query parameter' });
+      }
+      
+      const group = await getGroup(userEmail, id);
       res.status(200).json(group);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching group', error: error.message });
+      }
     }
   });
 
@@ -70,7 +103,12 @@ module.exports = (app) => {
       const groups = await getSavedGroups({ userEmail, page, limit });
       res.status(200).json(groups);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching saved groups', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching saved groups', error: error.message });
+      }
     }
   });
 
@@ -91,7 +129,12 @@ module.exports = (app) => {
       await saveGroup({ userEmail, groupId });
       res.status(200).json({ message: 'Group saved successfully' });
     } catch (error) {
-      res.status(400).json({ message: 'Error saving group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error saving group', error: error.message });
+      }
     }
   });
 
@@ -112,7 +155,12 @@ module.exports = (app) => {
       await SavedGroup.destroy({ where: { userEmail, groupId } });
       res.status(200).json({ message: 'Group unsaved successfully' });
     } catch (error) {
-      res.status(400).json({ message: 'Error unsaving group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error unsaving group', error: error.message });
+      }
     }
   });
 
@@ -131,10 +179,15 @@ module.exports = (app) => {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { groupId, amount } = req.body;
-      await joinGroup({accessToken, groupId, userEmail, amount });
-      res.status(200).json({ message: 'Joined group successfully' });
+      const response = await joinGroup({accessToken, groupId, userEmail, amount });
+      res.status(200).json(response.data);
     } catch (error) {
-      res.status(400).json({ message: 'Error joining group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error joining group', error: error.message });
+      }
     }
   });
 
@@ -155,7 +208,12 @@ module.exports = (app) => {
       await leaveGroup({ groupId, userEmail });
       res.status(200).json({ message: 'Left group successfully' });
     } catch (error) {
-      res.status(400).json({ message: 'Error leaving group', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error leaving group', error: error.message });
+      }
     }
   });
 
@@ -181,8 +239,12 @@ module.exports = (app) => {
       const groups = await searchGroups({ filters, page, limit, userEmail });
       res.status(200).json(groups);
     } catch (error) {
-      console.log('error searching groups',error);
-      res.status(400).json({ message: 'Error searching groups', error: error.message });
+      if(error.response && error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error searching groups', error: error.message });
+      }
     }
   });
 
@@ -198,13 +260,19 @@ module.exports = (app) => {
    */
   app.post('/businessHistory', async (req, res) => {
     try {
+      console.log('businessHistory');
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { page = 1, limit = 10 } = req.body;
       const groups = await getBusinessHistory(userEmail, page, limit);
       res.status(200).json(groups);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching business history', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching business history', error: error.message });
+      }
     }
   });
 
@@ -218,15 +286,21 @@ module.exports = (app) => {
    * 
    * @apiSuccess {Object[]} groups List of groups with purchaseMade set to true.
    */
-  app.post('/userHistory', async (req, res) => {
+  app.post('/getUserHistory', async (req, res) => {
     try {
+      console.log('userHistory');
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { page = 1, limit = 10 } = req.body;
       const groups = await getUserHistory(userEmail, page, limit);
       res.status(200).json(groups);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching user history', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching user history', error: error.message });
+      }
     }
   });
 
@@ -240,7 +314,7 @@ module.exports = (app) => {
    * 
    * @apiSuccess {Object[]} groups List of groups with purchaseMade set to false and isActive set to true.
    */
-  app.post('/userGroups', async (req, res) => {
+  app.post('/getUserGroups', async (req, res) => {
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
@@ -248,8 +322,41 @@ module.exports = (app) => {
       const groups = await getUserGroups(userEmail, page, limit);
       res.status(200).json(groups);
     } catch (error) {
-      res.status(400).json({ message: 'Error fetching user groups', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching user groups', error: error.message });
+      }
     }
   });
+
+/**
+   * @api {post} /getBuisnessGroups Get user groups
+   * @apiName getBuisnessGroups
+   * @apiGroup Group
+   * 
+   * @apiBody {Number} [page=1] Page number.
+   * @apiBody {Number} [limit=10] Number of groups per page.
+   * 
+   * @apiSuccess {Object[]} groups List of groups with purchaseMade set to false and isActive set to true.
+   */
+app.post('/getBuisnessGroups', async (req, res) => {
+  try {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const { userEmail } = await validate(accessToken);
+    const { page = 1, limit = 10 } = req.body;
+    const groups = await getBusinessGroups(userEmail, page, limit);
+    res.status(200).json(groups);
+  } catch (error) {
+    if(error.response.status == 401){
+      res.status(401).json({ message: 'Unauthorized', error: error.message });
+    }
+    else{
+      res.status(400).json({ message: 'Error fetching user groups', error: error.message });
+    }
+  }
+});
 };
+
 

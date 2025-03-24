@@ -1,4 +1,4 @@
-const { login, logout, verifyToken, refreshToken } = require('../domain/auth');
+const { login, logout, verifyToken, refreshAccessToken } = require('../domain/auth');
 
 module.exports = (app) => {
   /**
@@ -22,8 +22,8 @@ module.exports = (app) => {
     console.log('login');
     const { email, password } = req.body;
     try {
-      const { token, refreshUserToken } = await login({ email, password });
-      res.status(200).json({ accessToken: token, refreshToken: refreshUserToken });
+      const { token, refreshUserToken, isBusiness } = await login({ email, password });
+      res.status(200).json({ accessToken: token, refreshToken: refreshUserToken, isBusiness });
     } catch (error) {
       console.log('error logining in', error);
       res.status(400).json({ message: 'Error logging in', error: error.message });
@@ -49,7 +49,7 @@ module.exports = (app) => {
     console.log('logout');
     try {
       const token = req.body.token;
-      logout(token);
+      await logout(token);
       res.status(200).json({ message: 'Logged out successfully' });
     } catch (err) {
       res.status(400).json({ message: 'Error logging out', error: err.message });
@@ -83,7 +83,7 @@ module.exports = (app) => {
       const decoded = verifyToken(token);
       res.status(200).json({ valid: true, data: decoded });
     } catch (error) {
-      res.status(400).json({ valid: false, message: 'Invalid token', error: error.message });
+      res.status(401).json({ valid: false, message: 'Unauthorized', error: 'Unauthorized' });
     }
   });
 
@@ -105,8 +105,8 @@ module.exports = (app) => {
   app.post('/token', async (req, res) => {
     console.log('refresh token');
     try {
-      const { token } = req.body;
-      const newToken = await refreshToken(token);
+      const { refreshToken } = req.body;
+      const newToken = await refreshAccessToken(refreshToken);
       res.status(200).json({ accessToken: newToken });
     } catch (err) {
       res.status(400).json({ message: 'Error refreshing token', error: err.message });
