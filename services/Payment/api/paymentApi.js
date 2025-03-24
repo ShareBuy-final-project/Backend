@@ -45,7 +45,7 @@ module.exports = (app) => {
     try {
       const accountLink = await createLinkForBusinessRegistration(accountId);
       console.log('accountLink:', accountLink);
-      res.status(200).json({ url: accountLink.url });
+      res.status(200).json({ url: accountLink });
     } catch (error) {
       console.log(error + 'error');
       res.status(500).send({ error: error.message });
