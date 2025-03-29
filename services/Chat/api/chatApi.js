@@ -21,6 +21,7 @@ module.exports = (app) => {
 
   app.get('/group/getGroupChatsOfUser', async (req, res) => {
     try {
+      console.log('Fetching group chats for user');
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const groupChats = await getGroupChatsOfUser(userEmail);
