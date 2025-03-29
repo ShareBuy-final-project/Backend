@@ -6,11 +6,30 @@ const getGroupChat = async (groupId) => {
 };
 
 const getGroupChatsOfUser = async (userEmail) => {
-  const groupUsers = await GroupUser.findAll({ where: { userEmail }, include: [{ model: Group, attributes: ['name'] }] });
-  const groupChats = groupUsers.map(groupUser => ({
-    groupId: groupUser.groupId,
-    groupName: groupUser.Group.name
-  }));
+  const groupUsers = await GroupUser.findAll({
+    where: { userEmail },
+    include: [{ model: Group, attributes: ['name', 'image'] }]
+  });
+
+  const groupChats = await Promise.all(
+    groupUsers.map(async (groupUser) => {
+      const lastMessage = await Message.findOne({
+        where: { groupId: groupUser.groupId },
+        order: [['createdAt', 'DESC']],
+        attributes: ['content', 'createdAt']
+      });
+
+      return {
+        id: groupUser.groupId,
+        groupName: groupUser.Group.name,
+        lastMessage: lastMessage ? lastMessage.content : null,
+        timestamp: lastMessage ? lastMessage.createdAt : null,
+        unreadCount: 0,
+        image: groupUser.Group.image
+      };
+    })
+  );
+
   return groupChats;
 };
 
