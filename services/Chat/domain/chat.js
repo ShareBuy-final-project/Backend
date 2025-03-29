@@ -5,34 +5,52 @@ const getGroupChat = async (groupId) => {
     return messages;
 };
 
+const getChatDetails = async (groupId, groupName, groupImage, owner) => {
+  console.log(`Fetching last message for groupId: ${groupId}`);
+  const lastMessage = await Message.findOne({
+    where: { groupId },
+    order: [['createdAt', 'DESC']],
+    attributes: ['content', 'createdAt']
+  });
+
+  console.log(`Last message for groupId ${groupId}:`, lastMessage ? lastMessage.content : 'null');
+  return {
+    id: groupId,
+    groupName,
+    lastMessage: lastMessage ? lastMessage.content : null,
+    timestamp: lastMessage ? lastMessage.createdAt : null,
+    unreadCount: 0,
+    image: groupImage,
+    owner
+  };
+};
+
 const getGroupChatsOfUser = async (userEmail) => {
   console.log(`Fetching group chats for userEmail: ${userEmail}`);
+
+  // Fetch groups the user is a member of
   const groupUsers = await GroupUser.findAll({
     where: { userEmail },
     include: [{ model: Group, attributes: ['name', 'image'] }]
   });
   console.log(`Found ${groupUsers.length} groups for userEmail: ${userEmail}`);
 
-  const groupChats = await Promise.all(
-    groupUsers.map(async (groupUser) => {
-      console.log(`Fetching last message for groupId: ${groupUser.groupId}`);
-      const lastMessage = await Message.findOne({
-        where: { groupId: groupUser.groupId },
-        order: [['createdAt', 'DESC']],
-        attributes: ['content', 'createdAt']
-      });
+  // Fetch groups the user created
+  const createdGroups = await Group.findAll({
+    where: { creator: userEmail },
+    attributes: ['id', 'name', 'image']
+  });
+  console.log(`Found ${createdGroups.length} groups created by userEmail: ${userEmail}`);
 
-      console.log(`Last message for groupId ${groupUser.groupId}:`, lastMessage ? lastMessage.content : 'null');
-      return {
-        id: groupUser.groupId,
-        groupName: groupUser.Group.name,
-        lastMessage: lastMessage ? lastMessage.content : null,
-        timestamp: lastMessage ? lastMessage.createdAt : null,
-        unreadCount: 0,
-        image: groupUser.Group.image
-      };
-    })
-  );
+  // Combine both sets of groups
+  const groupChats = await Promise.all([
+    ...groupUsers.map((groupUser) =>
+      getChatDetails(groupUser.groupId, groupUser.Group.name, groupUser.Group.image, false)
+    ),
+    ...createdGroups.map((group) =>
+      getChatDetails(group.id, group.name, group.image, true)
+    )
+  ]);
 
   console.log(`Returning group chats for userEmail: ${userEmail}`, groupChats);
   return groupChats;
