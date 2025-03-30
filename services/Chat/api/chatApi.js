@@ -7,7 +7,7 @@ const { validate } = require('../domain/validation');
 module.exports = (app) => {
  
   // HTTP Routes
-  app.post('/group/getGroupChat', async (req, res) => {
+  app.post('/getGroupChat', async (req, res) => {
     const { groupId } = req.body;
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
@@ -19,8 +19,9 @@ module.exports = (app) => {
     }
   });
 
-  app.get('/group/getGroupChatsOfUser', async (req, res) => {
+  app.get('/getGroupChatsOfUser', async (req, res) => {
     try {
+      console.log('Fetching group chats for user');
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const groupChats = await getGroupChatsOfUser(userEmail);
