@@ -30,6 +30,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./config/models/images:/app/Group/images
 
   authentication-service:
     build:
@@ -45,6 +47,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./config/models/images:/app/Group/images
 
   group-service:
     build:
@@ -61,6 +65,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./config/models/images:/app/Group/images
 
   payment-service:
     build:
@@ -93,6 +99,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./config/models/images:/app/Group/images
 
   api-gateway:
     build:
