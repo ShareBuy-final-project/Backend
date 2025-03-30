@@ -3,9 +3,8 @@ const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 
 
-const createPaymentIntent = async ({businessUserEmail,price}) => {
+const createPaymentIntent = async (businessUserEmail,price) => {
   //const account = await stripe.accounts.retrieve(businessUserEmail);
-
   const customer = await stripe.customers.create();
   const ephemeralKey = await stripe.ephemeralKeys.create(
     {customer: customer.id},
@@ -29,8 +28,18 @@ const createPaymentIntent = async ({businessUserEmail,price}) => {
     paymentIntent: paymentIntent.client_secret,
     ephemeralKey: ephemeralKey.secret,
     customer: customer.id,
-    publishableKey: 'pk_live_51Qg9a2GBz0nP5LootWzP7eE1QOKCAMgG5b2TNMgIi62zdQ32MFl8gM18r2HzJDYrX5sox7nFXgh4vlAv6UN6Tilf005CzZCwH9',
+    publishableKey: 'pk_test_51Qg9a2GBz0nP5Loo5OXv3znrj1HFtp7pFa0cHkECXnvWbwAJFMYpYrvRLbw4An6eUmOM4EeUJ7BuhwgJj6JlUq1g003hKQsNBH',
     paymentIntentId: paymentIntent.id
   }; 
 }
-module.exports = {createPaymentIntent};
+
+const makePaymentTranscations = async (paymentIntentIds) => {
+  console.log('Confirming payment intents...');
+  for (const paymentIntentId of paymentIntentIds) {
+    const paymentIntent = await stripe.paymentIntents.capture(
+      paymentIntentId,
+    );
+    console.log('Payment intent confirmed:', paymentIntent.id);
+  }
+}
+module.exports = {createPaymentIntent, makePaymentTranscations};
