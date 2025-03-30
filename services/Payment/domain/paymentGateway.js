@@ -26,9 +26,7 @@ const createPaymentIntent = async (businessUserEmail,price) => {
     capture_method: 'manual',
     confirm: false, 
     description: 'Group purchase authorization',
-    transfer_data: {
-      destination: accountId,
-    },
+    ...(accountId && { transfer_data: { destination: accountId } })
   });
   console.log('Payment intent created:', paymentIntent.id);
   return {
