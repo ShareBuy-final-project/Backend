@@ -1,10 +1,17 @@
 require('dotenv').config();
 const stripe = require('stripe')('sk_test_51Qg9a2GBz0nP5LooWmlsEb404mhwdvAvxatXAmUFCFv8bCC4U0kxhKqUJ2Xl2cXmBUH6kAmj2zWRtMY2T47StATT00PH1hFVZn');
-
+const publishableKey = 'pk_test_51Qg9a2GBz0nP5Loo5OXv3znrj1HFtp7pFa0cHkECXnvWbwAJFMYpYrvRLbw4An6eUmOM4EeUJ7BuhwgJj6JlUq1g003hKQsNBH'
 
 
 const createPaymentIntent = async (businessUserEmail,price) => {
-  //const account = await stripe.accounts.retrieve(businessUserEmail);
+  const account = null
+  try{
+    account = await stripe.accounts.retrieve(businessUserEmail);
+  }
+  catch{
+    console.log("No Stripe account has been found for business with email:", businessUserEmail)
+  }
+  const accountId = account == null ? null : account.accountId
   const customer = await stripe.customers.create();
   const ephemeralKey = await stripe.ephemeralKeys.create(
     {customer: customer.id},
@@ -19,16 +26,16 @@ const createPaymentIntent = async (businessUserEmail,price) => {
     capture_method: 'manual',
     confirm: false, 
     description: 'Group purchase authorization',
-    // transfer_data: {
-    //   destination: account.id,
-    // },
+    transfer_data: {
+      destination: accountId,
+    },
   });
   console.log('Payment intent created:', paymentIntent.id);
   return {
     paymentIntent: paymentIntent.client_secret,
     ephemeralKey: ephemeralKey.secret,
     customer: customer.id,
-    publishableKey: 'pk_test_51Qg9a2GBz0nP5Loo5OXv3znrj1HFtp7pFa0cHkECXnvWbwAJFMYpYrvRLbw4An6eUmOM4EeUJ7BuhwgJj6JlUq1g003hKQsNBH',
+    publishableKey: publishableKey,
     paymentIntentId: paymentIntent.id
   }; 
 }
