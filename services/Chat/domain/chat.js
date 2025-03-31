@@ -71,15 +71,9 @@ const saveMessageToDB = async (groupId, userEmail, content) => {
 };
 
 const sendMessage = async (io, groupId, userEmail, content) => {
-  const groupUser = await GroupUser.findOne({ where: { groupId, userEmail } });
-  const groupChat = await GroupChat.findOne({ where: { groupId, isActive: true } });
-  console.log(`User ${userEmail} is a member of group ${groupId}:`, groupUser);
-  if (groupUser && groupChat) {
-    console.log(`Chat is active for group ${groupId}:`, groupChat);
-    const message = await saveMessageToDB(groupId, userEmail, content);
-    io.to(groupId).emit('newMessage', message);
-    console.log(`Message emitted to group ${groupId}:`, message);
-  }
+  // TODO: check if the chat is active?
+  const message = await saveMessageToDB(groupId, userEmail, content);
+  io.to(groupId).emit('newMessage', message);
 };
 
 module.exports = {
