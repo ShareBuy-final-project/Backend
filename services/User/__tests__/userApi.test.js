@@ -213,4 +213,51 @@ describe('User API', () => {
     expect(response.status).toBe(401);
     expect(response.body.message).toBe('Invalid token');
   });
+
+  // Test for creating business
+  it('should return create a business account', async () => {
+    const registerResponse = await request(app)
+      .post('/registerBusiness')
+      .send({
+        fullName: 'Alice',
+        password: 'password123',
+        email: 'alice@example.com',
+        phone: '1234567890',
+        state: 'State',
+        city: 'City',
+        street: 'Street',
+        streetNumber: '123',
+        zipCode: '12345',
+        businessName: 'Test Business',
+        businessNumber: '123456',
+        description: 'Business to test if the system works',
+        category: 'test',
+        websiteLink: 'www.example.com',
+        contactEmail: 'alice@example.com'
+      });
+    expect(registerResponse.status).toBe(201);
+    expect(response.body.message).toBe('Business registered successfully');
+    expect(response.body.user).toHaveProperty('id');
+  });
+
+  // Test for handling registration with an existing email
+  it('should not register a user with an existing email', async () => {
+    const response = await request(app)
+      .post('/register')
+      .send({
+        fullName: 'Jane Doe',
+        password: 'password123',
+        email: 'alice@example.com', // Same email as previous test
+        phone: '0987654321',
+        state: 'State',
+        city: 'City',
+        street: 'Another Street',
+        streetNumber: '456',
+        zipCode: '54321'
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe('Error registering Business');
+    expect(response.body.error).toBe('User with this email already exists');
+  });
 });
