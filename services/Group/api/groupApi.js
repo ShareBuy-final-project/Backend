@@ -1,6 +1,6 @@
 const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
-const { SavedGroup, Group, GroupUser, Business } = require('models');
+const { SavedGroup, Group, GroupUser, Business, GroupChat } = require('models');
 const express = require('express');
 
 module.exports = (app) => {
@@ -42,7 +42,12 @@ module.exports = (app) => {
         category: business.category, 
         businessNumber: business.businessNumber 
       });
+
+      // Create a new group chat for the created group
+      await GroupChat.create({ groupId: newGroup.id, isActive: true });
+
       res.status(201).json({ message: 'Group created successfully', group: newGroup });
+      
       console.log('Group created successfully');
     } catch (error) {
       if(error.response.status == 401){
