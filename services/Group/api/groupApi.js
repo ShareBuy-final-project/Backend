@@ -1,4 +1,4 @@
-const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserGroups, getUserGroups } = require('../domain/group');
+const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser, Business } = require('models');
 const express = require('express');
