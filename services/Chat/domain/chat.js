@@ -66,13 +66,17 @@ const joinGroup = async (socket, groupId, userEmail) => {
     }
 };
 
+const saveMessageToDB = async (groupId, userEmail, content) => {
+  return await Message.create({ groupId, userEmail, content });
+};
+
 const sendMessage = async (io, groupId, userEmail, content) => {
-    const groupUser = await GroupUser.findOne({ where: { groupId, userEmail } });
+  const groupUser = await GroupUser.findOne({ where: { groupId, userEmail } });
   const groupChat = await GroupChat.findOne({ where: { groupId, isActive: true } });
   if (groupUser && groupChat) {
-    const message = await Message.create({ groupId, userEmail, content });
-        io.to(groupId).emit('newMessage', message);
-    }
+    const message = await saveMessageToDB(groupId, userEmail, content);
+    io.to(groupId).emit('newMessage', message);
+  }
 };
 
 module.exports = {

@@ -32,10 +32,17 @@ const chatNamespace = io.of('/chat');
 
 chatNamespace.on('connection', (socket) => {
   console.log('User connected to chat service');
+
+  // Handle joining a group
+  socket.on('joinGroup', ({ groupId }) => {
+    console.log(`User joined group ${groupId}`);
+    socket.join(groupId); // Add the user to the group room
+  });
+
   socket.on('sendMessage', async ({ groupId, userEmail, content }) => {
     try {
       console.log(`Received message from ${userEmail} for group ${groupId}: ${content}`);
-      await sendMessage(io, groupId, userEmail, content);
+      await sendMessage(chatNamespace, groupId, userEmail, content); // Use chatNamespace for emitting
       console.log(`Message sent to group ${groupId} by ${userEmail}`);
     } catch (error) {
       console.error('Error sending message:', error);
