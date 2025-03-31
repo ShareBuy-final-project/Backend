@@ -34,6 +34,7 @@ chatNamespace.on('connection', (socket) => {
   console.log('User connected to chat service');
   socket.on('sendMessage', async ({ groupId, userEmail, content }) => {
     try {
+      console.log(`Received message from ${userEmail} for group ${groupId}: ${content}`);
       await sendMessage(io, groupId, userEmail, content);
       console.log(`Message sent to group ${groupId} by ${userEmail}`);
     } catch (error) {
