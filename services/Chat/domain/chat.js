@@ -5,6 +5,10 @@ const getGroupChat = async (groupId) => {
     return messages;
 };
 
+const convertImageToBase64 = (image) => {
+  return image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
+};
+
 const getChatDetails = async (groupId, groupName, groupImage, owner) => {
   console.log(`Fetching last message for groupId: ${groupId}`);
   const lastMessage = await Message.findOne({
@@ -20,7 +24,7 @@ const getChatDetails = async (groupId, groupName, groupImage, owner) => {
     lastMessage: lastMessage ? lastMessage.content : null,
     timestamp: lastMessage ? lastMessage.createdAt : null,
     unreadCount: 0,
-    image: groupImage,
+    image: convertImageToBase64(groupImage),
     owner
   };
 };

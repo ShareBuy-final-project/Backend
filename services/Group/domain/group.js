@@ -243,10 +243,14 @@ const getBusinessGroups = async (email, page = 1, limit = 10) => {
   }
 }
 
+const convertImageToBase64 = (image) => {
+  return image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
+};
+
 const getGroupGeneric = async (userEmail, groupIds) => {
   console.log('groupIds', groupIds);
   const groups = await Group.findAll({ where: { id: groupIds, isActive: true } });
-  console.log('groups', groups.map(g=>g.id));
+  console.log('groups', groups.map(g => g.id));
   const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
   const savedGroupIds = savedGroups.map(sg => sg.groupId);
 
@@ -254,14 +258,11 @@ const getGroupGeneric = async (userEmail, groupIds) => {
     const totalAmount = await getTotalAmount(group.id);
     const {image, ...groupData } = group.toJSON();
 
-    // Add the complete base64 string with data URI prefix
-    const imageBase64 = image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
-
     return {
       ...groupData,
       isSaved: savedGroupIds.includes(group.id),
       totalAmount,
-      imageBase64
+      imageBase64: convertImageToBase64(image)
     };
   }));
   return groupsWithTotalAmount;
