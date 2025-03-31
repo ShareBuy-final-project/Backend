@@ -21,7 +21,7 @@ const getChatDetails = async (groupId, groupName, groupImage, owner) => {
   return {
     id: groupId,
     groupName,
-    lastMessage: lastMessage ? lastMessage.content : null,
+    lastMessage: lastMessage ? lastMessage.content : 'no messages in the chat',
     timestamp: lastMessage ? lastMessage.createdAt : null,
     unreadCount: 0,
     image: convertImageToBase64(groupImage),
@@ -56,7 +56,7 @@ const getGroupChatsOfUser = async (userEmail) => {
     )
   ]);
 
-  console.log(`Returning group chats for userEmail: ${userEmail}`, groupChats);
+  //console.log(`Returning group chats for userEmail: ${userEmail}`, groupChats);
   return groupChats;
 };
 
