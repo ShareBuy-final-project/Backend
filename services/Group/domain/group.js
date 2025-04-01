@@ -45,16 +45,15 @@ const getGroup = async (userEmail ,id) => {
     if(group.length === 0){
       throw new Error('Group does not exist');
     }
-    console.log("Group data:", JSON.stringify(group, null, 2));
-    const businessNumber = 1;
+    const businessNumber = group[0].businessNumber;
     console.log('businessNumber', businessNumber);
-    const buisnessName = await Buisness.findOne({
-      where: { buisnessNumber: businessNumber },
+    const businessName = await Business.findOne({
+      where: { businessNumber: businessNumber },
       attributes: ['businessName']});
-    console.log('buisnessName', buisnessName);
+    console.log('businessName', businessName);
     const groupWithBusiness = {
       ...group[0],
-      businessName: buisnessName ? buisnessName : null ,
+      businessName: businessName ? businessName : null ,
       businessNumber: businessNumber ? businessNumber : null
   };
   return groupWithBusiness;
