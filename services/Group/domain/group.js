@@ -53,7 +53,8 @@ const getGroup = async (userEmail ,id) => {
     console.log('buisnessName', buisnessName);
     const groupWithBusiness = {
       ...group[0],
-      businessName: buisnessName ? buisnessName : null 
+      businessName: buisnessName ? buisnessName : null ,
+      businessNumber: businessNumber ? businessNumber : null
   };
   return groupWithBusiness;
   } 
