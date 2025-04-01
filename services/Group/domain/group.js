@@ -46,11 +46,11 @@ const getGroup = async (userEmail ,id) => {
       throw new Error('Group does not exist');
     }
     const businessNumber = group[0].buisnessNumber;
-
+    console.log('businessNumber', businessNumber);
     const buisnessName = await Buisness.findOne({
       where: { buisnessNumber: businessNumber },
       attributes: ['businessName']});
-
+    console.log('buisnessName', buisnessName);
     const groupWithBusiness = {
       ...group[0],
       businessName: buisnessName ? buisnessName : null 
