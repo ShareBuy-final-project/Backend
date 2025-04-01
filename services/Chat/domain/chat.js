@@ -5,6 +5,10 @@ const getGroupChat = async (groupId) => {
     return messages;
 };
 
+const convertImageToBase64 = (image) => {
+  return image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
+};
+
 const getChatDetails = async (groupId, groupName, groupImage, owner) => {
   console.log(`Fetching last message for groupId: ${groupId}`);
   const lastMessage = await Message.findOne({
@@ -17,10 +21,10 @@ const getChatDetails = async (groupId, groupName, groupImage, owner) => {
   return {
     id: groupId,
     groupName,
-    lastMessage: lastMessage ? lastMessage.content : null,
+    lastMessage: lastMessage ? lastMessage.content : 'no messages in the chat',
     timestamp: lastMessage ? lastMessage.createdAt : null,
     unreadCount: 0,
-    image: groupImage,
+    image: convertImageToBase64(groupImage),
     owner
   };
 };
@@ -52,7 +56,7 @@ const getGroupChatsOfUser = async (userEmail) => {
     )
   ]);
 
-  console.log(`Returning group chats for userEmail: ${userEmail}`, groupChats);
+  //console.log(`Returning group chats for userEmail: ${userEmail}`, groupChats);
   return groupChats;
 };
 
@@ -66,13 +70,14 @@ const joinGroup = async (socket, groupId, userEmail) => {
     }
 };
 
+const saveMessageToDB = async (groupId, userEmail, content) => {
+  return await Message.create({ groupId, userEmail, content });
+};
+
 const sendMessage = async (io, groupId, userEmail, content) => {
-    const groupUser = await GroupUser.findOne({ where: { groupId, userEmail } });
-  const groupChat = await GroupChat.findOne({ where: { groupId, isActive: true } });
-  if (groupUser && groupChat) {
-    const message = await Message.create({ groupId, userEmail, content });
-        io.to(groupId).emit('newMessage', message);
-    }
+  // TODO: check if the chat is active?
+  const message = await saveMessageToDB(groupId, userEmail, content);
+  io.to(groupId).emit('newMessage', message);
 };
 
 module.exports = {

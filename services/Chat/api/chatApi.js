@@ -7,19 +7,20 @@ const { validate } = require('../domain/validation');
 module.exports = (app) => {
  
   // HTTP Routes
-  app.post('/getGroupChat', async (req, res) => {
+  app.post('/group/getGroupChat', async (req, res) => {
     const { groupId } = req.body;
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       await validate(accessToken);
       const messages = await getGroupChat(groupId);
+      console.log(`Fetched ${messages.length} messages for groupId: ${groupId}`);
       res.json(messages);
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch chat messages' });
     }
   });
 
-  app.get('/getGroupChatsOfUser', async (req, res) => {
+  app.get('/group/getGroupChatsOfUser', async (req, res) => {
     try {
       console.log('Fetching group chats for user');
       const accessToken = req.headers.authorization.split(' ')[1];
