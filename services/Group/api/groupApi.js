@@ -283,7 +283,7 @@ module.exports = (app) => {
 
   /**
    * @api {post} /userHistory Get user history
-   * @apiName GetUserHistory
+   * @apiName getUserHistory
    * @apiGroup Group
    * 
    * @apiBody {Number} [page=1] Page number.

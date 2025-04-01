@@ -1,7 +1,7 @@
 // const bcrypt = require('bcrypt');
 const { Business, User, Group, GroupUser } = require('models');
 const { validate } = require('./validation');
-const {createPaymentIntent, makePaymentTranscations} = require('./paymentGateway');
+const {createPaymentIntent, makePaymentTranscations, createConnectedAccount, createAccountLink} = require('./paymentGateway');
 const e = require('express');
 
 
@@ -54,6 +54,16 @@ const updateCharged = async (paymentIntentId) => {
     }
 }
 
+const createBusinessAccount = async (businessUserEmail) => {
+      const accountId = await createConnectedAccount(businessUserEmail);
+      return accountId;
+}
+
+const createLinkForBusinessRegistration = async (accountId) => {
+    const link = await createAccountLink(accountId);
+    return link;
+}
+
 const isGroupFUll = async (groupId) => {
 console.log('checking if group is full');
   const amount = await getTotalAmount(groupId);
@@ -81,5 +91,5 @@ const updateGroupToPurchased = async (groupId) => {
     group.update({ isActive: false, purchaseMade: true });
     await group.save();
 }
-module.exports = {handlePayment, updateCharged};
+module.exports = {handlePayment, updateCharged, createBusinessAccount, createLinkForBusinessRegistration};
     
