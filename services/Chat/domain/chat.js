@@ -77,6 +77,7 @@ const saveMessageToDB = async (groupId, userEmail, content) => {
 const sendMessage = async (io, groupId, userEmail, content) => {
   // TODO: check if the chat is active?
   const message = await saveMessageToDB(groupId, userEmail, content);
+  console.log(`Message saved to DB: ${message.content}`);
   io.to(groupId).emit('newMessage', message);
 };
 
