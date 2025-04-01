@@ -45,7 +45,8 @@ const getGroup = async (userEmail ,id) => {
     if(group.length === 0){
       throw new Error('Group does not exist');
     }
-    const businessNumber = group[0].buisnessNumber;
+    console.log("Group data:", JSON.stringify(group, null, 2));
+    const businessNumber = 1;
     console.log('businessNumber', businessNumber);
     const buisnessName = await Buisness.findOne({
       where: { buisnessNumber: businessNumber },
