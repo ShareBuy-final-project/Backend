@@ -51,5 +51,6 @@ module.exports = {
   GroupChat,
   PrivateChat,
   Message,
-  sequelize
+  sequelize,
+  Review
 };
