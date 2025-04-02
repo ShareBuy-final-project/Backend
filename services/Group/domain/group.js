@@ -45,7 +45,18 @@ const getGroup = async (userEmail ,id) => {
     if(group.length === 0){
       throw new Error('Group does not exist');
     }
-    return group[0];
+    const businessNumber = group[0].businessNumber;
+    console.log('businessNumber', businessNumber);
+    const businessName = await Business.findOne({
+      where: { businessNumber: businessNumber },
+      attributes: ['businessName']});
+    console.log('businessName', businessName);
+    const groupWithBusiness = {
+      ...group[0],
+      businessName: businessName ? businessName : null ,
+      businessNumber: businessNumber ? businessNumber : null
+  };
+  return groupWithBusiness;
   } 
   catch (error) {
     throw new Error('Invalid id');

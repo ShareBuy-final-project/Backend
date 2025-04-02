@@ -7,6 +7,7 @@ const GroupUser = require('./tables/groupUser');
 const GroupChat = require('./tables/groupChat');
 const PrivateChat = require('./tables/privateChat');
 const Message = require('./tables/message');
+const Review = require('./tables/review');
 const sequelize = require('./db');
 
 // Define associations
@@ -34,6 +35,12 @@ PrivateChat.belongsTo(User, { foreignKey: 'userEmail' });
 Business.hasMany(PrivateChat, { foreignKey: 'businessNumber' });
 PrivateChat.belongsTo(Business, { foreignKey: 'businessNumber' });
 
+Business.hasMany(Review, { foreignKey: 'businessNumber', sourceKey: 'businessNumber', onDelete: 'CASCADE' });
+Review.belongsTo(Business, { foreignKey: 'businessNumber', targetKey: 'businessNumber' });
+
+User.hasMany(Review, { foreignKey: 'userEmail', sourceKey: 'email', onDelete: 'CASCADE' });
+Review.belongsTo(User, { foreignKey: 'userEmail', targetKey: 'email' });
+
 module.exports = {
   User,
   Group,
@@ -44,5 +51,6 @@ module.exports = {
   GroupChat,
   PrivateChat,
   Message,
-  sequelize
+  sequelize,
+  Review
 };
