@@ -14,7 +14,8 @@ module.exports = (app) => {
   app.get('/get', async (req, res) => {
     console.log('Business service received request to /user/number/:businessNumber');
     try {
-      const { businessNumber } = req.query; 
+      const { businessNumber } = req.query.businessNumber; 
+      console.log("businessNumber", businessNumber);
       const business = await getBusinessByNumber(businessNumber);
       console.log("business", business);
       if (!business) {
