@@ -53,9 +53,9 @@ const getGroup = async (userEmail ,id) => {
     console.log('businessName', businessName);
     const groupWithBusiness = {
       ...group[0],
-      businessName: businessName ? businessName : null ,
-      businessNumber: businessNumber ? businessNumber : null
-  };
+      businessName: business?.businessName || null,
+      businessNumber: businessNumber || null
+      };
   return groupWithBusiness;
   } 
   catch (error) {
