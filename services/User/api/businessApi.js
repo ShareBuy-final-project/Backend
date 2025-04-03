@@ -11,7 +11,7 @@ module.exports = (app) => {
    *
    * @apiSuccess {Object} business Business object with reviews and user info
    */
-  app.get('/businessNumber/:businessNumber', async (req, res) => {
+  app.get('/businessNumber', async (req, res) => {
     console.log('Business service received request to /user/number/:businessNumber');
     try {
       const { businessNumber } = req.query.businessNumber; 
