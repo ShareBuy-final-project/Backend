@@ -49,12 +49,12 @@ const getGroup = async (userEmail ,id) => {
     console.log('businessNumber', businessNumber);
     const businessName = await Business.findOne({
       where: { businessNumber: businessNumber },
-      attributes: ['businessName']});
+      attributes: ['businessName'], raw: true},);
     console.log('businessName', businessName);
     const groupWithBusiness = {
       ...group[0],
-      businessName,
-      businessNumber
+      businessName: businessName ? businessName : null ,
+      businessNumber: businessNumber ? businessNumber : null
   };
   return groupWithBusiness;
   } 
