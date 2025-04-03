@@ -47,15 +47,16 @@ const getGroup = async (userEmail ,id) => {
     }
     const businessNumber = group[0].businessNumber;
     console.log('businessNumber', businessNumber);
-    const businessName = await Business.findOne({
+    const business = await Business.findOne({
       where: { businessNumber: businessNumber },
       attributes: ['businessName'], raw: true},);
+      businessName = business['businessName'];
     console.log('businessName', businessName);
     const groupWithBusiness = {
       ...group[0],
-      businessName: business?.businessName || null,
-      businessNumber: businessNumber || null
-      };
+      businessName: businessName[0] ? businessName : null ,
+      businessNumber: businessNumber ? businessNumber : null
+  };
   return groupWithBusiness;
   } 
   catch (error) {
