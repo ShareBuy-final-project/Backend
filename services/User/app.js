@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const userApi = require('./api/userApi');
+const businessApi = require('./api/businessApi');
 // Import other models as needed:
 const { sequelize, User, Business} = require('models'); 
 
@@ -44,3 +45,4 @@ const connectWithRetry = async () => {
 
 connectWithRetry();
 userApi(app);
+businessApi(app);
