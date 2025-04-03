@@ -14,7 +14,7 @@ const getBusinessByNumber = async (businessNumber) => {
         include: [
           {
             model: User,
-            attributes: ['id', 'fullName', 'email']
+            attributes: ['fullName', 'email']
           }
         ]
       }
