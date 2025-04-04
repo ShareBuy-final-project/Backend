@@ -36,7 +36,7 @@ chatNamespace.on('connection', (socket) => {
   // Handle joining a group
   socket.on('joinGroup', ({ groupId }) => {
     console.log(`User joined group ${groupId}`);
-    socket.join(groupId); // Add the user to the group room
+    socket.join(groupId); // Add the user to the group chat
   });
 
   socket.on('sendMessage', async ({ groupId, userEmail, content }) => {

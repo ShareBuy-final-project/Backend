@@ -56,7 +56,7 @@ const getGroupChatsOfUser = async (userEmail) => {
     )
   ]);
 
-  //console.log(`Returning group chats for userEmail: ${userEmail}`, groupChats);
+  console.log(`Returning group chats for userEmail: ${userEmail}`);
   return groupChats;
 };
 

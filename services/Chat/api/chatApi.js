@@ -28,6 +28,7 @@ module.exports = (app) => {
       const groupChats = await getGroupChatsOfUser(userEmail);
       res.json(groupChats);
     } catch (error) {
+      console.error('Error fetching group chats:', error);
       res.status(500).json({ error: 'Failed to fetch group chats' });
     }
   });
