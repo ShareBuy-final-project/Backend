@@ -46,6 +46,9 @@ const getGroupChatsOfUser = async (userEmail) => {
   });
   console.log(`Found ${createdGroups.length} groups created by userEmail: ${userEmail}`);
 
+  console.log('Group users:', groupUsers);
+  console.log('Created groups:', createdGroups);
+
   // Combine both sets of groups
   const groupChats = await Promise.all([
     ...groupUsers.map((groupUser) =>
