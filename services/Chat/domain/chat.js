@@ -52,7 +52,7 @@ const getGroupChatsOfUser = async (userEmail) => {
   // Combine both sets of groups
   const groupChats = await Promise.all([
     ...groupUsers.map((groupUser) =>
-      getChatDetails(groupUser.groupId, groupUser.Group.name, groupUser.Group.image, false)
+      getChatDetails(groupUser.groupId, groupUser.group.name, groupUser.group.image, false) // Use lowercase 'group'
     ),
     ...createdGroups.map((group) =>
       getChatDetails(group.id, group.name, group.image, true)
