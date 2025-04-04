@@ -4,7 +4,7 @@ const socketIo = require('socket.io');
 const { sequelize } = require('models');
 const chatApi = require('./api/chatApi');
 const path = require('path');
-const { sendMessage } = require('./domain/chat');
+const { sendMessage, handleUpdateLastSeen } = require('./domain/chat');
 
 const app = express();
 const server = http.createServer(app);
@@ -38,6 +38,9 @@ chatNamespace.on('connection', (socket) => {
     console.log(`User joined group ${groupId}`);
     socket.join(groupId); // Add the user to the group chat
   });
+
+  // Handle updating last seen
+  handleUpdateLastSeen(socket);
 
   socket.on('sendMessage', async ({ groupId, userEmail, content }) => {
     try {
