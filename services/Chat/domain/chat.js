@@ -12,6 +12,7 @@ const convertImageToBase64 = (image) => {
 const calculateUnreadCount = async (groupId, userEmail) => {
   const lastSeen = await LastSeen.findOne({ where: { groupId, userEmail } });
   const lastSeenTimestamp = lastSeen ? lastSeen.timestamp : new Date(0); // Default to epoch if no record
+  console.log(`Last seen timestamp for user ${userEmail} in group ${groupId}:`, lastSeenTimestamp);
   const unreadCount = await Message.count({
     where: {
       groupId,
@@ -61,8 +62,8 @@ const getGroupChatsOfUser = async (userEmail) => {
   });
   console.log(`Found ${createdGroups.length} groups created by userEmail: ${userEmail}`);
 
-  console.log('Group users:', groupUsers);
-  console.log('Created groups:', createdGroups);
+  // console.log('Group users:', groupUsers);
+  // console.log('Created groups:', createdGroups);
 
   // Combine both sets of groups
   const groupChats = await Promise.all([
