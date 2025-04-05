@@ -43,6 +43,7 @@ const getChatDetails = async (groupId, groupName, groupImage, owner, userEmail) 
 
   console.log(`Last message for groupId ${groupId}:`, lastMessage ? lastMessage.content : 'null');
   const unreadCount = userEmail ? await calculateUnreadCount(groupId, userEmail) : 0;
+  const totalMessages = await Message.count({ where: { groupId } }); // Count total messages in the group
 
   return {
     id: groupId,
@@ -50,6 +51,7 @@ const getChatDetails = async (groupId, groupName, groupImage, owner, userEmail) 
     lastMessage: lastMessage ? lastMessage.content : 'no messages in the chat',
     timestamp: lastMessage ? lastMessage.createdAt : null,
     unreadCount,
+    totalMessages, // Include totalMessages in the response
     image: convertImageToBase64(groupImage),
     owner
   };
