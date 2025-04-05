@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const { getGroupChat, getGroupChatsOfUser, joinGroup, sendMessage } = require('../domain/chat');
+const { getGroupChat, getGroupChatsOfUser} = require('../domain/chat');
 const { validate } = require('../domain/validation');
 
 module.exports = (app) => {
