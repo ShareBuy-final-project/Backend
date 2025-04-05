@@ -3,6 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const { getGroupChat, getGroupChatsOfUser } = require('../domain/chat');
 const { validate } = require('../domain/validation');
+const { LastSeen } = require('models');
 
 module.exports = (app) => {
  
