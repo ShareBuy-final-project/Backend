@@ -1,4 +1,5 @@
 const { GroupChat, Message, GroupUser, Group, LastSeen } = require('models');
+const { Op } = require('sequelize'); // Import Op for query operators
 
 const getGroupChat = async (groupId) => {
     const messages = await Message.findAll({ where: { groupId }, order: [['createdAt', 'ASC']] });
@@ -13,12 +14,14 @@ const calculateUnreadCount = async (groupId, userEmail) => {
   const lastSeen = await LastSeen.findOne({ where: { groupId, userEmail } });
   const lastSeenTimestamp = lastSeen ? lastSeen.timestamp : new Date(0); // Default to epoch if no record
   console.log(`Last seen timestamp for user ${userEmail} in group ${groupId}:`, lastSeenTimestamp);
+
   const unreadCount = await Message.count({
     where: {
       groupId,
-      createdAt: { $gt: lastSeenTimestamp }
+      createdAt: { [Op.gt]: lastSeenTimestamp } // Use Op.gt for greater-than comparison
     }
   });
+
   console.log(`Unread count for groupId ${groupId} and userEmail ${userEmail}: ${unreadCount}`);
   return unreadCount;
 };
