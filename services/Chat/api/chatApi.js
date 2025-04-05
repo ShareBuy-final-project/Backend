@@ -9,22 +9,22 @@ module.exports = (app) => {
  
   // HTTP Routes
   app.post('/group/getGroupChat', async (req, res) => {
-    const { groupId, page = 1, limit = 10 } = req.body;
+    const { groupId, page = 1, limit = 10 } = req.body; // Use page to calculate offset
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
 
-      const offset = (page - 1) * limit;
-      const messages = await getGroupChat(groupId, offset, limit);
-
       const lastSeen = await LastSeen.findOne({ where: { groupId, userEmail } });
       const lastSeenTimestamp = lastSeen ? lastSeen.timestamp : new Date(0);
+
+      const offset = (page - 1) * limit; // Calculate offset based on page number
+      const messages = await getGroupChat(groupId, offset, limit);
 
       const unreadMessages = messages.filter(msg => msg.createdAt > lastSeenTimestamp);
       const readMessages = messages.filter(msg => msg.createdAt <= lastSeenTimestamp);
 
       console.log(`Fetched ${messages.length} messages for groupId: ${groupId}`);
-      res.json({ unreadMessages, readMessages });
+      res.json({ messages, unreadMessagesCount: unreadMessages.length });
     } catch (error) {
       console.error('Error fetching group chat messages:', error);
       res.status(500).json({ error: 'Failed to fetch chat messages' });
