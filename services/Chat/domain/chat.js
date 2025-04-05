@@ -9,7 +9,7 @@ const getGroupChat = async (groupId, offset = 0, limit = 10) => {
         limit
     });
     console.log(`Fetched ${messages.length} messages for groupId: ${groupId}`);
-    console.log('Messages:', messages);
+    //console.log('Messages:', messages);
     return messages;
 };
 
@@ -20,7 +20,7 @@ const convertImageToBase64 = (image) => {
 const calculateUnreadCount = async (groupId, userEmail) => {
   const lastSeen = await LastSeen.findOne({ where: { groupId, userEmail } });
   const lastSeenTimestamp = lastSeen ? lastSeen.timestamp : new Date(0); // Default to epoch if no record
-  console.log(`Last seen timestamp for user ${userEmail} in group ${groupId}:`, lastSeenTimestamp);
+  //console.log(`Last seen timestamp for user ${userEmail} in group ${groupId}:`, lastSeenTimestamp);
 
   const unreadCount = await Message.count({
     where: {
@@ -29,7 +29,7 @@ const calculateUnreadCount = async (groupId, userEmail) => {
     }
   });
 
-  console.log(`Unread count for groupId ${groupId} and userEmail ${userEmail}: ${unreadCount}`);
+  //console.log(`Unread count for groupId ${groupId} and userEmail ${userEmail}: ${unreadCount}`);
   return unreadCount;
 };
 
