@@ -18,6 +18,7 @@ const calculateUnreadCount = async (groupId, userEmail) => {
       createdAt: { $gt: lastSeenTimestamp }
     }
   });
+  console.log(`Unread count for groupId ${groupId} and userEmail ${userEmail}: ${unreadCount}`);
   return unreadCount;
 };
 
