@@ -82,16 +82,6 @@ const getGroupChatsOfUser = async (userEmail) => {
   return groupChats;
 };
 
-const joinGroup = async (socket, groupId, userEmail) => {
-    const groupUser = await GroupUser.findOne({ where: { groupId, userEmail } });
-  const groupChat = await GroupChat.findOne({ where: { groupId, isActive: true } });
-  if (groupUser && groChat) {
-        socket.join(groupId);
-    const messages = await Message.findAll({ where: { groupId }, order: [['createdAt', 'ASC']] });
-        socket.emit('chatHistory', messages);
-    }
-};
-
 const saveMessageToDB = async (groupId, userEmail, content) => {
   return await Message.create({ groupId, userEmail, content });
 };
@@ -126,7 +116,6 @@ const handleUpdateLastSeen = async (socket) => {
 module.exports = {
   getGroupChat,
   getGroupChatsOfUser,
-  joinGroup,
   sendMessage,
   handleUpdateLastSeen
 };
