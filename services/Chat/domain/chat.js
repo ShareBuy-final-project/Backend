@@ -1,8 +1,15 @@
 const { GroupChat, Message, GroupUser, Group, LastSeen } = require('models');
 const { Op } = require('sequelize'); // Import Op for query operators
 
-const getGroupChat = async (groupId) => {
-    const messages = await Message.findAll({ where: { groupId }, order: [['createdAt', 'ASC']] });
+const getGroupChat = async (groupId, offset = 0, limit = 10) => {
+    const messages = await Message.findAll({
+        where: { groupId },
+        order: [['createdAt', 'ASC']],
+        offset,
+        limit
+    });
+    console.log(`Fetched ${messages.length} messages for groupId: ${groupId}`);
+    console.log('Messages:', messages);
     return messages;
 };
 
