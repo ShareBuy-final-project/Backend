@@ -7,6 +7,7 @@ const GroupUser = require('./tables/groupUser');
 const GroupChat = require('./tables/groupChat');
 const PrivateChat = require('./tables/privateChat');
 const Message = require('./tables/message');
+const LastSeen = require('./tables/lastSeen');
 const Review = require('./tables/review');
 const sequelize = require('./db');
 
@@ -35,6 +36,11 @@ PrivateChat.belongsTo(User, { foreignKey: 'userEmail' });
 Business.hasMany(PrivateChat, { foreignKey: 'businessNumber' });
 PrivateChat.belongsTo(Business, { foreignKey: 'businessNumber' });
 
+User.hasMany(LastSeen, { foreignKey: 'userEmail' });
+LastSeen.belongsTo(User, { foreignKey: 'userEmail' });
+
+Group.hasMany(LastSeen, { foreignKey: 'groupId' });
+LastSeen.belongsTo(Group, { foreignKey: 'groupId' });
 Business.hasMany(Review, { foreignKey: 'businessNumber', sourceKey: 'businessNumber', onDelete: 'CASCADE' });
 Review.belongsTo(Business, { foreignKey: 'businessNumber', targetKey: 'businessNumber' });
 
@@ -51,6 +57,7 @@ module.exports = {
   GroupChat,
   PrivateChat,
   Message,
+  LastSeen,
   sequelize,
   Review
 };
