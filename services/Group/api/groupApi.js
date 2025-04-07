@@ -46,7 +46,11 @@ module.exports = (app) => {
       // Create a new group chat for the created group
       await GroupChat.create({ groupId: newGroup.id, isActive: true });
 
-      res.status(201).json({ message: 'Group created successfully', group: newGroup });
+      res.status(201).json({ 
+        message: 'Group created successfully', 
+        group: newGroup, 
+        groupId: newGroup.id // Include groupId in the response
+      });
       
       console.log('Group created successfully');
     } catch (error) {
