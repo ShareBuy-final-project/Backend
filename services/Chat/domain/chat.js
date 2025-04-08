@@ -1,8 +1,15 @@
 const { GroupChat, Message, GroupUser, Group, LastSeen } = require('models');
 const { Op } = require('sequelize'); // Import Op for query operators
 
-const getGroupChat = async (groupId) => {
-    const messages = await Message.findAll({ where: { groupId }, order: [['createdAt', 'ASC']] });
+const getGroupChat = async (groupId, offset = 0, limit = 10) => {
+    const messages = await Message.findAll({
+        where: { groupId },
+        order: [['createdAt', 'ASC']],
+        offset,
+        limit
+    });
+    console.log(`Fetched ${messages.length} messages for groupId: ${groupId}`);
+    //console.log('Messages:', messages);
     return messages;
 };
 
@@ -13,7 +20,7 @@ const convertImageToBase64 = (image) => {
 const calculateUnreadCount = async (groupId, userEmail) => {
   const lastSeen = await LastSeen.findOne({ where: { groupId, userEmail } });
   const lastSeenTimestamp = lastSeen ? lastSeen.timestamp : new Date(0); // Default to epoch if no record
-  console.log(`Last seen timestamp for user ${userEmail} in group ${groupId}:`, lastSeenTimestamp);
+  //console.log(`Last seen timestamp for user ${userEmail} in group ${groupId}:`, lastSeenTimestamp);
 
   const unreadCount = await Message.count({
     where: {
@@ -22,7 +29,7 @@ const calculateUnreadCount = async (groupId, userEmail) => {
     }
   });
 
-  console.log(`Unread count for groupId ${groupId} and userEmail ${userEmail}: ${unreadCount}`);
+  //console.log(`Unread count for groupId ${groupId} and userEmail ${userEmail}: ${unreadCount}`);
   return unreadCount;
 };
 
@@ -36,6 +43,7 @@ const getChatDetails = async (groupId, groupName, groupImage, owner, userEmail) 
 
   console.log(`Last message for groupId ${groupId}:`, lastMessage ? lastMessage.content : 'null');
   const unreadCount = userEmail ? await calculateUnreadCount(groupId, userEmail) : 0;
+  const totalMessages = await Message.count({ where: { groupId } }); // Count total messages in the group
 
   return {
     id: groupId,
@@ -43,6 +51,7 @@ const getChatDetails = async (groupId, groupName, groupImage, owner, userEmail) 
     lastMessage: lastMessage ? lastMessage.content : 'no messages in the chat',
     timestamp: lastMessage ? lastMessage.createdAt : null,
     unreadCount,
+    totalMessages, // Include totalMessages in the response
     image: convertImageToBase64(groupImage),
     owner
   };
