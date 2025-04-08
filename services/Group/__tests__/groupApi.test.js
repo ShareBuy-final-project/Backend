@@ -148,7 +148,7 @@ describe('Group API', () => {
       .send({id});
 
     expect(response.status).toBe(200);
-    expect(response.group).toHaveProperty('name', 'Test Group');
+    expect(response.body.group).toHaveProperty('name', 'Test Group');
   });
 
   // Test for retrieving group that doesn't exist
@@ -805,7 +805,7 @@ describe('Group API', () => {
       });
 
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups[0].id).toBe(id);
+    expect(getresponse.body.groups[0].id).toBe(id);
     const getResponse2 = await request(app)
       .get('/getPage')
       .set('Authorization', `Bearer ${accessToken}`)
@@ -859,7 +859,7 @@ describe('Group API', () => {
       });
 
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups[0].id).toBe(id);
+    expect(getresponse.body.groups[0].id).toBe(id);
     const getResponse2 = await request(app)
       .get('/getPage')
       .set('Authorization', `Bearer ${accessToken}`)
@@ -912,7 +912,7 @@ describe('Group API', () => {
       });
 
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups[0].id).toBe(id);
+    expect(getresponse.body.groups[0].id).toBe(id);
     const getResponse2 = await request(app)
       .get('/getPage')
       .set('Authorization', `Bearer ${accessToken}`)
@@ -979,7 +979,7 @@ describe('Group API', () => {
       });
 
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups[0].id).toBe(id3);
+    expect(getresponse.body.groups[0].id).toBe(id3);
   });
   // Test for no filter
   it('should return all groups if no filters are specified', async () => {
@@ -1023,7 +1023,7 @@ describe('Group API', () => {
       });
 
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups).toHaveLength(2);
+    expect(getresponse.body.groups).toHaveLength(2);
   });
   // Test for limit and range
   it('should only return groups depending on the limit and page', async () => {
@@ -1066,7 +1066,7 @@ describe('Group API', () => {
         filters: {price:50,page:1,limit:1}
       });
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups[0].id).toBe(id);
+    expect(getresponse.body.groups[0].id).toBe(id);
     const getResponse2 = await request(app)
       .get('/getPage')
       .set('Authorization', `Bearer ${accessToken}`)
@@ -1104,7 +1104,7 @@ describe('Group API', () => {
         filters: {price:50,page:2,limit:10}
       });
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups).toHaveLength(0);
+    expect(getresponse.body.groups).toHaveLength(0);
     const getResponse2 = await request(app)
       .get('/getPage')
       .set('Authorization', `Bearer ${accessToken}`)
@@ -1137,7 +1137,7 @@ describe('Group API', () => {
     .get('/businessHistory')
     .set('Authorization', `Bearer ${accessToken}`)
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups).toHaveLength(1);
+    expect(getresponse.body.groups).toHaveLength(1);
   });
   // Test for returning business history
   it('should get the history of a business per page', async () => {
@@ -1179,7 +1179,7 @@ describe('Group API', () => {
       limit:1
     });
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups).toHaveLength(1);
+    expect(getresponse.body.groups).toHaveLength(1);
     const getResponse2 = await request(app)
     .get('/businessHistory')
     .set('Authorization', `Bearer ${accessToken}`)
@@ -1216,7 +1216,7 @@ describe('Group API', () => {
       limit:10
     });
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups).toHaveLength(0);
+    expect(getresponse.body.groups).toHaveLength(0);
     const getResponse2 = await request(app)
     .get('/businessHistory')
     .set('Authorization', `Bearer ${accessToken}`)
@@ -1268,7 +1268,7 @@ describe('Group API', () => {
     .get('/getUserHistory')
     .set('Authorization', `Bearer ${accessToken}`)
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups).toHaveLength(1);
+    expect(getresponse.body.groups).toHaveLength(1);
   });
   // Test for returning business history
   it('should get the history of a business per page', async () => {
@@ -1325,7 +1325,7 @@ describe('Group API', () => {
       limit:1
     });
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups).toHaveLength(1);
+    expect(getresponse.body.groups).toHaveLength(1);
     const getResponse2 = await request(app)
     .get('/getUserHistory')
     .set('Authorization', `Bearer ${accessToken}`)
@@ -1369,7 +1369,7 @@ describe('Group API', () => {
       limit:10
     });
     expect(getResponse.status).toBe(200);
-    expect(getResponse.groups).toHaveLength(0);
+    expect(getresponse.body.groups).toHaveLength(0);
     const getResponse2 = await request(app)
     .get('/getUserHistory')
     .set('Authorization', `Bearer ${accessToken}`)
