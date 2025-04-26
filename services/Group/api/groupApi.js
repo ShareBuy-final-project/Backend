@@ -2,6 +2,7 @@ const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, s
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser, Business, GroupChat } = require('models');
 const express = require('express');
+const sequelize = require('sequelize');
 
 module.exports = (app) => {
   app.use(express.json());
@@ -364,6 +365,26 @@ app.post('/getBuisnessGroups', async (req, res) => {
     else{
       res.status(400).json({ message: 'Error fetching user groups', error: error.message });
     }
+  }
+});
+
+  /**
+ * @api {get} /categories Get all unique categories
+ * @apiName GetCategories
+ * @apiGroup Group
+ * 
+ * @apiSuccess {String[]} categories List of unique categories.
+ */
+app.get('/categories', async (req, res) => {
+  try {
+    const categories = await Group.findAll({
+      attributes: [[sequelize.fn('DISTINCT', sequelize.col('category')), 'category']],
+      raw: true,
+    });
+    const categoryList = categories.map(c => c.category);
+    res.status(200).json(categoryList);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching categories', error: error.message });
   }
 });
 };
