@@ -46,7 +46,7 @@ app.get('/runModel', async (req, res) => {
             res.status(404).json({ message: 'User not found' });
             return
         }
-        if(!userEmail === 'ido@gmail.com'){
+        if(!userEmail === 'user1@example.com'){
             res.status(403).json({ message: 'Access denied' });
             return
         }
