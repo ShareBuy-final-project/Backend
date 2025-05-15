@@ -29,6 +29,24 @@ async function getGroupEmbedding({ description, category, price, discount, size 
   return embeddingArray[0]; // 512-dimension vector
 }
 
+const ensureVectorColumn = async () => {
+  const result = await sequelize.query(`
+    SELECT column_name
+    FROM information_schema.columns
+    WHERE table_name = 'Group' AND column_name = 'groupEmbedding';
+  `);
+
+  if (result[0].length === 0) {
+    console.log('Adding groupEmbedding column as vector(512)...');
+    await sequelize.query(`
+      ALTER TABLE "Group"
+      ADD COLUMN "groupEmbedding" vector(512);
+    `);
+  } else {
+    console.log('groupEmbedding column already exists');
+  }
+};
+
 const Group = sequelize.define('group', {
   id: {
     type: DataTypes.INTEGER,
@@ -88,10 +106,6 @@ const Group = sequelize.define('group', {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
-  },
-  groupEmbedding: {
-    type: DataTypes.ARRAY(DataTypes.FLOAT),
-    allowNull: true
   }
 }, {
   tableName: 'Group', // Specify the table name
@@ -111,6 +125,7 @@ const readImage = (imagePath) => {
 };
 
 const insertInitialGroups = async () => {
+  await ensureVectorColumn();
   const existingGroups = await Group.findAll();
   console.log('Trying to insert initial groups');
   if (existingGroups.length > 0) {
