@@ -1,12 +1,6 @@
 const { Group, User, SavedGroup, GroupUser, Business } = require('models');
 const tf = require('@tensorflow/tfjs-node'); // TensorFlow.js for Node.js
 
-/**
- * Load the AI model for recommendations.
- */
-const loadModel = async () => {
-  return await tf.loadLayersModel('file://path/to/your/model.json'); // Replace with your model path
-};
 
 /**
  * Get recommendations for a user based on an AI model.
@@ -14,58 +8,28 @@ const loadModel = async () => {
  * @param {Object} options - Additional options for generating recommendations.
  * @returns {Array} - A list of recommended groups.
  */
-async function getRecommendationsForUser(userEmail, options = {}) {
+const getRecommendationsForUser = async (userEmail, options = {}) => {
   try {
-    // Step 1: Fetch groups the user is already a part of
+    console.log(`[INFO] Fetching recommendations for user: ${userEmail}`);
+
     const userGroupIds = await getUserGroups(userEmail);
+    console.log(`[INFO] User is part of groups: ${JSON.stringify(userGroupIds)}`);
 
-    // Step 2: Fetch groups the user has saved
     const savedGroupIds = await getSavedGroups(userEmail);
+    console.log(`[INFO] User has saved groups: ${JSON.stringify(savedGroupIds)}`);
 
-    // Combine the two lists to exclude these groups from recommendations
-    const excludedGroupIds = [...new Set([...userGroupIds, ...savedGroupIds])];
+    const groupsVectors = await getGroupsVectors([...userGroupIds, ...savedGroupIds]);
+    console.log(`[INFO] Retrieved group vectors for user: ${JSON.stringify(groupsVectors)}`);
 
-    // Step 3: Fetch all groups excluding the ones the user is already associated with
-    const allGroups = await Group.findAll({
-      where: {
-        id: { [Group.sequelize.Op.notIn]: excludedGroupIds }
-      }
-    });
+    const forYou = await getForYouGroups(groupsVectors);
+    console.log(`[INFO] Generated recommendations for user: ${JSON.stringify(forYou)}`);
 
-    // Step 4: Fetch user's preferences (you'll need to implement this)
-    const userProfile = await getUserProfileFeatures(userEmail);
-
-    // Step 5: Prepare input data for all groups
-    const groupFeatures = allGroups.map(group => ({
-      id: group.id,
-      name: group.name,
-      tags: group.tags,
-      features: extractGroupFeatures(group) // function that transforms group to feature vector
-    }));
-
-    // Step 6: Compute distances between user profile and each group
-    const scoredGroups = groupFeatures.map(group => {
-      const distance = euclideanDistance(userProfile, group.features);
-      return { ...group, distance };
-    });
-
-    // Step 7: Sort by ascending distance (smaller distance = more similar)
-    const recommendedGroups = scoredGroups
-      .sort((a, b) => a.distance - b.distance)
-      .slice(0, options.limit || 10);
-
-    // Step 8: Format the recommendations
-    return recommendedGroups.map(group => ({
-      id: group.id,
-      name: group.name,
-      tags: group.tags,
-      score: 1 / (1 + group.distance) // Higher score = closer
-    }));
+    return forYou;
   } catch (error) {
-    console.error('Error generating recommendations:', error);
-    return [];    
+    console.error(`[ERROR] Error generating recommendations for user ${userEmail}:`, error);
+    return [];
   }
-}
+};
 
 /**
  * Calculates Euclidean distance between two vectors.
@@ -82,19 +46,82 @@ function euclideanDistance(vec1, vec2) {
 
 const getUserGroups = async (userEmail) => {
   try {
-    const groupUsers = await GroupUser.findAll({ where: { userEmail,  paymentConfirmed:true} });
+    console.log(`[INFO] Fetching groups for user: ${userEmail}`);
+    const groupUsers = await GroupUser.findAll({ where: { userEmail } });
     const groupIds = groupUsers.map(gu => gu.groupId);
+    console.log(`[INFO] Found groups for user: ${JSON.stringify(groupIds)}`);
     return groupIds;
   } catch (error) {
+    console.error(`[ERROR] Error fetching groups for user ${userEmail}:`, error);
     throw new Error(error.toString());
   }
 };
 
 const getSavedGroups = async (userEmail) => {
-  const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
-  const groupIds = savedGroups.map(sg => sg.groupId);
-  return groupIds;
+  try {
+    console.log(`[INFO] Fetching saved groups for user: ${userEmail}`);
+    const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
+    const groupIds = savedGroups.map(sg => sg.groupId);
+    console.log(`[INFO] Found saved groups for user: ${JSON.stringify(groupIds)}`);
+    return groupIds;
+  } catch (error) {
+    console.error(`[ERROR] Error fetching saved groups for user ${userEmail}:`, error);
+    throw new Error(error.toString());
+  }
 };
+
+const getForYouGroups = async (groupsVectors) => {
+  try {
+    console.log(`[INFO] Generating recommendations based on group vectors: ${JSON.stringify(groupsVectors)}`);
+    const recommendations = [];
+
+    for (const userVector of groupsVectors) {
+      console.log(`[INFO] Processing user vector: ${JSON.stringify(userVector)}`);
+      const nearestNeighbors = await Group.findAll({
+        attributes: ['id'],
+        order: [
+          [
+            Sequelize.literal(`
+              "groupEmbedding" <#> '${JSON.stringify(userVector)}'
+            `),
+            'ASC'
+          ]
+        ],
+        limit: 3 // Limit to top 3 nearest neighbors
+      });
+
+      console.log(`[INFO] Found nearest neighbors: ${JSON.stringify(nearestNeighbors)}`);
+      recommendations.push(...nearestNeighbors.map(neighbor => neighbor.id));
+    }
+
+    console.log(`[INFO] Final recommendations: ${JSON.stringify(recommendations)}`);
+    return [...new Set(recommendations)]; // Remove duplicates
+  } catch (error) {
+    console.error(`[ERROR] Error generating recommendations:`, error);
+    throw new Error('Error fetching recommendations: ' + error.toString());
+  }
+};
+
+
+const getGroupsVectors = async (groupIds) => {
+  try {
+    console.log(`[INFO] Fetching group vectors for group IDs: ${JSON.stringify(groupIds)}`);
+    const groups = await Group.findAll({
+      where: {
+        id: groupIds
+      },
+      attributes: ['groupEmbedding'] 
+    });
+
+    const vectors = groups.map(group => group.groupEmbedding);
+    console.log(`[INFO] Retrieved group vectors: ${JSON.stringify(vectors)}`);
+    return vectors;
+  } catch (error) {
+    console.error(`[ERROR] Error fetching group vectors:`, error);
+    throw new Error(error.toString());
+  }
+};
+
 
 
 module.exports = {
