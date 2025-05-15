@@ -4,6 +4,30 @@ const Business = require('./business');
 const User = require('./user');
 const fs = require('fs');
 const path = require('path');
+const use = require('@tensorflow-models/universal-sentence-encoder');
+const tf = require('@tensorflow/tfjs-node');
+let useModel = null;
+
+async function loadUSEModel() {
+  if (!useModel) {
+    useModel = await use.load();
+  }
+  return useModel;
+}
+
+async function getGroupEmbedding({ description, category, price, discount, size }) {
+  const model = await loadUSEModel();
+  const enrichedText = `
+    ${description}
+    Category: ${category}.
+    Price: $${price}.
+    Group size: ${size}.
+    Discount: $${discount}.
+  `;
+  const embeddings = await model.embed([enrichedText]);
+  const embeddingArray = await embeddings.array();
+  return embeddingArray[0]; // 512-dimension vector
+}
 
 const Group = sequelize.define('group', {
   id: {
@@ -122,6 +146,18 @@ const insertInitialGroups = async () => {
     { name: 'Sports Gear', creator: 'user25@example.com', description: 'Join the group to buy sports equipment at a lower price.', image: readImage('Sports Gear.jpeg'), price: 1000, discount: 100, size: 10, category: 'Sports', businessNumber: 'B025' }
   ];
 
+  for (const group of groups) {
+    const embedding = await getGroupEmbedding({
+      description: group.description,
+      category: group.category,
+      price: group.price,
+      discount: group.discount,
+      size: group.size
+    });
+  
+    group.groupEmbedding = embedding; // נוסיף את הוקטור ישירות לאובייקט
+  }
+  
   await Group.bulkCreate(groups);
   console.log('Initial groups inserted');
 };
