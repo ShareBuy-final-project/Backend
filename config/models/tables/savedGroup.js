@@ -25,7 +25,6 @@ const SavedGroup = sequelize.define('savedGroup', {
   timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
 });
 
-// 💾 הכנסת נתונים ראשוניים
 const insertInitialSavedGroups = async () => {
   const existing = await SavedGroup.findAll();
   if (existing.length > 0) {
