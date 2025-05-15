@@ -1,6 +1,7 @@
 const { getRecommendationsForUser } = require('../domain/recommendations');
 const { trainRecommendationModel } = require('models');
 const { validate } = require('../domain/validation');
+const express = require('express');
 
 module.exports = (app) => {
   /**
