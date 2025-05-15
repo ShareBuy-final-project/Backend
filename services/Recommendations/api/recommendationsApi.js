@@ -1,5 +1,5 @@
 const { getRecommendationsForUser } = require('../domain/recommendations');
-const { trainRecommendationModel } = require('../domain/model'); // Assuming this function is defined in your domain
+const { trainRecommendationModel } = require('models');
 const { validate } = require('../domain/validation');
 
 module.exports = (app) => {
