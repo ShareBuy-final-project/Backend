@@ -26,7 +26,8 @@ async function getGroupEmbedding({ description, category, price, discount, size 
   `;
   const embeddings = await model.embed([enrichedText]);
   const embeddingArray = await embeddings.array();
-  return embeddingArray[0]; // 512-dimension vector
+
+  return `[${embeddingArray[0].join(',')}]`;
 }
 
 const ensureVectorColumn = async () => {
