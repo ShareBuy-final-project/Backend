@@ -32,39 +32,53 @@ async function getRecommendationsForUser(userEmail, options = {}) {
       }
     });
 
-    // Step 4: Load the AI model
-    const model = await loadModel();
+    // Step 4: Fetch user's preferences (you'll need to implement this)
+    const userProfile = await getUserProfileFeatures(userEmail);
 
-    // Step 5: Prepare input data for the model
-    const inputData = allGroups.map(group => {
-      return [
-        /* Example features: user preferences, group tags, etc. */
-        ...group.tags, // Group tags
-        /* Add more features as needed */
-      ];
+    // Step 5: Prepare input data for all groups
+    const groupFeatures = allGroups.map(group => ({
+      id: group.id,
+      name: group.name,
+      tags: group.tags,
+      features: extractGroupFeatures(group) // function that transforms group to feature vector
+    }));
+
+    // Step 6: Compute distances between user profile and each group
+    const scoredGroups = groupFeatures.map(group => {
+      const distance = euclideanDistance(userProfile, group.features);
+      return { ...group, distance };
     });
 
-    // Step 6: Predict scores for each group
-    const predictions = model.predict(tf.tensor2d(inputData)).arraySync();
-
-    // Step 7: Sort groups by predicted scores
-    const recommendedGroups = allGroups
-      .map((group, index) => ({ ...group, score: predictions[index] }))
-      .sort((a, b) => b.score - a.score) // Sort by score descending
-      .slice(0, options.limit || 10); // Limit the number of recommendations
+    // Step 7: Sort by ascending distance (smaller distance = more similar)
+    const recommendedGroups = scoredGroups
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, options.limit || 10);
 
     // Step 8: Format the recommendations
     return recommendedGroups.map(group => ({
       id: group.id,
       name: group.name,
       tags: group.tags,
-      score: group.score
+      score: 1 / (1 + group.distance) // Higher score = closer
     }));
   } catch (error) {
     console.error('Error generating recommendations:', error);
-    return [];
+    return [];    
   }
 }
+
+/**
+ * Calculates Euclidean distance between two vectors.
+ * @param {Array} vec1 
+ * @param {Array} vec2 
+ * @returns {number}
+ */
+function euclideanDistance(vec1, vec2) {
+  if (vec1.length !== vec2.length) throw new Error('Vectors must be of same length');
+  return Math.sqrt(vec1.reduce((sum, val, idx) => sum + Math.pow(val - vec2[idx], 2), 0));
+}
+
+
 
 const getUserGroups = async (userEmail) => {
   try {
