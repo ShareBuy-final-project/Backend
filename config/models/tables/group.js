@@ -54,7 +54,7 @@ const Group = sequelize.define('group', {
     primaryKey: true,
     autoIncrement: true,
   },
-  creator: { //email of the user
+  creator: {
     type: DataTypes.STRING,
     allowNull: false,
     references: {
@@ -109,20 +109,18 @@ const Group = sequelize.define('group', {
     defaultValue: false
   }
 }, {
-  tableName: 'Group', // Specify the table name
-  timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
+  tableName: 'Group',
+  timestamps: false
 });
 
 const readImage = (imagePath) => {
   const resolvedPath = path.resolve('/app/Group/images', imagePath);
-  console.log(`Reading image from: ${resolvedPath}`);
   try {
-    const files = fs.readdirSync('/app/Group/images');
-    console.log('Files in /app/Group/images:', files);
+    return fs.readFileSync(resolvedPath);
   } catch (err) {
-    console.error('Error reading /app/Group/images directory:', err.message);
+    console.error(`Error reading image at ${resolvedPath}:`, err.message);
+    return null;
   }
-  return fs.readFileSync(resolvedPath);
 };
 
 const insertInitialGroups = async () => {
@@ -162,7 +160,11 @@ const insertInitialGroups = async () => {
     { name: 'Sports Gear', creator: 'user25@example.com', description: 'Join the group to buy sports equipment at a lower price.', image: readImage('Sports Gear.jpeg'), price: 1000, discount: 100, size: 10, category: 'Sports', businessNumber: 'B025' }
   ];
 
-  for (const group of groups) {
+  await Group.bulkCreate(groups);
+  console.log('Initial groups inserted');
+
+  const allGroups = await Group.findAll();
+  for (const group of allGroups) {
     const embedding = await getGroupEmbedding({
       description: group.description,
       category: group.category,
@@ -170,12 +172,15 @@ const insertInitialGroups = async () => {
       discount: group.discount,
       size: group.size
     });
-  
-    group.groupEmbedding = embedding; // נוסיף את הוקטור ישירות לאובייקט
+
+    await sequelize.query(`
+      UPDATE "Group"
+      SET "groupEmbedding" = '${embedding}'
+      WHERE id = ${group.id}
+    `);
   }
-  
-  await Group.bulkCreate(groups);
-  console.log('Initial groups inserted');
+
+  console.log('Embeddings updated for all groups');
 };
 
 insertInitialGroups().catch(error => {
