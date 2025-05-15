@@ -10,6 +10,8 @@ module.exports = (app) => {
    * 
    * @apiSuccess {Object[]} recommendations List of recommended groups.
    */
+  app.use(express.json());
+
   app.get('/recommendations', async (req, res) => {
     try {
         const accessToken = req.headers.authorization?.split(' ')[1];
