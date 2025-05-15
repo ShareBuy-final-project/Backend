@@ -1,5 +1,5 @@
 const { Group, User, SavedGroup, GroupUser, Business } = require('models');
-const tf = require('@tensorflow/tfjs-node'); // TensorFlow.js for Node.js
+const { Sequelize } = require('sequelize');
 
 
 /**
