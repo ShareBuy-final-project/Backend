@@ -23,8 +23,11 @@ const getRecommendationsForUser = async (userEmail, options = {}) => {
 
     const forYou = await getForYouGroups(groupsVectors);
     console.log(`[INFO] Generated recommendations for user: ${JSON.stringify(forYou)}`);
-
-    return forYou;
+     
+    const filteredRecommendations = forYou.filter(groupId => 
+      !userGroupIds.includes(groupId) && !savedGroupIds.includes(groupId)
+    );
+    return filteredRecommendations;
   } catch (error) {
     console.error(`[ERROR] Error generating recommendations for user ${userEmail}:`, error);
     return [];
