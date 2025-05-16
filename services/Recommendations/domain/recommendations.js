@@ -151,7 +151,7 @@ const getGroupGeneric = async (userEmail, groupIds) => {
     return {
       ...groupData,
       isSaved: savedGroupIds.includes(group.id),
-      totalAmount,
+      totalAmount,  
       imageBase64: convertImageToBase64(image)
     };
   }));
@@ -161,6 +161,10 @@ const getGroupGeneric = async (userEmail, groupIds) => {
 const getTotalAmount = async (id) =>{ 
   return await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
 )};
+
+const convertImageToBase64 = (image) => {
+  return image ? `data:image/jpeg;base64,${image.toString('base64')}` : null;
+};
 
 
 
