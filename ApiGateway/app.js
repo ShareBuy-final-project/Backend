@@ -110,6 +110,15 @@ const chatServiceProxy = createProxyMiddleware({
   secure: false
 });
 
+const recommendationsServiceProxy = createProxyMiddleware({
+  target: 'http://recommendations-service:10000',
+  changeOrigin: true,
+  pathRewrite: {
+    '^/recommendations': '', // remove /recommendations prefix
+  },
+  on: { proxyReq: onProxyReq },
+});
+
 app.use('/user', (req, res, next) => {
   console.log(`Before proxy: ${req.method} ${req.originalUrl} with body: ${JSON.stringify(req.body)} and headers: ${JSON.stringify(req.headers)}`);
   next();
@@ -135,6 +144,10 @@ app.use('/chat', (req, res, next) => {
   next();
 }, chatServiceProxy);
 
+app.use('/recommendations', (req, res, next) => {
+  console.log(`Before proxy: ${req.method} ${req.originalUrl}`);
+  next();
+}, recommendationsServiceProxy);
 
 app.use(cors());
 

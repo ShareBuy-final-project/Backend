@@ -4,6 +4,49 @@ const Business = require('./business');
 const User = require('./user');
 const fs = require('fs');
 const path = require('path');
+const use = require('@tensorflow-models/universal-sentence-encoder');
+const tf = require('@tensorflow/tfjs-node');
+let useModel = null;
+
+async function loadUSEModel() {
+  if (!useModel) {
+    useModel = await use.load();
+  }
+  return useModel;
+}
+
+async function getGroupEmbedding({ description, category, price, discount, size }) {
+  const model = await loadUSEModel();
+  const enrichedText = `
+    ${description}
+    Category: ${category}.
+    Price: $${price}.
+    Group size: ${size}.
+    Discount: $${discount}.
+  `;
+  const embeddings = await model.embed([enrichedText]);
+  const embeddingArray = await embeddings.array();
+
+  return `[${embeddingArray[0].join(',')}]`;
+}
+
+const ensureVectorColumn = async () => {
+  const result = await sequelize.query(`
+    SELECT column_name
+    FROM information_schema.columns
+    WHERE table_name = 'Group' AND column_name = 'groupEmbedding';
+  `);
+
+  if (result[0].length === 0) {
+    console.log('Adding groupEmbedding column as vector(512)...');
+    await sequelize.query(`
+      ALTER TABLE "Group"
+      ADD COLUMN "groupEmbedding" vector(512);
+    `);
+  } else {
+    console.log('groupEmbedding column already exists');
+  }
+};
 
 const Group = sequelize.define('group', {
   id: {
@@ -11,7 +54,7 @@ const Group = sequelize.define('group', {
     primaryKey: true,
     autoIncrement: true,
   },
-  creator: { //email of the user
+  creator: {
     type: DataTypes.STRING,
     allowNull: false,
     references: {
@@ -66,23 +109,22 @@ const Group = sequelize.define('group', {
     defaultValue: false
   }
 }, {
-  tableName: 'Group', // Specify the table name
-  timestamps: false // Disable the automatic addition of createdAt and updatedAt fields
+  tableName: 'Group',
+  timestamps: false
 });
 
 const readImage = (imagePath) => {
   const resolvedPath = path.resolve('/app/Group/images', imagePath);
-  console.log(`Reading image from: ${resolvedPath}`);
   try {
-    const files = fs.readdirSync('/app/Group/images');
-    console.log('Files in /app/Group/images:', files);
+    return fs.readFileSync(resolvedPath);
   } catch (err) {
-    console.error('Error reading /app/Group/images directory:', err.message);
+    console.error(`Error reading image at ${resolvedPath}:`, err.message);
+    return null;
   }
-  return fs.readFileSync(resolvedPath);
 };
 
 const insertInitialGroups = async () => {
+  await ensureVectorColumn();
   const existingGroups = await Group.findAll();
   console.log('Trying to insert initial groups');
   if (existingGroups.length > 0) {
@@ -120,6 +162,25 @@ const insertInitialGroups = async () => {
 
   await Group.bulkCreate(groups);
   console.log('Initial groups inserted');
+
+  const allGroups = await Group.findAll();
+  for (const group of allGroups) {
+    const embedding = await getGroupEmbedding({
+      description: group.description,
+      category: group.category,
+      price: group.price,
+      discount: group.discount,
+      size: group.size
+    });
+
+    await sequelize.query(`
+      UPDATE "Group"
+      SET "groupEmbedding" = '${embedding}'
+      WHERE id = ${group.id}
+    `);
+  }
+
+  console.log('Embeddings updated for all groups');
 };
 
 insertInitialGroups().catch(error => {

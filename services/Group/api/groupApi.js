@@ -3,6 +3,31 @@ const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser, Business, GroupChat } = require('models');
 const express = require('express');
 const sequelize = require('sequelize');
+const use = require('@tensorflow-models/universal-sentence-encoder');
+const tf = require('@tensorflow/tfjs-node');
+let useModel = null;
+
+async function loadUSEModel() {
+  if (!useModel) {
+    useModel = await use.load();
+  }
+  return useModel;
+}
+
+async function getGroupEmbedding({ description, category, price, discount, size }) {
+  const model = await loadUSEModel();
+  const enrichedText = `
+    ${description}
+    Category: ${category}.
+    Price: $${price}.
+    Group size: ${size}.
+    Discount: $${discount}.
+  `;
+  const embeddings = await model.embed([enrichedText]);
+  const embeddingArray = await embeddings.array();
+  return embeddingArray[0]; // 512-dimension vector
+}
+
 
 module.exports = (app) => {
   app.use(express.json());
@@ -44,8 +69,16 @@ module.exports = (app) => {
         businessNumber: business.businessNumber 
       });
 
+      const embedding = await getGroupEmbedding({
+        description,
+        category: business.category,
+        price,
+        discount,
+        size
+      });
+  
       // Create a new group chat for the created group
-      await GroupChat.create({ groupId: newGroup.id, isActive: true });
+      await GroupChat.create({ groupId: newGroup.id, isActive: true, groupEmbedding: embedding });
 
       res.status(201).json({ 
         message: 'Group created successfully', 

@@ -1,7 +1,7 @@
 services:
 
   db:
-    image: postgres:latest
+    image: ankane/pgvector:latest
     environment:
       - POSTGRES_DB=ShareBuyDB
       - POSTGRES_USER=adminDB
@@ -101,6 +101,23 @@ services:
         condition: service_healthy
     volumes:
       - ./config/models/images:/app/Group/images
+
+  recommendations-service:
+    build:
+      context: .
+      dockerfile: ./services/Recommendations/Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=10000
+      - DB_HOST=db
+      - DB_USER=adminDB
+      - DB_PASS=adminDB
+      - DB_NAME=ShareBuyDB
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./config/models:/app/models
 
   api-gateway:
     build:
