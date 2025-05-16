@@ -112,10 +112,17 @@ const getGroupsVectors = async (groupIds) => {
     });
 
     console.log(`[INFO] Number of groups found: ${groups.length}`);
-    console.log(`[INFO] Found groups: ${JSON.stringify(groups.map(group => group.toJSON()))}`);
 
-    // Extract groupEmbedding from each group
-    const vectors = groups.map(group => group.groupEmbedding);
+    // Parse groupEmbedding from JSON string to array
+    const vectors = groups.map(group => {
+      try {
+        return JSON.parse(group.groupEmbedding);
+      } catch (error) {
+        console.error(`[ERROR] Failed to parse groupEmbedding for group ID ${group.id}:`, error);
+        return null; // Handle parsing errors gracefully
+      }
+    });
+
     console.log(`[INFO] Retrieved group vectors: ${JSON.stringify(vectors)}`);
     return vectors;
   } catch (error) {
