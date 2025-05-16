@@ -107,13 +107,14 @@ const getGroupsVectors = async (groupIds) => {
   try {
     console.log(`[INFO] Fetching group vectors for group IDs: ${JSON.stringify(groupIds)}`);
     const groups = await Group.findAll({
-      where: {
-        id: groupIds
-      },
-      attributes: ['groupEmbedding'] 
+      where: { id: groupIds },
+      attributes: ['id', 'groupEmbedding'] // Ensure groupEmbedding is included
     });
+
     console.log(`[INFO] Number of groups found: ${groups.length}`);
-    console.log(`[INFO] Found groups: ${groups}`);
+    console.log(`[INFO] Found groups: ${JSON.stringify(groups.map(group => group.toJSON()))}`);
+
+    // Extract groupEmbedding from each group
     const vectors = groups.map(group => group.groupEmbedding);
     console.log(`[INFO] Retrieved group vectors: ${JSON.stringify(vectors)}`);
     return vectors;
