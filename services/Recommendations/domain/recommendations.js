@@ -112,7 +112,8 @@ const getGroupsVectors = async (groupIds) => {
       },
       attributes: ['groupEmbedding'] 
     });
-    console.log(`[INFO] Found groups: ${JSON.stringify(groups)}`);
+    console.log(`[INFO] Number of groups found: ${groups.length}`);
+    console.log(`[INFO] Found groups: ${groups}`);
     const vectors = groups.map(group => group.groupEmbedding);
     console.log(`[INFO] Retrieved group vectors: ${JSON.stringify(vectors)}`);
     return vectors;
