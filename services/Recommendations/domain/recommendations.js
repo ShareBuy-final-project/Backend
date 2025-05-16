@@ -1,3 +1,4 @@
+const { get } = require('lodash');
 const { Group, User, SavedGroup, GroupUser, Business } = require('models');
 const { Sequelize } = require('sequelize');
 
@@ -27,7 +28,7 @@ const getRecommendationsForUser = async (userEmail, options = {}) => {
     const filteredRecommendations = forYou.filter(groupId => 
       !userGroupIds.includes(groupId) && !savedGroupIds.includes(groupId)
     );
-    return filteredRecommendations;
+    return getGroupGeneric(userEmail, filteredRecommendations);
   } catch (error) {
     console.error(`[ERROR] Error generating recommendations for user ${userEmail}:`, error);
     return [];
@@ -135,6 +136,27 @@ const getGroupsVectors = async (groupIds) => {
     throw new Error(error.toString());
   }
 };
+
+const getGroupGeneric = async (userEmail, groupIds) => {
+  console.log('groupIds', groupIds);
+  const groups = await Group.findAll({ where: { id: groupIds, isActive: true } });
+  console.log('groups', groups.map(g => g.id));
+  const savedGroups = await SavedGroup.findAll({ where: { userEmail } });
+  const savedGroupIds = savedGroups.map(sg => sg.groupId);
+
+  const groupsWithTotalAmount = await Promise.all(groups.map(async group => {
+    const totalAmount = await getTotalAmount(group.id);
+    const {image, ...groupData } = group.toJSON();
+
+    return {
+      ...groupData,
+      isSaved: savedGroupIds.includes(group.id),
+      totalAmount,
+      imageBase64: convertImageToBase64(image)
+    };
+  }));
+  return groupsWithTotalAmount;
+}
 
 
 
