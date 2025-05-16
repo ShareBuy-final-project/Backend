@@ -115,6 +115,7 @@ const getGroupsVectors = async (groupIds) => {
 
     // Parse groupEmbedding from JSON string to array
     const vectors = groups.map(group => {
+      console.log(`[INFO] Processing group Embedding: ${group.groupEmbedding}`);
       try {
         return JSON.parse(group.groupEmbedding);
       } catch (error) {
