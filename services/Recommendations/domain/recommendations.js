@@ -115,6 +115,7 @@ const getGroupsVectors = async (groupIds) => {
 
     // Parse groupEmbedding from JSON string to array
     const vectors = groups.map(group => {
+      group = group.toJSON(); // Convert Sequelize instance to plain object
       console.log(`[INFO] Processing group: ${group}`);
       try {
         return JSON.parse(group.groupEmbedding);
