@@ -158,6 +158,10 @@ const getGroupGeneric = async (userEmail, groupIds) => {
   return groupsWithTotalAmount;
 }
 
+const getTotalAmount = async (id) =>{ 
+  return await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
+)};
+
 
 
 module.exports = {
