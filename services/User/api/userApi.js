@@ -1,6 +1,7 @@
 const { User, Business } = require('models');
 const { register, getUser, registerBusiness } = require('../domain/user');
 const { comparePassword } = require('../domain/utils');
+const { validate } = require('../domain/validation');
 
 module.exports = (app) => {
   /**
@@ -92,7 +93,8 @@ module.exports = (app) => {
     try {
       //console.log('Authorization header:', req.headers.authorization);
       const accessToken = req.headers.authorization.split(' ')[1];
-      const user = await getUser(accessToken);
+      const { userEmail } = await validate(accessToken);
+      const user = await getUser(userEmail);
 
       //console.log('User:', user);
 
@@ -104,11 +106,13 @@ module.exports = (app) => {
       //console.log('User data returned:', userData);
       res.status(200).json(userData);
     } catch (error) {
-      if (error.message === 'Invalid token') {
-        return res.status(401).json({ message: 'Invalid token' });
-      }
       console.error('Error fetching user:', error);
-      res.status(400).json({ message: 'Error fetching user', error: error.message });
+      if (error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error fetching user', error: error.message });
+      }
     }
   });
 
@@ -135,7 +139,8 @@ module.exports = (app) => {
     try {
       const { fullName, email, phone, state, city, street, streetNumber, zipCode } = req.body;
       const accessToken = req.headers.authorization.split(' ')[1];
-      const user = await getUser(accessToken);
+      const { userEmail } = await validate(accessToken);
+      const user = await getUser(userEmail);
 
       if (!user) {
         return res.status(401).json({ message: 'Invalid token' });
@@ -153,8 +158,9 @@ module.exports = (app) => {
       await user.save();
       res.status(200).json({ message: 'Update successful' });
     } catch (error) {
-      if (error.message === 'Invalid token') {
-        return res.status(401).json({ message: 'Invalid token' });
+      console.error('Error updating user:', error);
+      if (error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
       }
       console.error('Error updating user:', error);
       res.status(400).json({ message: 'Error updating user', error: error.message });
@@ -178,7 +184,8 @@ module.exports = (app) => {
     try {
       const { currentPassword, newPassword } = req.body;
       const accessToken = req.headers.authorization.split(' ')[1];
-      const user = await getUser(accessToken);
+      const { userEmail } = await validate(accessToken);
+      const user = await getUser(userEmail);
 
       if (!user) {
         return res.status(401).json({ message: 'Invalid token' });
@@ -193,10 +200,10 @@ module.exports = (app) => {
       await user.save();
       res.status(200).json({ message: 'Password change successful' });
     } catch (error) {
-      if (error.message === 'Invalid token') {
-        return res.status(401).json({ message: 'Invalid token' });
-      }
       console.error('Error changing password:', error);
+      if (error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
       res.status(400).json({ message: 'Error changing password', error: error.message });
     }
   });

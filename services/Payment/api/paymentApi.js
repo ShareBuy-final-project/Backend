@@ -7,13 +7,19 @@ module.exports = (app) => {
     console.log('Payment service received request to /payment');
     try {
       const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
       const groupId = req.body.groupId;
       const amount = req.body.amount;
       const data = await handlePayment(groupId, amount, accessToken);
       res.status(201).json(data);
     } catch (error) {
       console.error('Error making payment:', error);
-      res.status(400).json({ message: 'Error making payment', error: error.message });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error making payment', error: error.message });
+      }
     }
   });
   app.post('/charge', async (req, res) => {
