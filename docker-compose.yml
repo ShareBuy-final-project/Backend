@@ -1,7 +1,7 @@
 services:
 
   db:
-    image: postgres:latest
+    image: ankane/pgvector:latest
     environment:
       - POSTGRES_DB=ShareBuyDB
       - POSTGRES_USER=adminDB
