@@ -7,15 +7,17 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "@tensorflow-models/universal-sentence-encoder": "^1.3.3",
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "axios": "^0.21.1",
+    "bcrypt": "^5.1.0",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.1",
+    "http": "^0.0.1-security",
     "pg": "^8.13.1",
     "sequelize": "^6.6.2",
-    "http": "^0.0.1-security",
-    "socket.io": "^4.0.0",
-    "axios": "^0.21.1",
-    "bcrypt": "^5.1.0"
+    "socket.io": "^4.0.0"
   }
 }
