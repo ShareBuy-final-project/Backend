@@ -410,11 +410,10 @@ app.post('/getBuisnessGroups', async (req, res) => {
  */
 app.get('/categories', async (req, res) => {
   try {
-    const categories = await Group.findAll({
-      attributes: [[sequelize.fn('DISTINCT', sequelize.col('category')), 'category']],
-      raw: true,
-    });
-    console.log('categories', categories);
+    // Use a raw query to fetch distinct categories from the "Group" table
+    const [categories] = await Group.sequelize.query(
+      'SELECT DISTINCT "category" FROM "Group" WHERE "category" IS NOT NULL'
+    );
     const categoryList = categories.map(c => c.category);
     res.status(200).json(categoryList);
   } catch (error) {
