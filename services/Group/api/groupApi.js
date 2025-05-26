@@ -414,6 +414,7 @@ app.get('/categories', async (req, res) => {
       attributes: [[sequelize.fn('DISTINCT', sequelize.col('category')), 'category']],
       raw: true,
     });
+    console.log('categories', categories);
     const categoryList = categories.map(c => c.category);
     res.status(200).json(categoryList);
   } catch (error) {
