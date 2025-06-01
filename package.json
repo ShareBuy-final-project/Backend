@@ -5,11 +5,14 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.8.0",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "faker": "^6.6.6",
+    "k6": "^0.0.0",
     "pg": "^8.13.1",
     "sequelize": "^6.37.5",
     "sequelize-cli": "^6.6.2",
