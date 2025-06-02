@@ -422,4 +422,19 @@ app.get('/categories', async (req, res) => {
 });
 };
 
-
+app.get('/getGroupsByBusinessEmail', async (req, res) => {
+  try {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const { userEmail } = await validate(accessToken);
+    const {businessEmail , page = 1, limit = 10 } = req.body;
+    const groups = await getBusinessGroups(businessEmail, page, limit);
+    res.status(200).json(groups);
+  } catch (error) {
+    if(error.response.status == 401){
+      res.status(401).json({ message: 'Unauthorized', error: error.message });
+    }
+    else{
+      res.status(400).json({ message: 'Error fetching groups by business email', error: error.message });
+    }
+  }
+});
