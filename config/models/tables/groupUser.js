@@ -74,8 +74,8 @@ const insertInitialGroupUsers = async () => {
   await GroupUser.bulkCreate(groupUsers);
   console.log('Initial group-user connections inserted');
 };
-insertInitialGroupUsers().catch(error => {
-  console.error('Error inserting initial groups:', error.message);
-});
+// insertInitialGroupUsers().catch(error => {
+//   console.error('Error inserting initial groups:', error.message);
+// });
 
 module.exports = GroupUser;
