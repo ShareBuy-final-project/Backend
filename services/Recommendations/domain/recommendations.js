@@ -91,7 +91,7 @@ const getForYouGroups = async (groupsVectors) => {
             'ASC'
           ]
         ],
-        limit: 10 // Limit to top 3 nearest neighbors
+        limit: 10 // Limit to top 10 nearest neighbors
       });
 
       // Filter nearestNeighbors to have unique names
