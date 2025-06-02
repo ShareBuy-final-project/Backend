@@ -84,6 +84,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./config/models/images:/app/Group/images
 
   chat-service:
     build:
@@ -118,6 +120,7 @@ services:
         condition: service_healthy
     volumes:
       - ./config/models:/app/models
+      - ./config/models/images:/app/Group/images
 
   api-gateway:
     build:
