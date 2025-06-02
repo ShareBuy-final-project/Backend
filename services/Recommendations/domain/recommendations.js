@@ -82,7 +82,7 @@ const getForYouGroups = async (groupsVectors) => {
     for (const userVector of groupsVectors) {
       //console.log(`[INFO] Processing user vector: ${JSON.stringify(userVector)}`);
       const nearestNeighbors = await Group.findAll({
-        attributes: ['id'],
+        attributes: ['id', 'name'],
         order: [
           [
             Sequelize.literal(`
@@ -91,11 +91,21 @@ const getForYouGroups = async (groupsVectors) => {
             'ASC'
           ]
         ],
-        limit: 3 // Limit to top 3 nearest neighbors
+        limit: 10 // Limit to top 3 nearest neighbors
       });
 
-      console.log(`[INFO] Found nearest neighbors: ${JSON.stringify(nearestNeighbors)}`);
-      recommendations.push(...nearestNeighbors.map(neighbor => neighbor.id));
+      // Filter nearestNeighbors to have unique names
+      const uniqueNeighbors = [];
+      const seenNames = new Set();
+      for (const neighbor of nearestNeighbors) {
+        if (!seenNames.has(neighbor.name)) {
+          uniqueNeighbors.push(neighbor);
+          seenNames.add(neighbor.name);
+        }
+      }
+
+      console.log(`[INFO] Found nearest neighbors: ${JSON.stringify(uniqueNeighbors)}`);
+      recommendations.push(...uniqueNeighbors.map(neighbor => neighbor.id));
     }
 
     console.log(`[INFO] Final recommendations: ${JSON.stringify(recommendations)}`);
