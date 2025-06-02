@@ -234,12 +234,20 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
 
 const getBusinessGroups = async (email, page = 1, limit = 10) => {
   try {
+    console.log('Fetching business groups for email:', email);
     const offset = (page - 1) * limit;
+    console.log('Pagination details - page:', page, 'limit:', limit, 'offset:', offset);
+
     const groups = await Group.findAll({ where: { creator: email }, offset, limit });
+    console.log('Groups fetched:', groups.map(g => g.id));
+
     const groupsIds = groups.map(g => g.id);
     const groupsToReturn = await getGroupGeneric(email, groupsIds);
+    console.log('Groups to return:', groupsToReturn.map(g => g.id));
+
     return groupsToReturn;
   } catch (error) {
+    console.error('Error fetching business groups:', error.toString());
     throw new Error(error.toString());
   }
 }
