@@ -80,7 +80,7 @@ const getForYouGroups = async (groupsVectors) => {
     const recommendations = [];
 
     for (const userVector of groupsVectors) {
-      console.log(`[INFO] Processing user vector: ${JSON.stringify(userVector)}`);
+      //console.log(`[INFO] Processing user vector: ${JSON.stringify(userVector)}`);
       const nearestNeighbors = await Group.findAll({
         attributes: ['id'],
         order: [
