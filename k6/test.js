@@ -1,9 +1,9 @@
 import http from 'k6/http'
 import {SharedArray} from 'k6/data'
-import { response } from 'express';
+//import { response } from 'express';
 //const {faker} = require('@faker-js/faker')
 //const fs = require('node:fs');
-const baseURL = 'http://132.73.84.56/'
+const baseURL = 'http://132.73.84.56:443/'
 export const options = {
     vus: 1,
     duration: '10s'
@@ -150,9 +150,9 @@ function save_unsave_test() {
 }*/
 // uncomment to perform tests
 //test 1
-/*export default () => {
+export default () => {
   generate_many_users();
-}*/
+}
 //test 2
 /*init_chat_test()
 export default () => {
