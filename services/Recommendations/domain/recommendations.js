@@ -76,7 +76,7 @@ const getSavedGroups = async (userEmail) => {
 
 const getForYouGroups = async (groupsVectors) => {
   try {
-    console.log(`[INFO] Generating recommendations based on group vectors: ${JSON.stringify(groupsVectors)}`);
+    //console.log(`[INFO] Generating recommendations based on group vectors: ${JSON.stringify(groupsVectors)}`);
     const recommendations = [];
 
     for (const userVector of groupsVectors) {
