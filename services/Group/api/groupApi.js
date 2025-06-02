@@ -419,8 +419,9 @@ app.get('/categories', async (req, res) => {
   }
 });
 
-app.get('/getGroupsByBusinessEmail', async (req, res) => {
+app.post('/getGroupsByBusinessEmail', async (req, res) => {
   try {
+    console.log('getGroupsByBusinessEmail');
     const accessToken = req.headers.authorization.split(' ')[1];
     const { userEmail } = await validate(accessToken);
     const { businessEmail, page = 1, limit = 10 } = req.body;
