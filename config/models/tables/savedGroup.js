@@ -55,8 +55,8 @@ const insertInitialSavedGroups = async () => {
   console.log('Initial saved groups inserted');
 };
 
-// insertInitialSavedGroups().catch(err => {
-//   console.error('Error inserting saved groups:', err.message);
-// });
+insertInitialSavedGroups().catch(err => {
+  console.error('Error inserting saved groups:', err.message);
+});
 
 module.exports = SavedGroup;
