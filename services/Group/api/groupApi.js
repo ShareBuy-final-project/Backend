@@ -420,7 +420,6 @@ app.get('/categories', async (req, res) => {
     res.status(500).json({ message: 'Error fetching categories', error: error.message });
   }
 });
-};
 
 app.get('/getGroupsByBusinessEmail', async (req, res) => {
   try {
@@ -438,3 +437,4 @@ app.get('/getGroupsByBusinessEmail', async (req, res) => {
     }
   }
 });
+};
