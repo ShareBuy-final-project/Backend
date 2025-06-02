@@ -63,6 +63,7 @@ services:
       - DB_PASS=adminDB
       - DB_NAME=ShareBuyDB
       - GATE_WAY_URL=http://132.73.84.56:443
+      - RUN_GROUP_SEED=true
     depends_on:
       db:
         condition: service_healthy

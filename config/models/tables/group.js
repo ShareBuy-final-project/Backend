@@ -365,8 +365,10 @@ const insertInitialGroups = async () => {
   console.log('Embeddings updated for all groups');
 };
 
-insertInitialGroups().catch(error => {
-  console.error('Error inserting initial groups:', error.message);
-});
+if (process.env.RUN_GROUP_SEED === 'true') {
+  insertInitialGroups().catch(error => {
+    console.error('Error inserting initial groups:', error.message);
+  });
+}
 
 module.exports = Group;
