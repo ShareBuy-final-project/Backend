@@ -27,7 +27,7 @@ for (let i = 0; i < num_users; i++)
   });
 }*/
 function generate_many_users() {
-  const url = baseURL+'userApi/register';
+  const url = baseURL+'user/register';
   const params = JSON.stringify({
     'Content-Type': 'application/json',
   });
@@ -51,7 +51,7 @@ function generate_many_users() {
 }
 function mass_login()
 {
-  const url = baseURL+'authApi/login';
+  const url = baseURL+'auth/login';
   const params = JSON.stringify({
     'Content-Type': 'application/json',
   });
@@ -73,7 +73,7 @@ function mass_login()
 var groupId = 304; //replace with valid group id
 function init_chat_test() {
   mass_login();
-  const url = baseURL+'groupApi/joinGroup';
+  const url = baseURL+'group/joinGroup';
   for (let i = 0; i < num_users; i++)
   {
     const accessToken = tokens[i]
@@ -98,8 +98,8 @@ function chat_test() {
   });
 }
 function join_unjoin_test() {
-  const url = baseURL+'groupApi/joinGroup';
-  const url2 = baseURL+'groupApi/leaveGroup';
+  const url = baseURL+'group/joinGroup';
+  const url2 = baseURL+'group/leaveGroup';
   for (let i = 0; i < num_users; i++)
   {
     const accessToken = tokens[i]
@@ -119,8 +119,8 @@ function join_unjoin_test() {
   }
 }
 function save_unsave_test() {
-  const url = baseURL+'groupApi/saveGroup';
-  const url2 = baseURL+'groupApi/unSaveGroup';
+  const url = baseURL+'group/saveGroup';
+  const url2 = baseURL+'group/unSaveGroup';
   for (let i = 0; i < num_users; i++)
   {
     const accessToken = tokens[i]
@@ -137,7 +137,7 @@ function save_unsave_test() {
 }
 /*export default () => {
   const accessToken = 'valid-token';
-  const url = baseURL+'groupApi/getPage';
+  const url = baseURL+'group/getPage';
   const params = JSON.stringify({
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${accessToken}`,
@@ -163,3 +163,9 @@ export default () => {
 export default () => {
   join_unjoin();
 }*/
+//test 3
+/*mass_login()
+export default () => {
+  save_unsave_test();
+}*/
+
