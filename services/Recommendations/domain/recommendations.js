@@ -20,7 +20,7 @@ const getRecommendationsForUser = async (userEmail, options = {}) => {
     console.log(`[INFO] User has saved groups: ${JSON.stringify(savedGroupIds)}`);
 
     const groupsVectors = await getGroupsVectors([...userGroupIds, ...savedGroupIds]);
-    console.log(`[INFO] Retrieved group vectors for user: ${JSON.stringify(groupsVectors)}`);
+    //console.log(`[INFO] Retrieved group vectors for user: ${JSON.stringify(groupsVectors)}`);
 
     const forYou = await getForYouGroups(groupsVectors);
     console.log(`[INFO] Generated recommendations for user: ${JSON.stringify(forYou)}`);
@@ -76,11 +76,11 @@ const getSavedGroups = async (userEmail) => {
 
 const getForYouGroups = async (groupsVectors) => {
   try {
-    console.log(`[INFO] Generating recommendations based on group vectors: ${JSON.stringify(groupsVectors)}`);
+    //console.log(`[INFO] Generating recommendations based on group vectors: ${JSON.stringify(groupsVectors)}`);
     const recommendations = [];
 
     for (const userVector of groupsVectors) {
-      console.log(`[INFO] Processing user vector: ${JSON.stringify(userVector)}`);
+      //console.log(`[INFO] Processing user vector: ${JSON.stringify(userVector)}`);
       const nearestNeighbors = await Group.findAll({
         attributes: ['id'],
         order: [
@@ -129,7 +129,7 @@ const getGroupsVectors = async (groupIds) => {
       }
     });
 
-    console.log(`[INFO] Retrieved group vectors: ${JSON.stringify(vectors)}`);
+    //console.log(`[INFO] Retrieved group vectors: ${JSON.stringify(vectors)}`);
     return vectors;
   } catch (error) {
     console.error(`[ERROR] Error fetching group vectors:`, error);
