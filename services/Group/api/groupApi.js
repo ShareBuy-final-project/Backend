@@ -365,16 +365,15 @@ module.exports = (app) => {
       const groups = await getUserGroups(userEmail, page, limit);
       res.status(200).json(groups);
     } catch (error) {
-      if(error.response.status == 401){
+      if (error.response && error.response.status === 401) {
         res.status(401).json({ message: 'Unauthorized', error: error.message });
-      }
-      else{
+      } else {
         res.status(400).json({ message: 'Error fetching user groups', error: error.message });
       }
     }
   });
 
-/**
+  /**
    * @api {post} /getBuisnessGroups Get user groups
    * @apiName getBuisnessGroups
    * @apiGroup Group
@@ -384,22 +383,21 @@ module.exports = (app) => {
    * 
    * @apiSuccess {Object[]} groups List of groups with purchaseMade set to false and isActive set to true.
    */
-app.post('/getBuisnessGroups', async (req, res) => {
-  try {
-    const accessToken = req.headers.authorization.split(' ')[1];
-    const { userEmail } = await validate(accessToken);
-    const { page = 1, limit = 10 } = req.body;
-    const groups = await getBusinessGroups(userEmail, page, limit);
-    res.status(200).json(groups);
-  } catch (error) {
-    if(error.response.status == 401){
-      res.status(401).json({ message: 'Unauthorized', error: error.message });
+  app.post('/getBuisnessGroups', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { page = 1, limit = 10 } = req.body;
+      const groups = await getBusinessGroups(userEmail, page, limit);
+      res.status(200).json(groups);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      } else {
+        res.status(400).json({ message: 'Error fetching user groups', error: error.message });
+      }
     }
-    else{
-      res.status(400).json({ message: 'Error fetching user groups', error: error.message });
-    }
-  }
-});
+  });
 
   /**
  * @api {get} /categories Get all unique categories
@@ -425,14 +423,13 @@ app.get('/getGroupsByBusinessEmail', async (req, res) => {
   try {
     const accessToken = req.headers.authorization.split(' ')[1];
     const { userEmail } = await validate(accessToken);
-    const {businessEmail , page = 1, limit = 10 } = req.body;
+    const { businessEmail, page = 1, limit = 10 } = req.body;
     const groups = await getBusinessGroups(businessEmail, page, limit);
     res.status(200).json(groups);
   } catch (error) {
-    if(error.response.status == 401){
+    if (error.response && error.response.status === 401) {
       res.status(401).json({ message: 'Unauthorized', error: error.message });
-    }
-    else{
+    } else {
       res.status(400).json({ message: 'Error fetching groups by business email', error: error.message });
     }
   }
