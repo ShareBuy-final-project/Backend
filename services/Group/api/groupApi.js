@@ -56,6 +56,14 @@ module.exports = (app) => {
       if (!business) {
         return res.status(400).json({ message: 'No business found for the user' });
       }
+      
+      const embedding = await getGroupEmbedding({
+        description,
+        category: business.category,
+        price,
+        discount,
+        size
+      });
 
       const newGroup = await create({ 
         name, 
@@ -66,19 +74,12 @@ module.exports = (app) => {
         discount, 
         size, 
         category: business.category, 
-        businessNumber: business.businessNumber 
-      });
-
-      const embedding = await getGroupEmbedding({
-        description,
-        category: business.category,
-        price,
-        discount,
-        size
+        businessNumber: business.businessNumber,
+        groupEmbedding: embedding
       });
   
       // Create a new group chat for the created group
-      await GroupChat.create({ groupId: newGroup.id, isActive: true, groupEmbedding: embedding });
+      await GroupChat.create({ groupId: newGroup.id, isActive: true });
 
       res.status(201).json({ 
         message: 'Group created successfully', 
