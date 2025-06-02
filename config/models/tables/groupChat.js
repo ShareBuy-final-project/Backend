@@ -48,8 +48,8 @@ const initializeGroupChats = async () => {
   }
 };
 
-initializeGroupChats().catch(error => {
-  console.error('Error initializing group chats:', error.message);
-});
+// initializeGroupChats().catch(error => {
+//   console.error('Error initializing group chats:', error.message);
+// });
 
 module.exports = GroupChat;
