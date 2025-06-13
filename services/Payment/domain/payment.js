@@ -5,11 +5,10 @@ const {createPaymentIntent, makePaymentTranscations, createConnectedAccount, cre
 const e = require('express');
 
 
-const handlePayment = async (groupId, amount, accessToken) => {
+const handlePayment = async (groupId, amount) => {
     try{
         console.log('handling payment');
         const id = groupId;
-        const {customerEmail} = await validate(accessToken);
         const group_data = await Group.findOne({ where: { id } });
         if(!group_data){
             throw new Error('Group not found');

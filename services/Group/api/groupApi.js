@@ -2,6 +2,32 @@ const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, s
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser, Business, GroupChat } = require('models');
 const express = require('express');
+const sequelize = require('sequelize');
+const use = require('@tensorflow-models/universal-sentence-encoder');
+const tf = require('@tensorflow/tfjs-node');
+let useModel = null;
+
+async function loadUSEModel() {
+  if (!useModel) {
+    useModel = await use.load();
+  }
+  return useModel;
+}
+
+async function getGroupEmbedding({ description, category, price, discount, size }) {
+  const model = await loadUSEModel();
+  const enrichedText = `
+    ${description}
+    Category: ${category}.
+    Price: $${price}.
+    Group size: ${size}.
+    Discount: $${discount}.
+  `;
+  const embeddings = await model.embed([enrichedText]);
+  const embeddingArray = await embeddings.array();
+  return embeddingArray[0]; // 512-dimension vector
+}
+
 
 module.exports = (app) => {
   app.use(express.json());
@@ -30,6 +56,14 @@ module.exports = (app) => {
       if (!business) {
         return res.status(400).json({ message: 'No business found for the user' });
       }
+      
+      const embedding = await getGroupEmbedding({
+        description,
+        category: business.category,
+        price,
+        discount,
+        size
+      });
 
       const newGroup = await create({ 
         name, 
@@ -40,9 +74,10 @@ module.exports = (app) => {
         discount, 
         size, 
         category: business.category, 
-        businessNumber: business.businessNumber 
+        businessNumber: business.businessNumber,
+        groupEmbedding: embedding
       });
-
+  
       // Create a new group chat for the created group
       await GroupChat.create({ groupId: newGroup.id, isActive: true });
 
@@ -331,16 +366,15 @@ module.exports = (app) => {
       const groups = await getUserGroups(userEmail, page, limit);
       res.status(200).json(groups);
     } catch (error) {
-      if(error.response.status == 401){
+      if (error.response && error.response.status === 401) {
         res.status(401).json({ message: 'Unauthorized', error: error.message });
-      }
-      else{
+      } else {
         res.status(400).json({ message: 'Error fetching user groups', error: error.message });
       }
     }
   });
 
-/**
+  /**
    * @api {post} /getBuisnessGroups Get user groups
    * @apiName getBuisnessGroups
    * @apiGroup Group
@@ -350,22 +384,56 @@ module.exports = (app) => {
    * 
    * @apiSuccess {Object[]} groups List of groups with purchaseMade set to false and isActive set to true.
    */
-app.post('/getBuisnessGroups', async (req, res) => {
+  app.post('/getBuisnessGroups', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { page = 1, limit = 10 } = req.body;
+      const groups = await getBusinessGroups(userEmail, page, limit);
+      res.status(200).json(groups);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      } else {
+        res.status(400).json({ message: 'Error fetching user groups', error: error.message });
+      }
+    }
+  });
+
+  /**
+ * @api {get} /categories Get all unique categories
+ * @apiName GetCategories
+ * @apiGroup Group
+ * 
+ * @apiSuccess {String[]} categories List of unique categories.
+ */
+app.get('/categories', async (req, res) => {
   try {
+    // Use a raw query to fetch distinct categories from the "Group" table
+    const [categories] = await Group.sequelize.query(
+      'SELECT DISTINCT "category" FROM "Group" WHERE "category" IS NOT NULL'
+    );
+    const categoryList = categories.map(c => c.category);
+    res.status(200).json(categoryList);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching categories', error: error.message });
+  }
+});
+
+app.post('/getGroupsByBusinessEmail', async (req, res) => {
+  try {
+    console.log('getGroupsByBusinessEmail');
     const accessToken = req.headers.authorization.split(' ')[1];
     const { userEmail } = await validate(accessToken);
-    const { page = 1, limit = 10 } = req.body;
-    const groups = await getBusinessGroups(userEmail, page, limit);
+    const { businessEmail, page = 1, limit = 10 } = req.body;
+    const groups = await getBusinessGroups(businessEmail, page, limit);
     res.status(200).json(groups);
   } catch (error) {
-    if(error.response.status == 401){
+    if (error.response && error.response.status === 401) {
       res.status(401).json({ message: 'Unauthorized', error: error.message });
-    }
-    else{
-      res.status(400).json({ message: 'Error fetching user groups', error: error.message });
+    } else {
+      res.status(400).json({ message: 'Error fetching groups by business email', error: error.message });
     }
   }
 });
 };
-
-

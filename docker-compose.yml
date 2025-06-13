@@ -1,7 +1,7 @@
 services:
 
   db:
-    image: postgres:latest
+    image: ankane/pgvector:latest
     environment:
       - POSTGRES_DB=ShareBuyDB
       - POSTGRES_USER=adminDB
@@ -10,6 +10,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./config/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d ShareBuyDB -U adminDB"]
       interval: 10s
@@ -62,6 +63,7 @@ services:
       - DB_PASS=adminDB
       - DB_NAME=ShareBuyDB
       - GATE_WAY_URL=http://132.73.84.56:443
+      - RUN_GROUP_SEED=true
     depends_on:
       db:
         condition: service_healthy
@@ -84,6 +86,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./config/models/images:/app/Group/images
 
   chat-service:
     build:
@@ -100,6 +104,24 @@ services:
       db:
         condition: service_healthy
     volumes:
+      - ./config/models/images:/app/Group/images
+
+  recommendations-service:
+    build:
+      context: .
+      dockerfile: ./services/Recommendations/Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=10000
+      - DB_HOST=db
+      - DB_USER=adminDB
+      - DB_PASS=adminDB
+      - DB_NAME=ShareBuyDB
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./config/models:/app/models
       - ./config/models/images:/app/Group/images
 
   api-gateway:

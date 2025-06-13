@@ -27,7 +27,12 @@ module.exports = (app) => {
       res.json({ messages, unreadMessagesCount: unreadMessages.length });
     } catch (error) {
       console.error('Error fetching group chat messages:', error);
-      res.status(500).json({ error: 'Failed to fetch chat messages' });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error getting group chat', error: error.message });
+      }
     }
   });
 
@@ -40,7 +45,12 @@ module.exports = (app) => {
       res.json(groupChats);
     } catch (error) {
       console.error('Error fetching group chats:', error);
-      res.status(500).json({ error: 'Failed to fetch group chats' });
+      if(error.response.status == 401){
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      }
+      else{
+        res.status(400).json({ message: 'Error getting group chat', error: error.message });
+      }
     }
   });
 
