@@ -65,6 +65,8 @@ module.exports = (app) => {
         size
       });
 
+      console.log('Embedding generated:', embedding);
+
       const newGroup = await create({ 
         name, 
         creator: userEmail, 
