@@ -20,6 +20,8 @@ const create = async ({ name, creator, description, base64Image, price, discount
       image = Buffer.from(base64Data, 'base64');
     }
 
+    console.log('Creating group');
+
     const newGroup = await Group.create({
       name,
       creator,
@@ -32,6 +34,8 @@ const create = async ({ name, creator, description, base64Image, price, discount
       businessNumber,
       groupEmbedding
     });
+
+    console.log('Group created successfully', newGroup.id);
 
     return newGroup;
   } catch (error) {
