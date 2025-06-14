@@ -7,7 +7,7 @@ const getTotalAmount = async (id) =>{
   return await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
 )};
 
-const create = async ({ name, creator, description, base64Image, price, discount, size, category, businessNumber }) => {
+const create = async ({ name, creator, description, base64Image, price, discount, size, category, businessNumber, groupEmbedding }) => {
   if (!name || !price || !discount || !size || !category || !businessNumber) {
     throw new Error('Missing required fields');
   }
@@ -29,7 +29,8 @@ const create = async ({ name, creator, description, base64Image, price, discount
       discount,
       size,
       category,
-      businessNumber
+      businessNumber,
+      groupEmbedding
     });
 
     return newGroup;
