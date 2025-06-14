@@ -20,8 +20,6 @@ const create = async ({ name, creator, description, base64Image, price, discount
       image = Buffer.from(base64Data, 'base64');
     }
 
-    console.log('Creating group');
-
     const newGroup = await Group.create({
       name,
       creator,
@@ -34,15 +32,13 @@ const create = async ({ name, creator, description, base64Image, price, discount
       businessNumber
     });
 
-    console.log('Group created successfully', newGroup.id);
-
     await sequelize.query(`
       UPDATE "Group"
       SET "groupEmbedding" = '${groupEmbedding}'
       WHERE id = ${newGroup.id}
     `);
 
-    console.log('Group embedding updated successfully');
+    console.log('Group created and embedding updated successfully');
 
     return newGroup;
   } catch (error) {
