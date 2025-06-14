@@ -107,10 +107,6 @@ const Group = sequelize.define('group', {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
-  },
-  groupEmbedding: {
-    type: DataTypes.TEXT, // Use TEXT for large embeddings
-    allowNull: true
   }
 }, {
   tableName: 'Group',

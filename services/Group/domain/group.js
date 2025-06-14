@@ -1,4 +1,4 @@
-const { Group, User, SavedGroup, GroupUser, Business } = require('models');
+const { Group, User, SavedGroup, GroupUser, Business, sequelize } = require('models');
 const { Op } = require('sequelize');
 const axios = require('axios');
 require('dotenv').config();
@@ -31,9 +31,14 @@ const create = async ({ name, creator, description, base64Image, price, discount
       discount,
       size,
       category,
-      businessNumber,
-      groupEmbedding
+      businessNumber
     });
+
+    await sequelize.query(`
+      UPDATE "Group"
+      SET "groupEmbedding" = '${groupEmbedding}'
+      WHERE id = ${newGroup.id}
+    `);
 
     console.log('Group created successfully', newGroup.id);
 
