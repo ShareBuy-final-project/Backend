@@ -109,7 +109,7 @@ const Group = sequelize.define('group', {
     defaultValue: false
   },
   groupEmbedding: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT, // Use TEXT for large embeddings
     allowNull: true
   }
 }, {
