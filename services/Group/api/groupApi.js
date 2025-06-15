@@ -375,6 +375,37 @@ module.exports = (app) => {
   });
 
   /**
+ * @api {post} /hasUserGroupWithBusiness Check if user has group with specific business
+ * @apiName HasUserGroupWithBusiness
+ * @apiGroup Group
+ * 
+ * @apiBody {Number} businessId ID of the business to check against.
+ * 
+ * @apiSuccess {Boolean} hasGroup Whether the user has a group with this business.
+ */
+  app.post('/hasUserGroupWithBusiness', async (req, res) => {
+    try {
+      const accessToken = req.headers.authorization.split(' ')[1];
+      const { userEmail } = await validate(accessToken);
+      const { businessId } = req.body;
+  
+      if (!businessId) {
+        return res.status(400).json({ message: 'Missing businessId' });
+      }
+  
+      const hasGroup = await doesUserHaveGroupWithBusiness(userEmail, parseInt(businessId));
+      res.status(200).json({ hasGroup });
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        res.status(401).json({ message: 'Unauthorized', error: error.message });
+      } else {
+        res.status(400).json({ message: 'Error checking user group', error: error.message });
+      }
+    }
+  });
+  
+
+  /**
    * @api {post} /getBuisnessGroups Get user groups
    * @apiName getBuisnessGroups
    * @apiGroup Group
