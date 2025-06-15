@@ -323,5 +323,5 @@ const checkGroupCapacity = async (groupId, amount) => {
 
 
 module.exports = {
-  create, getGroup, saveGroup, joinGroup, leaveGroup,getBusinessGroups, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups
+  create, getGroup, saveGroup, joinGroup, leaveGroup,getBusinessGroups, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups, doesUserHaveGroupWithBusiness
 };

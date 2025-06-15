@@ -1,4 +1,4 @@
-const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups } = require('../domain/group');
+const { create, getGroup, saveGroup, joinGroup, leaveGroup, getBusinessGroups, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups, doesUserHaveGroupWithBusiness } = require('../domain/group');
 const { validate } = require('../domain/validation');
 const { SavedGroup, Group, GroupUser, Business, GroupChat } = require('models');
 const express = require('express');
@@ -388,7 +388,8 @@ module.exports = (app) => {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { businessId } = req.body;
-      console.log("testtt-amit");
+      console.log("businessId", businessId);
+      console.log("userEmail", userEmail);
 
       if (!businessId) {
         return res.status(400).json({ message: 'Missing businessId' });
