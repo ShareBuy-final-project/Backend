@@ -388,7 +388,8 @@ module.exports = (app) => {
       const accessToken = req.headers.authorization.split(' ')[1];
       const { userEmail } = await validate(accessToken);
       const { businessId } = req.body;
-  
+      console.log("testtt-amit");
+
       if (!businessId) {
         return res.status(400).json({ message: 'Missing businessId' });
       }
