@@ -395,7 +395,7 @@ module.exports = (app) => {
         return res.status(400).json({ message: 'Missing businessId' });
       }
   
-      const hasGroup = await doesUserHaveGroupWithBusiness(userEmail, parseInt(businessId));
+      const hasGroup = await doesUserHaveGroupWithBusiness(userEmail, businessId);
       console.log("hasGroup", hasGroup);
       res.status(200).json({ hasGroup });
     } catch (error) {
