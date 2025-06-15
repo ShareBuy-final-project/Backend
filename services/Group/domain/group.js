@@ -242,6 +242,7 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
 
 const doesUserHaveGroupWithBusiness = async (userEmail, businessId) => {
   try {
+    console.log("amit-test", userEmail, businessId);
     const groupUsers = await GroupUser.findAll({
       where: { userEmail, paymentConfirmed: true },
       attributes: ['groupId']
