@@ -394,6 +394,7 @@ module.exports = (app) => {
       }
   
       const hasGroup = await doesUserHaveGroupWithBusiness(userEmail, parseInt(businessId));
+      console.log("hasGroup", hasGroup);
       res.status(200).json({ hasGroup });
     } catch (error) {
       if (error.response && error.response.status === 401) {
