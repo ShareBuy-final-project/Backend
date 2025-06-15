@@ -242,12 +242,10 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
 
 const doesUserHaveGroupWithBusiness = async (userEmail, businessId) => {
   try {
-    console.log("amit-test", userEmail, businessId);
-    const groupUsers = await GroupUser.findAll({
-      where: { userEmail, paymentConfirmed: true },
-      attributes: ['groupId']
-    });
+    console.log("amit-test", userEmail);
+    console.log("amit-test", businessId);
 
+    const groupUsers = await GroupUser.findAll({ where: { userEmail,  paymentConfirmed:true} });
     const groupIds = groupUsers.map(gu => gu.groupId);
 
     if (groupIds.length === 0) return false;
@@ -255,9 +253,7 @@ const doesUserHaveGroupWithBusiness = async (userEmail, businessId) => {
     const matchingGroup = await Group.findOne({
       where: {
         id: groupIds,
-        businessId,
-        purchaseMade: false
-      }
+        businessNumber: businessId }
     });
 
     return !!matchingGroup;
