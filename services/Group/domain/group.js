@@ -1,4 +1,4 @@
-const { Group, User, SavedGroup, GroupUser, Business } = require('models');
+const { Group, User, SavedGroup, GroupUser, Business, sequelize } = require('models');
 const { Op } = require('sequelize');
 const axios = require('axios');
 require('dotenv').config();
@@ -7,7 +7,7 @@ const getTotalAmount = async (id) =>{
   return await GroupUser.sum('amount', { where: { groupId: id, paymentConfirmed: true  } }
 )};
 
-const create = async ({ name, creator, description, base64Image, price, discount, size, category, businessNumber }) => {
+const create = async ({ name, creator, description, base64Image, price, discount, size, category, businessNumber, groupEmbedding }) => {
   if (!name || !price || !discount || !size || !category || !businessNumber) {
     throw new Error('Missing required fields');
   }
@@ -31,6 +31,14 @@ const create = async ({ name, creator, description, base64Image, price, discount
       category,
       businessNumber
     });
+
+    await sequelize.query(`
+      UPDATE "Group"
+      SET "groupEmbedding" = '${groupEmbedding}'
+      WHERE id = ${newGroup.id}
+    `);
+
+    console.log('Group created and embedding updated successfully');
 
     return newGroup;
   } catch (error) {
