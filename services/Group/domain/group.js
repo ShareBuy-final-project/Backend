@@ -240,6 +240,30 @@ const getUserGroups = async (userEmail, page = 1, limit = 10) => {
   }
 };
 
+const doesUserHaveGroupWithBusiness = async (userEmail, businessId) => {
+  try {
+    console.log("amit-test", userEmail);
+    console.log("amit-test", businessId);
+
+    const groupUsers = await GroupUser.findAll({ where: { userEmail,  paymentConfirmed:true} });
+    const groupIds = groupUsers.map(gu => gu.groupId);
+
+    if (groupIds.length === 0) return false;
+
+    const matchingGroup = await Group.findOne({
+      where: {
+        id: groupIds,
+        businessNumber: businessId }
+    });
+
+    return !!matchingGroup;
+  } catch (error) {
+    throw new Error(error.toString());
+  }
+};
+
+
+
 const getBusinessGroups = async (email, page = 1, limit = 10) => {
   try {
     console.log('Fetching business groups for email:', email);
@@ -296,5 +320,5 @@ const checkGroupCapacity = async (groupId, amount) => {
 
 
 module.exports = {
-  create, getGroup, saveGroup, joinGroup, leaveGroup,getBusinessGroups, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups
+  create, getGroup, saveGroup, joinGroup, leaveGroup,getBusinessGroups, checkGroupExists, searchGroups, getBusinessHistory, getSavedGroups, getUserHistory, getUserGroups, doesUserHaveGroupWithBusiness
 };
