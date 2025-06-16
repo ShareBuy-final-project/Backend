@@ -59,21 +59,21 @@ const insertInitialGroupUsers = async () => {
   const groupUsers = [
     // user1 in groups 1, 2
     { groupId: minGroupId, userEmail: 'user1@example.com', amount: 1, paymentConfirmed: true, paymentIntentId: 'pi_101' },
-    { groupId: minGroupId + 1, userEmail: 'user1@example.com', amount: 1, paymentConfirmed: false, paymentIntentId: 'pi_102' },
+    { groupId: minGroupId + 1, userEmail: 'user1@example.com', amount: 1, paymentConfirmed: true, paymentIntentId: 'pi_102' },
 
     // user2 in groups 1, 3, 4
     { groupId: minGroupId, userEmail: 'user2@example.com', amount: 2, paymentConfirmed: true, paymentIntentId: 'pi_201' },
     { groupId: minGroupId + 4, userEmail: 'user2@example.com', amount: 1, paymentConfirmed: true, paymentIntentId: 'pi_202' },
-    { groupId: minGroupId + 3, userEmail: 'user2@example.com', amount: 1, paymentConfirmed: false, paymentIntentId: 'pi_203' },
+    { groupId: minGroupId + 3, userEmail: 'user2@example.com', amount: 1, paymentConfirmed: true, paymentIntentId: 'pi_203' },
 
     // user3 in groups 2, 4
     { groupId: minGroupId + 4, userEmail: 'user3@example.com', amount: 1, paymentConfirmed: true, paymentIntentId: 'pi_301' },
-    { groupId: minGroupId + 6, userEmail: 'user3@example.com', amount: 1, paymentConfirmed: false, paymentIntentId: 'pi_302' },
+    { groupId: minGroupId + 6, userEmail: 'user3@example.com', amount: 1, paymentConfirmed: true, paymentIntentId: 'pi_302' },
 
     // user4 in groups 1, 2, 3, 5
     { groupId: minGroupId + 9, userEmail: 'user4@example.com', amount: 1, paymentConfirmed: true, paymentIntentId: 'pi_401' },
     { groupId: minGroupId + 4, userEmail: 'user4@example.com', amount: 1, paymentConfirmed: true, paymentIntentId: 'pi_402' },
-    { groupId: minGroupId + 14, userEmail: 'user4@example.com', amount: 2, paymentConfirmed: false, paymentIntentId: 'pi_403' },
+    { groupId: minGroupId + 14, userEmail: 'user4@example.com', amount: 2, paymentConfirmed: true, paymentIntentId: 'pi_403' },
     { groupId: minGroupId + 19, userEmail: 'user4@example.com', amount: 1, paymentConfirmed: true, paymentIntentId: 'pi_404' },
 
     // user5 in group 3
