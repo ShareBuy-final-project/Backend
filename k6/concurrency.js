@@ -1,5 +1,7 @@
+const http = require('k6/http');
+const baseURL = 'http://132.73.84.56:443/'
 function login_concurrency_test() {
-    let url = baseURL+'user/login';
+    let url = baseURL+'auth/login';
     const params = JSON.stringify({
         'Content-Type': 'application/json',
     });
@@ -11,11 +13,11 @@ function login_concurrency_test() {
         email: 'useer2@example.com',
         password: 'password2'
     }
-    call1 = new Promise((resolve, reject) => {
+    let call1 = new Promise((resolve, reject) => {
         let result1 = http.post(url, payload1, params);
         resolve(result1);
     });
-    call2 = new Promise((resolve, reject) => {
+    let call2 = new Promise((resolve, reject) => {
         let result2 = http.post(url, payload2, params);
         resolve(result2);
     });
@@ -25,7 +27,7 @@ function login_concurrency_test() {
     })
 }
 function login_same_user_test() {
-    const url = baseURL+'user/login';
+    const url = baseURL+'auth/login';
     const params = JSON.stringify({
       'Content-Type': 'application/json',
     });
@@ -33,11 +35,11 @@ function login_same_user_test() {
       email: 'useer1@example.com',
       password: 'password1'
     }
-    call1 = new Promise((resolve, reject) => {
+    let call1 = new Promise((resolve, reject) => {
       let result1 = http.post(url, payload1, params);
       resolve(result1);
     });
-    call2 = new Promise((resolve, reject) => {
+    let call2 = new Promise((resolve, reject) => {
       let result2 = http.post(url, payload1, params);
       resolve(result2);
     });
@@ -47,31 +49,30 @@ function login_same_user_test() {
     })
 }
 function save_unsave_concurrency_test() {
-    let url = baseURL+'user/login';
-    params = JSON.stringify({
+    let url = baseURL+'auth/login';
+    const loginParams = JSON.stringify({
       'Content-Type': 'application/json',
     });
     let login_payload = {
       email: 'useer1@example.com',
       password: 'password1'
     }
-    let login_result = http.post(url, login_payload, params);
+    let login_result = http.post(url, login_payload, loginParams);
     let accessToken = login_result.body.accessToken;
     let refreshToken = login_result.body.refreshToken;
-    let user_id = login_result.body.user.id;
-    params = JSON.stringify({
+    let params = JSON.stringify({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`
     });
     url = baseURL+'group/saveGroup';
-    url2 = baseURL+'group/unSaveGroup';
+    let url2 = baseURL+'group/unSaveGroup';
     let save_payload = {
+      userEmail: 'useer1@example.com',
       groupId: 305,
-      userId: user_id
     }
     let unsave_payload = {
+      userEmail: 'useer1@example.com',
       groupId: 305,
-      userId: user_id
     }
     let save_call = new Promise((resolve, reject) => {
       let save_result = http.post(url, save_payload, params);
@@ -87,8 +88,8 @@ function save_unsave_concurrency_test() {
     })
 }
 function create_2groups_concurrency_test() {
-    let url = baseURL+'user/login';
-    params = JSON.stringify({
+    let url = baseURL+'auth/login';
+    let params = JSON.stringify({
       'Content-Type': 'application/json',
     });
     //change this to a business account
@@ -99,7 +100,6 @@ function create_2groups_concurrency_test() {
     let login_result = http.post(url, login_payload, params);
     let accessToken = login_result.body.accessToken;
     let refreshToken = login_result.body.refreshToken;
-    let user_id = login_result.body.user.id;
     params = JSON.stringify({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`
@@ -133,4 +133,9 @@ function create_2groups_concurrency_test() {
       console.log(results[0].body);
       console.log(results[1].body);
     })
+}
+export function setup() {
+    create_2groups_concurrency_test()
+  }
+export default () => {
 }
