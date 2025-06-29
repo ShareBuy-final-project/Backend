@@ -218,3 +218,39 @@ To run the tests for the backend services, follow these steps:
 By following these instructions, you can run and manage tests for the backend services effectively.
 
 By following these instructions, you can manage the Docker services, access the database, generate API documentation, and use pgAdmin effectively while ensuring the persistence of your data.
+
+##Running Stress and Concurrency Tests:
+
+To run these tests, follow these steps
+
+1. **Install Dependencies:**
+
+   Ensure that all dependencies are installed by running:
+
+   ```sh
+   npm install
+   ```
+2. **Install K6:**
+
+   Install the k6 testing tool by following the instructions on this link:
+   https://grafana.com/docs/k6/latest/set-up/install-k6/
+   The k6 is required for both stress and concurrency tests.
+
+3. **Prepeare the test:**
+
+   To prepeare a stress test, go to the k6/test.js file and uncomment the code at the bottom to run the test.
+   That is the code between ```//test n``` and ```//test n+1```
+
+   To prepare a concurrency test, go to the k6/concurrency.js file and replace the function call in the ```setup()``` function to the function of the test that you want.
+
+4. **Run the test:**
+
+   To run a stress test, run the following command:
+   ```sh
+   k6 run k6/test.js
+   ```
+
+   To run a concurrency test, run the following command:
+   ```sh
+   k6 run k6/concurrency.js
+   ```
