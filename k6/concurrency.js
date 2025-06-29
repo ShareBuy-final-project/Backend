@@ -134,6 +134,9 @@ function create_2groups_concurrency_test() {
       console.log(results[1].body);
     })
 }
+//to run the tests, replace the below function with the one you want to test
+//install k6 https://grafana.com/docs/k6/latest/set-up/install-k6/
+//then run k6 run concurrency.js
 export function setup() {
     create_2groups_concurrency_test()
   }

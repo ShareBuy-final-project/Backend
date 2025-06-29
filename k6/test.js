@@ -200,6 +200,8 @@ function create_group_test() {
   }
 }
 // uncomment to perform tests
+//install k6 https://grafana.com/docs/k6/latest/set-up/install-k6/
+//then run k6 run test.js
 //test 1
 /*export default () => {
   generate_many_users();
